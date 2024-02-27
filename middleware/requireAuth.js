@@ -1,36 +1,26 @@
-// Middleware to check if the user is authenticated before accessing protected routes
-const jwt = require('jsonwebtoken')
-const requireAuth = async (req, res, next) => {
-  
-  const { authorization } = req.headers
+const jwt = require('jsonwebtoken');
+const { isInBlacklist } = require('../controllers/adminController');
 
-    if (!authorization) {
-      return res.status(401).json({error: 'Authorization token required'})
-    } 
-  
-  const token = authorization.split(' ')[1]
-  try{
-    const {_id} = jwt.verify(token,process.env.SECRET)
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.jwt; // Assuming you're using cookies for token storage
 
-    req.user = await User.findOne({_id}).select('_id')
-    next();
-
-  }catch(error){
-    console.log(error);
-    res.status(401).json({error:'Request is not authorised'})
+  if (isInBlacklist(token)) {
+    // return res.status(401).json({ message: "Token revoked, please log in again" });
+    return res.redirect("/admin")
   }
-}
-module.exports = requireAuth
 
-// const requireAuth = (req, res, next) => {
-//   if (req.session.user) {
-//     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-//     return next();
-//   } else {
-//     return next();
-//   }
-// };
+  if (!token) {
+    // return res.status(401).json({ error: 'Access denied. No token provided.' });
+    return res.redirect("/admin")
+  }
 
-// module.exports = {
-//   requireAuth,
-// };
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    return res.status(403).redirect("/admin")
+  }
+};
+
+module.exports = verifyToken;

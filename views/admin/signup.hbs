@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="../assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="../assets/img/favicon.png">
+  <title>
+    E-store
+  </title>
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css"
+    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <!-- Nucleo Icons -->
+  <link href="../assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="../assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <!-- CSS Files -->
+  <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.1.0" rel="stylesheet" />
+  <!-- Nepcha Analytics (nepcha.com) -->
+  <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
+  <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+</head>
+
+<body class="">
+  {{!-- <div class="container position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <!-- Navbar -->
+        <nav
+          class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
+          <div class="container-fluid ps-2 pe-0">
+            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/dash">
+              E-store
+            </a>
+            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse"
+              data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false"
+              aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon mt-2">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navigation">
+              <ul class="navbar-nav mx-auto">
+                <li class="nav-item">
+                  <a class="nav-link d-flex align-items-center me-2 active" aria-current="page"
+                    href="/dash">
+                    <i class="fa fa-chart-pie opacity-6 text-dark me-1"></i>
+                    Dashboard
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link me-2" href="/profile">
+                    <i class="fa fa-user opacity-6 text-dark me-1"></i>
+                    Profile
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link me-2" href="signin">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    Sign Up
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link me-2" href="/signin">
+                    <i class="fas fa-key opacity-6 text-dark me-1"></i>
+                    Sign In
+                  </a>
+                </li>
+              </ul>
+              <ul class="navbar-nav d-lg-flex d-none">
+                <li class="nav-item d-flex align-items-center">
+                  <a class="btn btn-outline-primary btn-sm mb-0 me-2" target="_blank"
+                    href="https://www.creative-tim.com/builder?ref=navbar-material-dashboard">Online Builder</a>
+                </li>
+                <li class="nav-item">
+                  <!-- <a href="https://www.creative-tim.com/product/material-dashboard" class="btn btn-sm mb-0 me-1 bg-gradient-dark">Free download</a> -->
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </div>
+  </div> --}}
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-100">
+        <div class="container">
+          <div class="row">
+            <div
+              class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 start-0 text-center justify-content-center flex-column">
+              <div
+                class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center"
+                style="background-image: url('../assets/img/illustrations/illustration-signup.jpg'); background-size: cover;">
+              </div>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column ms-auto me-auto ms-lg-auto me-lg-5">
+              <div class="card card-plain">
+                <div class="card-header">
+                  <h4 class="font-weight-bolder">Sign Up</h4>
+                  <p class="mb-0">Enter your email and password to register</p>
+                </div>
+                <div class="card-body">
+                  <form role="form" action="/signup" method="post" onsubmit="return validateForm()">
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" for="name"></label>
+                      <input type="text" class="form-control" id="name" name="name" placeholder="Name" required>
+                    </div>
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" for="email"></label>
+                      <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                    </div>
+                    {{!-- <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" for="phone"></label>
+                      <input type="number" class="form-control" id="number" name="number" placeholder="Phone Number" required>
+                    </div> --}}
+                    <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" for="password"></label>
+                      <input type="password" class="form-control" id="password" name="password" placeholder="Password"
+                        required>
+                    </div>
+                    {{!-- <div class="input-group input-group-outline mb-3">
+                      <label class="form-label" for="password"></label>
+                      <input type="password" class="form-control" id="password" name="password" placeholder="Confirm Password"
+                        required>
+                    </div> --}}
+                    <div class="form-check form-check-info text-start ps-0">
+                      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" required>
+                      <label class="form-check-label" for="flexCheckDefault">
+                        I agree to the <a href="javascript:;" class="text-dark font-weight-bolder">Terms and
+                          Conditions</a>
+                      </label>
+                    </div>
+                    <div id="error-messages" class="text-danger"></div>
+                    <div class="text-center">
+                      <button type="submit" class="btn btn-lg bg-gradient-primary btn-lg w-100 mt-4 mb-0">Sign
+                        Up</button>
+                    </div>
+                      <div class="text-center">
+                          <a href='/auth/google' class="btn btn-lg bg-gradient-danger btn-lg w-100 mt-4 mb-0">Sign Up With Google</a>
+                    </div>
+                  </form>
+
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-2 text-sm mx-auto">
+                    Already have an account?
+                    <a href="/" type="submit"
+                      class="text-primary text-gradient font-weight-bold">Sign in</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!--   Core JS Files   -->
+  <script src="../assets/js/core/popper.min.js"></script>
+  <script src="../assets/js/core/bootstrap.min.js"></script>
+  <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="../assets/js/material-dashboard.min.js?v=3.1.0"></script>
+</body>
+
+<script>
+const User = require("../models/usersModel");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const nodemailer = require("nodemailer");
+const twilio = require("twilio");
+require("dotenv").config();
+
+// HOME PAGE DISPLAY
+let homePage = (req, res) => {
+  try {
+    res.status(200).render("user/home");
+    // res.status(200).render("user/home", { user: res.locals.user });
+  } catch (error) {
+    console.error("Failed to get home:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// AUTH
+const loadAuth = (req, res) => [res.render("auth")];
+
+// USER SIGNUP PAGE DISPLAY
+let signupGetPage = async (req, res) => {
+  try {
+    res.render("user/signup");
+  } catch (error) {
+    console.error("Failed to get login page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// USER SIGNUP
+let signupPostPage = async (req, res) => {
+  try {
+    const { userName, email, phoneNumber, password } = req.body;
+    let phone = phoneNumber;
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    if (!phone.startsWith("+91")) {
+      phone = "+91" + phone;
+    }
+
+    const newUser = new User({
+      name: userName,
+      email,
+      phoneNumber: phone,
+      password: hashedPassword,
+    });
+
+    await newUser.save();
+
+    console.log(newUser);
+
+    res.status(201).redirect("/login");
+  } catch (error) {
+    console.error("Signup failed:", error);
+    res.status(500).json({ error: "Signup failed. Please try again later." });
+  }
+};
+
+// USER LOGIN PAGE DISPLAY
+let loginGetPage = async (req, res) => {
+  try {
+    res.render("user/login", { error: " " });
+  } catch (error) {
+    console.error("Failed to get login page:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+// USER LOGIN
+let loginPostPage = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.password);
+
+    if (!validPassword) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
+
+    res.status(200).json({ message: "Login successful", token });
+    console.log("user logged in with email and password : jwt created");
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+// LOGIN WITH GOOGLE
+const successGoogleLogin = async (req, res) => {
+  try {
+    if (!req.user) {
+      // If no user data
+      return res.status(401).send("no user data , login failed");
+    }
+
+    console.log(req.user);
+
+    // Checking user already exists in database
+    let user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      // If the user does not exist, create a new user
+      user = new User({
+        name: req.user.displayName,
+        email: req.user.email,
+      });
+
+      // Save the new user to the database
+      await user.save();
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    // Set JWT token in a cookie
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+      secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
+    });
+
+    // Redirect the user to the home page
+    res.status(200).redirect("/");
+
+    console.log("User logged in with Google : jwt created");
+  } catch (error) {
+    console.error("Error logging in with Google:", error);
+    res.status(500).redirect("/login");
+  }
+};
+
+const failureGooglelogin = (req, res) => {
+  res.status(500).send("Error logging in with Google");
+};
+
+// LOGIN WITH OTP STARTS HERE
+// LOGIN WITH OTP PAGE DISPLAY
+let loginWithOtpGetPage = async (req, res) => {
+  try {
+    res.render("user/loginOtpPhone");
+  } catch (error) {
+    res.status(404).send("page not found");
+  }
+};
+
+// .ENV DETAILS
+const accountSid = process.env.TWILIO_ACCOUNT_SID;
+const authToken = process.env.TWILIO_AUTH_TOKEN;
+const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+
+const client = twilio(accountSid, authToken);
+
+const generateOTP = () => {
+  return Math.floor(100000 + Math.random() * 900000).toString();
+};
+
+// REQUESTON FOR OTP AFTER ENTERED PHONE
+const loginRequestOTP = async (req, res) => {
+  const { phoneNumber } = req.body;
+
+  try {
+    let phone = phoneNumber;
+
+    if (!phone.startsWith("+91")) {
+      phone = "+91" + phone;
+    }
+
+    console.log(phone);
+    const user = await User.findOne({ phoneNumber: phone });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const otp = generateOTP();
+    user.otp = otp;
+    user.otpExpiration = new Date(Date.now() + 10 * 60 * 1000); // OTP expires in 10 minutes
+    await user.save();
+    console.log(`generatete otp id :${otp}`);
+
+    // Send OTP via Twilio SMS
+    try {
+      await client.messages.create({
+        body: `Your OTP for login to WATCH-VISTA is: ${otp}`,
+        from: twilioPhoneNumber,
+        to: phone,
+      });
+      console.log("OTP SMS sent");
+    } catch (error) {
+      console.error("Error sending OTP SMS:", error);
+      return res.status(500).json({ message: "Error sending OTP" });
+    }
+
+    res.render("user/loginOtp", { phone });
+  } catch (error) {
+    console.error("Error requesting OTP:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+const loginVerifyOTP = async (req, res) => {
+  const { phoneNumber, otp } = req.body;
+
+  try {
+    const user = await User.findOne({ phoneNumber });
+
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.otp !== otp || Date.now() > user.otpExpiration) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    // Clear OTP fields after successful verification
+    user.otp = undefined;
+    user.otpExpiration = undefined;
+    await user.save();
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hours expiry
+
+    res.status(200).redirect("/");
+    console.log("User logged in using OTP : JWT created");
+  } catch (error) {
+    console.error("Error verifying OTP:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+// LOGIN WITH OTP ENDS HERE
+
+// FORGOT PASSWORD -- STARTS FROM HERE
+// FORGOT PASSWORD PAGE DISPLAY
+let forgotGetPage = async (req, res) => {
+  try {
+    res.render("user/forgotemail");
+  } catch (error) {
+    res.status(404).send("page not found");
+  }
+};
+
+////////////////////////////////////////////////
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  auth: {
+    user: process.env.APP_EMAIL,
+    pass: process.env.APP_PASSWORD,
+  },
+});
+
+const sendOtpEmail = async (email, otp) => {
+  const mailOptions = {
+    from: "watchvista6@gmail.com",
+    to: email,
+    subject: "Reset Your Password",
+    text: `Your OTP to reset your password is: ${otp}`,
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    console.log("Email sent");
+  } catch (error) {
+    console.error("Error sending email:", error);
+  }
+};
+////////////////////////////////////////////
+
+// FORGOT EMAIL POST + OTP GENERATION AND MAIL SEND
+let forgotEmailPostPage = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otpExpiration = Date.now() + 10 * 60 * 1000; // OTP expires in 10 minutes
+    await user.save();
+
+    await sendOtpEmail(email, otp);
+
+    res.render("user/forgototp", { email });
+  } catch (error) {
+    console.error("Error sending OTP:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// RESET PASSWORD
+let resetPassword = async (req, res) => {
+  const { email, otp, newPassword, confirmPassword } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    if (user.otp !== otp || Date.now() > user.otpExpiration) {
+      return res.status(400).json({ message: "Invalid or expired OTP" });
+    }
+
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: "Passwords do not match" });
+    }
+
+    const bcryptedNewPassword = await bcrypt.hash(newPassword, 10);
+    // Reset password
+    user.password = bcryptedNewPassword;
+    // Clear OTP fields
+    user.otp = undefined;
+    user.otpExpiration = undefined;
+    await user.save();
+    console.log("password resetted");
+
+    res.status(200).redirect("/login");
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// FORGOT PASSWORD -- ENDS HERE
+
+// LOGOUT STARTS HERE
+// LOGOUT JWT
+let blacklistedTokens = [];
+
+const addToBlacklist = (token) => {
+  blacklistedTokens.push(token);
+};
+
+const isInBlacklist = (token) => {
+  return blacklistedTokens.includes(token);
+};
+// USER LOGOUT
+let userLogout = async (req, res) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return res.redirect("/login"); // If no token, redirect to login
+  }
+
+  try {
+    // Add the JWT to the blacklist (could be a database, cache, etc.)
+    await addToBlacklist(token);
+
+    res.clearCookie("jwt"); // Clear the JWT cookie
+    res.redirect("/login");
+    console.log("User logged out");
+  } catch (error) {
+    console.error("Error logging out:", error);
+    res.status(500).send("Internal Server Error");
+  }
+};
+// LOGOUT ENDS HERE
+
+// SHOP PAGE DISPLAY
+let shopGetPage = async (req, res) => {
+  try {
+    res.status(200).render("user/shop");
+  } catch (error) {
+    console.log("page not found :", error);
+    res.status(404).send("page not found");
+  }
+};
+
+// DISPLAY SINGLE PRODUCT PAGE
+let singleProductGetPage = async (req, res) => {
+  try {
+    res.status(200).render("user/singleProduct");
+  } catch (error) {
+    console.log("page not found :", error);
+    res.status(404).send("page not found");
+  }
+};
+
+// USER PROFILE PAGE DISPLAY
+let userProfile = async (req, res) => {
+  console.log(req.user);
+  const user = req.user;
+  res.render("user/account", { user });
+};
+
+module.exports = {
+  homePage,
+  signupGetPage,
+  signupPostPage,
+  loginGetPage,
+  loginPostPage,
+  isInBlacklist,
+  userLogout,
+  userProfile,
+  loadAuth,
+  successGoogleLogin,
+  failureGooglelogin,
+  loginWithOtpGetPage,
+  loginRequestOTP,
+  loginVerifyOTP,
+  forgotGetPage,
+  forgotEmailPostPage,
+  resetPassword,
+  shopGetPage,
+  singleProductGetPage,
+};
+</script>
+
+</html>

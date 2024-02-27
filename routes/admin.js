@@ -3,31 +3,20 @@ const router = express.Router();
 const passport = require('passport');
 
 const adminController = require('../controllers/adminController');
-const authController = require('../controllers/authController');
 const requireAuth = require('../middleware/requireAuth');
 const { isAuthenticated } = require('../middleware/authMiddleware');
 
-// router.use(requireAuth)
-
-// const preventBackAfterLoginMiddleware = require('../middleware/requireAuth');
-
-
-// Render the signup view
-router.get('/signup',isAuthenticated, adminController.renderSignup);
-
-
 // Render the home view
-router.get('/',isAuthenticated, adminController.renderHome);
+router.get('/admin',adminController.renderHome);
 
-router.get('/forgot-password',adminController.forgotGetPage)
+router.get('/admin/forgot-password',adminController.forgotGetPage)
 
-router.post('/forgot-password',adminController.forgotEmailPostPage)
+router.post('/admin/forgot-password',adminController.forgotEmailPostPage)
 
-router.post('/resetPassword',adminController.resetPassword)
+router.post('/admin/resetPassword',adminController.resetPassword)
 
 // Render the dashboard view (requires authentication)
-router.get('/dash', isAuthenticated, adminController.renderDashboard);
-
+router.get('/admin/dash',requireAuth, isAuthenticated, adminController.renderDashboard);
 
 // Render the profile view (requires authentication)
 router.get('/product', adminController.renderProduct);
@@ -37,10 +26,10 @@ router.post('/signin', adminController.handleSignin);
 
 // Google OAuth routes
 router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/' }), authController.handleGoogleCallback);
+router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/admin' }), adminController.handleGoogleCallback);
 
-// Route for handling the signup form submission
-router.post('/signup', adminController.handleSignup);
+router.get("/admin/success", adminController.successGoogleLogin);
+router.get("/admin/failure", adminController.failureGooglelogin);
 
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);

@@ -8,4 +8,4 @@ const userDataSchema = new mongoose.Schema({
   otpExpiration: { type: Date },
 });
 
-module.exports = mongoose.model('User', userDataSchema);
+module.exports = mongoose.model('Admin', userDataSchema);

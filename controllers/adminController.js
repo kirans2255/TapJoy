@@ -1,52 +1,62 @@
-const User = require('../models/userDataModel');
-// const preventBackAfterLoginMiddleware = require('../middleware/preventBackAfterLoginMiddleware');
-// const authController = require('../controllers/authController');
+const User = require('../models/Admin');
+const authMiddleware = require('../middleware/authMiddleware');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken')
 require('dotenv').config();
 
-// Render the signup view
-const renderSignup = (req, res) => {
-  res.render('signup');
-};
 
 // Render the home view
 const renderHome = (req, res) => {
-  res.render('signin', { error: req.query.error || '' });
+  res.render('admin/signin', { error: req.query.error || '' });
 };
 
 // Render the dashboard view
 const renderDashboard = (req, res) => {
-  res.render('dashboard');
+  res.render('admin/dashboard');
 };
 
 // Render the profile view
 const renderProduct = (req, res) => {
-  res.render('product');
+  res.render('admin/product');
 };
 
 
-// Route handler for handling the signin form submission
 const handleSignin = async (req, res) => {
   const { email, password } = req.body;
 
   try {
     const user = await User.findOne({ email });
 
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.redirect('/?error=authentication_failed');
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
     }
 
-    req.session.user = {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-    };
+    const validPassword = await bcrypt.compare(password, user.password);
 
-    res.redirect('/dash');
+    if (!validPassword) {
+      return res.status(401).json({ error: "Invalid password" });
+    }
+
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
+
+    res.redirect("/admin/dash");
+    console.log("user logged in with email and password : jwt created");
   } catch (error) {
     console.error(error);
-    res.status(500).send('Internal Server Error');
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
@@ -58,46 +68,68 @@ const handleGoogleCallback = (req, res) => {
       name: req.user.name,
       email: req.user.email,
     };
-    res.redirect('/dash');
+    res.redirect('/admin/dash');
   } else {
-    res.redirect('/');
+    res.redirect('/admin');
   }
 };
 
-// Route handler for handling the signup form submission
-const handleSignup = async (req, res) => {
-  const { name, email, password } = req.body;
-
+// LOGIN WITH GOOGLE
+const successGoogleLogin = async (req, res) => {
   try {
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      return res.redirect('/signup?error=user_exists');
+    if (!req.user) {
+      // If no user data
+      return res.status(401).send("no user data , login failed");
     }
 
-    // Hash the password before saving it to the database
-    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log(req.user);
 
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword, // Save the hashed password
+    // Checking user already exists in database
+    let user = await User.findOne({ email: req.user.email });
+
+    if (!user) {
+      // If the user does not exist, create a new user
+      user = new User({
+        name: req.user.displayName,
+        email: req.user.email,
+      });
+
+      // Save the new user to the database
+      await user.save();
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: "24h",
+      }
+    );
+
+    // Set JWT token in a cookie
+    res.cookie("jwt", token, {
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+      secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
     });
 
-    await newUser.save();
+    // Redirect the user to the home page
+    res.status(200).redirect("/admin");
 
-    req.session.user = {
-      id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-    };
-
-    // Redirect to the dashboard after successful signup
-    res.redirect('/dash');
+    console.log("User logged in with Google : jwt created");
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Internal Server Error');
+    console.error("Error logging in with Google:", error);
+    res.status(500).redirect("/admin");
   }
+};
+
+const failureGooglelogin = (req, res) => {
+  res.status(500).send("Error logging in with Google");
 };
 
 // FORGOT PASSWORD -- STARTS FROM HERE
@@ -196,7 +228,7 @@ let resetPassword = async (req, res) => {
     await user.save();
     console.log("password resetted");
 
-    res.status(200).redirect("/");
+    res.status(200).redirect("/admin");
   } catch (error) {
     console.error("Error resetting password:", error);
     res.status(500).json({ message: "Server Error" });
@@ -205,33 +237,48 @@ let resetPassword = async (req, res) => {
 
 // FORGOT PASSWORD -- ENDS HERE
 
+let blacklistedTokens = [];
+
+const addToBlacklist = (token) => {
+  blacklistedTokens.push(token);
+};
+
+const isInBlacklist = (token) => {
+  return blacklistedTokens.includes(token);
+};
+
 // Route handler for handling logout
-const handleLogout = (req, res) => {
+const handleLogout = async (req, res) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return res.redirect("/admin"); // If no token, redirect to login
+  }
+
   try {
-    req.session.destroy((err) => {
-      if (err) {
-        console.error('Error destroying session:', err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        res.redirect('/');
-      }
-    });
+    // Add the JWT to the blacklist (could be a database, cache, etc.)
+    await addToBlacklist(token);
+
+    res.clearCookie("jwt"); // Clear the JWT cookie
+    res.redirect("/admin");
+    console.log("User logged out");
   } catch (error) {
-    console.error('Error during logout:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error logging out:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
 
 module.exports = {
-  renderSignup,
   renderDashboard,
   renderHome,
   renderProduct,
+  isInBlacklist,
   handleSignin,
   handleGoogleCallback,
-  handleSignup,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
+  successGoogleLogin,
+  failureGooglelogin,
   handleLogout,
 };
