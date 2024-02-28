@@ -18,8 +18,8 @@ router.post('/admin/resetPassword',adminController.resetPassword)
 // Render the dashboard view (requires authentication)
 router.get('/admin/dash',requireAuth, isAuthenticated, adminController.renderDashboard);
 
-// Render the profile view (requires authentication)
-router.get('/product', adminController.renderProduct);
+// Render the product view (requires authentication)
+router.get('/admin/product',requireAuth, adminController.renderProduct);
 
 // Route for handling the signin form submission
 router.post('/signin', adminController.handleSignin);
