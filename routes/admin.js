@@ -11,9 +11,9 @@ router.get('/admin',adminController.renderHome);
 
 router.get('/admin/forgot-password',adminController.forgotGetPage)
 
-router.post('/admin/forgot-password',adminController.forgotEmailPostPage)
+router.post('/forgot-password',adminController.forgotEmailPostPage)
 
-router.post('/admin/resetPassword',adminController.resetPassword)
+router.post('/resetPassword',adminController.resetPassword)
 
 // Render the dashboard view (requires authentication)
 router.get('/admin/dash',requireAuth, isAuthenticated, adminController.renderDashboard);
@@ -28,8 +28,8 @@ router.post('/signin', adminController.handleSignin);
 router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
 router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/admin' }), adminController.handleGoogleCallback);
 
-router.get("/admin/success", adminController.successGoogleLogin);
-router.get("/admin/failure", adminController.failureGooglelogin);
+router.get("/success", adminController.successGoogleLogin);
+router.get("/failure", adminController.failureGooglelogin);
 
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);

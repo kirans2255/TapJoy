@@ -136,7 +136,7 @@ const failureGooglelogin = (req, res) => {
 // FORGOT PASSWORD PAGE DISPLAY
 let forgotGetPage = async (req, res) => {
   try {
-    res.render("forgot-password");
+   return res.render("admin/forgot-password");
   } catch (error) {
     res.status(404).send("page not found");
   }
@@ -190,7 +190,7 @@ let forgotEmailPostPage = async (req, res) => {
 
     await sendOtpEmail(email, otp);
 
-    res.render("otp", { email });
+    res.render("admin/otp", { email });
   } catch (error) {
     console.error("Error sending OTP:", error);
     res.status(500).json({ message: "Server Error" });
