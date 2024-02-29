@@ -39,6 +39,8 @@ app.use(passport.session());
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(express.static(path.join(__dirname, 'publics')));
+
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
@@ -56,23 +58,8 @@ const requireAuth = (req, res, next) => {
   }
 };
 
-app.use(requireAuth);
-
-// app.get('/signup', (req, res) => {
-//   res.render('signup');
-// });
-
-// app.get('/dash', requireAuth, (req, res) => {
-//   res.render('dashboard');
-// });
-
-// app.get('/', (req, res) => {
-//   res.render('signin', { error: req.query.error || '' });
-// });
-
-// app.get('/profile', isAuthenticated, (req, res) => {
-//   res.render('profile');
-// });
+const indRoutes = require('./routes/user');
+app.use('/', indRoutes);
 
 // Start the server
 app.listen(port, () => {
