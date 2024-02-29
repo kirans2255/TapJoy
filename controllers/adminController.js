@@ -119,7 +119,7 @@ const successGoogleLogin = async (req, res) => {
     });
 
     // Redirect the user to the home page
-    res.status(200).redirect("/admin");
+    res.status(200).redirect("/admin/dash");
 
     console.log("User logged in with Google : jwt created");
   } catch (error) {

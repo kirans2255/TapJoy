@@ -26,7 +26,7 @@ router.post('/signin', adminController.handleSignin);
 
 // Google OAuth routes
 router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
-router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/admin' }), adminController.handleGoogleCallback);
+router.get("/auth/google/callback",passport.authenticate("google", {successRedirect: "/success",failureRedirect: "/failure",}));
 
 router.get("/success", adminController.successGoogleLogin);
 router.get("/failure", adminController.failureGooglelogin);
