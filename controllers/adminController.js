@@ -8,9 +8,12 @@ require('dotenv').config();
 
 // Render the home view
 const renderHome = (req, res) => {
-  res.render('admin/signin', { error: req.query.error || '' });
+  if(req.cookies.jwt){
+    res.redirect('/admin/dash')
+  }else{
+  res.render('admin/signin');
 };
-
+}
 // Render the dashboard view
 const renderDashboard = (req, res) => {
   res.render('admin/dashboard');

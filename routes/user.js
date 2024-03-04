@@ -4,7 +4,7 @@ const passport = require('passport');
 
 const userController = require('../controllers/userController');
 // const authController = require('../controllers/authController');
-const requireAuth = require('../middleware/requireAuth');
+const requireAuth = require('../middleware/userrequire');
 const { isAuthenticated } = require('../middleware/authMiddleware');
 
 // Render the home view
@@ -22,7 +22,9 @@ router.post('/resethePassword',userController.resetPassword)
 router.get('/',isAuthenticated, userController.renderDashboard);
 
 // Render the profile view (requires authentication)
-// router.get('/product',requireAuth, userController.renderProduct);
+
+
+router.get('/account',requireAuth, userController.renderAccount);
 
 router.post('/signup', userController.handleSignup);
 
@@ -30,14 +32,18 @@ router.post('/signup', userController.handleSignup);
 router.post('/login', userController.handleSignin);
 
 
-// Google OAuth routes
-// router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
-// router.get('/auth/google/callback', passport.authenticate('google', { failureRedirect: '/login' }), userController.handleGoogleCallback);
-
-// router.get("/success", userController.successGoogleLogin);
-// router.get("/failure", userController.failureGooglelogin);
+router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
+router.get(
+    "/auth/google/callback",
+    passport.authenticate("google", {
+      successRedirect: "/success",
+      failureRedirect: "/failure",
+    })
+  );
+router.get("/success", userController.successGoogleLogin);
+router.get("/failure", userController.failureGooglelogin);
 
 // Route for handling logout
-router.get('/logout', userController.handleLogout);
+router.get('/logoutt', userController.handleLogout);
 
 module.exports = router;

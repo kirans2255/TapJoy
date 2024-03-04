@@ -1,6 +1,6 @@
 const Users = require('../models/User');
-// const Product = require('../models/Prod');
-// const authMiddleware = require('../middleware/authMiddleware');
+const Product = require('../models/Product');
+const authMiddleware = require('../middleware/authMiddleware');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken')
@@ -8,11 +8,23 @@ require('dotenv').config();
 
 const renderSignup = (req, res) => {
     res.render('user/signup', { error: req.query.error || '' });
-  };
+};
 
 // Render the home view
+// const renderHome = (req, res) => {
+//   res.render('user/login', { error: req.query.error || '' });
+// };
+
 const renderHome = (req, res) => {
-  res.render('user/login', { error: req.query.error || '' });
+  if(req.cookies.jwt){
+    res.redirect('/')
+  }else{
+  res.render('user/login');
+};
+}
+
+const renderAccount = (req, res) => {
+  res.render('user/account', { error: req.query.error || '' });
 };
 
 // Render the dashboard view
@@ -327,6 +339,7 @@ module.exports = {
   isInBlacklist,
   handleSignup,
   handleSignin,
+  renderAccount,
   handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,

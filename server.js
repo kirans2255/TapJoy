@@ -49,17 +49,18 @@ app.set('view engine', 'hbs');
 const indexRoutes = require('./routes/admin');
 app.use('/', indexRoutes);
 
-const requireAuth = (req, res, next) => {
-  if (req.session.user) {
-    res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-    return next();
-  } else {
-    return next();
-  }
-};
-
 const indRoutes = require('./routes/user');
 app.use('/', indRoutes);
+
+// const requireAuth = (req, res, next) => {
+//   if (req.session.user) {
+//     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+//     return next();
+//   } else {
+//     return next();
+//   }
+// };
+
 
 // Start the server
 app.listen(port, () => {
