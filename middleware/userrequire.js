@@ -1,14 +1,8 @@
 const jwt = require('jsonwebtoken');
-const { isInBlacklist } = require('../controllers/userController');
 
 const verifyToken = (req, res, next) => {
   const token = req.cookies.jwt; // Assuming you're using cookies for token storage
-
-  if (isInBlacklist(token)) {
-    // return res.status(401).json({ message: "Token revoked, please log in again" });
-    return res.redirect("/")
-  }
-
+  
   if (!token) {
     // return res.status(401).json({ error: 'Access denied. No token provided.' });
     return res.redirect("/")

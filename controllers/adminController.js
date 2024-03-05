@@ -32,13 +32,15 @@ const handleSignin = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(404).json({ error: "User not found" });
+      const errorMessage = "User not found";
+      return res.status(404).render('admin/signin', { error: errorMessage });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
 
     if (!validPassword) {
-      return res.status(401).json({ error: "Invalid password" });
+      const errorMessage = "Invalid password";
+      return res.status(401).render('admin/signin', { error: errorMessage });
     }
 
     const token = jwt.sign(
@@ -53,29 +55,16 @@ const handleSignin = async (req, res) => {
       }
     );
 
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24-hour expiry
 
     res.redirect("/admin/dash");
-    console.log("user logged in with email and password : jwt created");
+    console.log("user logged in with email and password: jwt created");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// Google OAuth callback handler
-const handleGoogleCallback = (req, res) => {
-  if (req.isAuthenticated()) {
-    req.session.user = {
-      id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
-    };
-    res.redirect('/admin/dash');
-  } else {
-    res.redirect('/admin');
-  }
-};
 
 // LOGIN WITH GOOGLE
 const successGoogleLogin = async (req, res) => {
@@ -240,15 +229,6 @@ let resetPassword = async (req, res) => {
 
 // FORGOT PASSWORD -- ENDS HERE
 
-let blacklistedTokens = [];
-
-const addToBlacklist = (token) => {
-  blacklistedTokens.push(token);
-};
-
-const isInBlacklist = (token) => {
-  return blacklistedTokens.includes(token);
-};
 
 // Route handler for handling logout
 const handleLogout = async (req, res) => {
@@ -259,8 +239,6 @@ const handleLogout = async (req, res) => {
   }
 
   try {
-    // Add the JWT to the blacklist (could be a database, cache, etc.)
-    await addToBlacklist(token);
 
     res.clearCookie("jwt"); // Clear the JWT cookie
     res.redirect("/admin");
@@ -275,9 +253,7 @@ module.exports = {
   renderDashboard,
   renderHome,
   renderProduct,
-  isInBlacklist,
   handleSignin,
-  handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
