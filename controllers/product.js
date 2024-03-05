@@ -93,14 +93,14 @@ const deleteProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     const productId = req.params.id;
     const {
-        editProductName,
-        editProductCategory,
-        editSubproductCategory,
-        editProductBrand,
-        editProductColor,
-        editProductMrp,
-        editProductPrice,
-        editProductDescription,
+        productName,
+        productCategory,
+        subproductCategory,
+        productBrand,
+        productColor,
+        productMrp,
+        productPrice,
+        productDescription,
     } = req.body;
 
     try {
@@ -111,14 +111,14 @@ const updateProduct = async (req, res) => {
         }
 
         // Update product details
-        product.productName = editProductName;
-        product.productCategory = editProductCategory;
-        product.subproductCategory = editSubproductCategory;
-        product.productBrand = editProductBrand;
-        product.productColor = editProductColor;
-        product.productMrp = editProductMrp;
-        product.productPrice = editProductPrice;
-        product.productDescription = editProductDescription;
+        product.productName = productName;
+        product.productCategory = productCategory;
+        product.subproductCategory = subproductCategory;
+        product.productBrand = productBrand;
+        product.productColor = productColor;
+        product.productMrp = productMrp;
+        product.productPrice = productPrice;
+        product.productDescription = productDescription;
         
 
         await product.save();
