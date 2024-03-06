@@ -1,29 +1,40 @@
 const User = require('../models/Admin');
+const Categorys = require('../models/Category');
 const authMiddleware = require('../middleware/authMiddleware');
 const bcrypt = require('bcrypt');
+const cloudinary = require('../utils/cloudinary');// Update the import based on your cloudinary setup
 const nodemailer = require('nodemailer');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const Category = require('../models/Category');
 require('dotenv').config();
 
 
 // Render the home view
 const renderHome = (req, res) => {
-  if(req.cookies.jwt){
+  if (req.cookies.jwt) {
     res.redirect('/admin/dash')
-  }else{
-  res.render('admin/signin');
-};
+  } else {
+    res.render('admin/signin');
+  };
 }
 // Render the dashboard view
 const renderDashboard = (req, res) => {
   res.render('admin/dashboard');
 };
-
-// Render the profile view
-const renderProduct = (req, res) => {
-  res.render('admin/product');
+const renderCategory = async function (req, res) {
+  try {
+    const category = await Categorys.find();
+    res.render('admin/category', { category });
+  } catch (error) {
+    console.error('Error fetching category:', error);
+    res.status(500).json({ error: 'Error fetching category' });
+  }
 };
 
+// Render the profile view
+// const renderProduct = (req, res) => {
+//   res.render('admin/product');
+// };
 
 const handleSignin = async (req, res) => {
   const { email, password } = req.body;
@@ -32,7 +43,7 @@ const handleSignin = async (req, res) => {
     const user = await User.findOne({ email });
 
     if (!user) {
-      const errorMessage = "User not found";
+      const errorMessage = "Admin not found";
       return res.status(404).render('admin/signin', { error: errorMessage });
     }
 
@@ -58,77 +69,18 @@ const handleSignin = async (req, res) => {
     res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24-hour expiry
 
     res.redirect("/admin/dash");
-    console.log("user logged in with email and password: jwt created");
+    console.log("Admin logged in with email and password: jwt created");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-
-// LOGIN WITH GOOGLE
-const successGoogleLogin = async (req, res) => {
-  try {
-    if (!req.user) {
-      // If no user data
-      return res.status(401).send("no user data , login failed");
-    }
-
-    console.log(req.user);
-
-    // Checking user already exists in database
-    let user = await User.findOne({ email: req.user.email });
-
-    if (!user) {
-      // If the user does not exist, create a new user
-      user = new User({
-        name: req.user.displayName,
-        email: req.user.email,
-      });
-
-      // Save the new user to the database
-      await user.save();
-    }
-
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-      },
-      process.env.JWT_KEY,
-      {
-        expiresIn: "24h",
-      }
-    );
-
-    // Set JWT token in a cookie
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
-      secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
-    });
-
-    // Redirect the user to the home page
-    res.status(200).redirect("/admin/dash");
-
-    console.log("User logged in with Google : jwt created");
-  } catch (error) {
-    console.error("Error logging in with Google:", error);
-    res.status(500).redirect("/admin");
-  }
-};
-
-const failureGooglelogin = (req, res) => {
-  res.status(500).send("Error logging in with Google");
-};
-
 // FORGOT PASSWORD -- STARTS FROM HERE
 // FORGOT PASSWORD PAGE DISPLAY
 let forgotGetPage = async (req, res) => {
   try {
-   return res.render("admin/forgot-password");
+    return res.render("admin/forgot-password");
   } catch (error) {
     res.status(404).send("page not found");
   }
@@ -199,8 +151,8 @@ let resetPassword = async (req, res) => {
     console.log(user);
 
     if (!user) {
-      
-      return res.status(404).json({ message: "User not found" });
+
+      return res.status(404).json({ message: "Admin not found" });
     }
 
     if (user.otp !== otp || Date.now() > user.otpExpiration) {
@@ -229,6 +181,107 @@ let resetPassword = async (req, res) => {
 
 // FORGOT PASSWORD -- ENDS HERE
 
+////Category
+const handleCategory = async (req, res) => {
+  try {
+    const {
+      CategoryName,
+    } = req.body;
+
+
+    let existingCategory = await Category.findOne({
+      name: CategoryName,
+  });
+
+  if (!existingCategory) {
+      const imageUrlss = [];
+      for (const file of req.files) {
+          const result = await cloudinary.uploader.upload(file.path);
+          imageUrlss.push(result.secure_url);
+      }
+      console.log(imageUrlss);
+
+      const newCategory = new Category({
+          CategoryImage : imageUrlss,
+          CategoryName : CategoryName,
+      });
+
+      await newCategory.save();
+      res.redirect('/admin/category');
+       }
+  } catch (error) {
+      console.error('Error adding Category:', error);
+      res.status(500).json({ error: 'Error adding the Category' });
+  }
+};
+
+const editCategory = async (req, res) => {
+  const CategoryId = req.body.CategoryId;
+
+  try {
+    // Find the Category by ID
+    const existingCategory = await Categorys.findById(CategoryId);
+
+    if (!existingCategory) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    // Update the Category data based on the form fields
+    existingCategory.CategoryName = req.body.editCategoryName;
+    // Update other fields as needed
+
+    // Save the updated Category
+    const updatedCategory = await existingCategory.save();
+
+    res.status(200).json({ message: 'Category updated successfully', updatedCategory });
+  } catch (error) {
+    console.error('Error updating Category:', error);
+    res.status(500).json({ error: 'Error updating Category' });
+  }
+};
+
+
+const deleteCategory = async (req, res) => {
+  const CategoryId = req.params.id;
+
+  try {
+    const deletedCategory = await Categorys.findByIdAndDelete(CategoryId);
+
+    if (!deletedCategory) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    res.status(200).json({ message: 'Category deleted successfully', deletedCategory });
+  } catch (error) {
+    console.error('Error deleting Category:', error);
+    res.status(500).json({ error: 'Error deleting Category' });
+  }
+};
+
+const updateCategory = async (req, res) => {
+  const CategoryId = req.params.id;
+  const {
+    CategoryName,
+
+  } = req.body;
+
+  try {
+    const Category = await Categorys.findById(CategoryId);
+
+    if (!Category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    // Update Category details
+    Category.CategoryName = CategoryName;
+    await Category.save();
+    res.json({ message: 'Category updated successfully' });
+  } catch (error) {
+    console.error('Error updating Category:', error);
+    res.status(500).json({ error: 'Error updating Category' });
+  }
+};
+/////////Category Ending
 
 // Route handler for handling logout
 const handleLogout = async (req, res) => {
@@ -239,10 +292,9 @@ const handleLogout = async (req, res) => {
   }
 
   try {
-
     res.clearCookie("jwt"); // Clear the JWT cookie
     res.redirect("/admin");
-    console.log("User logged out");
+    console.log("Admin logged out");
   } catch (error) {
     console.error("Error logging out:", error);
     res.status(500).send("Internal Server Error");
@@ -252,12 +304,17 @@ const handleLogout = async (req, res) => {
 module.exports = {
   renderDashboard,
   renderHome,
-  renderProduct,
+  handleCategory,
+  editCategory,
+  deleteCategory,
+  updateCategory,
   handleSignin,
+  renderCategory,
+  // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
-  successGoogleLogin,
-  failureGooglelogin,
+  // successGoogleLogin,
+  // failureGooglelogin,    
   handleLogout,
 };

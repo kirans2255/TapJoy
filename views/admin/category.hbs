@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Category Page</title>
+    <style>
+        /* Add some basic styling to make it look like a button */
+        .button-link {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            text-align: center;
+            text-decoration: none;
+            background-color: #4CAF50;
+            /* Green background color */
+            color: white;
+            /* White text color */
+            border: 1px solid #4CAF50;
+            /* Green border */
+            border-radius: 5px;
+            /* Rounded corners */
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="col-lg-12 mt-4 mb-3">
+        <div class="card z-index-2 ">
+            <div class="container mt-5">
+                <h1 class="mb-4">Category Table</h1>
+
+                <!-- Add Product Button -->
+                <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add
+                    Category</button>
+
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Image</th>
+                                <th>Name</th>
+
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Example Product Row -->
+                            {{#each category}}
+                            <tr>
+                                <td class="indexing">{{@index}}</td>
+                                <td><img src="{{this.CategoryImage.[0]}}" alt="{{this.CategoryName}}"
+                                        class="img-thumbnal" style="width: 80px;"></td>
+                                <td>{{this.CategoryName}}</td>
+                                <td>
+                                    <button class="btn btn-warning" data-bs-toggle="modal"
+                                        data-bs-target="#editCategoryModal"
+                                        onclick="editCategory('{{this.id}}', '{{this.CategoryName}}')">Edit</button>
+                                    <button class="btn btn-danger"
+                                        onclick="deleteCategory('{{this.id}}')">Delete</button>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to add a new Category -->
+                    <form id="addCategoryForm" action="/addCategory" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="CategoryImage" class="form-label">Category Image</label>
+                            <input name="CategoryImage" type="file" class="form-control" id="CategoryImage" value="{{image4}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label name="CategoryName" for="CategoryName" class="form-label">Category
+                                Name</label>
+                            <input name="CategoryName" type="text" class="form-control" id="CategoryName" required>
+                        </div>
+
+                        <!-- Add more input fields as needed -->
+
+                        <button type="submit" class="btn btn-primary" onclick="addCategory()">Add
+                            Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Category Modal -->
+    <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to edit an existing Category -->
+                    <form id="editCategory" action="/updateCategory" method="post">
+                        <input type="hidden" id="editCategoryId" name="CategoryId" value="{{this.id}}" >
+                        <div class="mb-3">
+                            <label for="editCategoryName" class="form-label">Category Name</label>
+                            <input name="CategoryName" type="text" class="form-control" id="editCategoryName"
+                                value="{{this.CategoryName}}" required>
+                        </div>
+
+                        <!-- Add more input fields as needed -->
+
+                        <button type="submit" class="btn btn-primary">Update Category</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Assuming you are using jQuery for simplicity -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+        function editCategory(id, CategoryName) {
+            $('#editCategoryName').val(CategoryName);
+
+            var editCategoryModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
+            editCategoryModal.show();
+
+            $('#editCategory').on('submit', function (e) {
+                e.preventDefault();
+
+                const updatedData = {
+                    CategoryName: $('#editCategoryName').val(),
+                };
+
+                const CategoryId = id;
+
+                updateCategory(CategoryId, updatedData);
+            });
+        }
+
+
+        function updateCategory(CategoryId, updatedData) {
+            const baseUrl = '/admin/category/';
+
+            fetch(`${baseUrl}${CategoryId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error updating product: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Product updated successfully:', data);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error updating product:', error);
+                });
+        }
+
+        // Function to delete a product
+        function deleteCategory(CategoryId) {
+            // You can add additional confirmation logic here if needed
+            var confirmation = confirm("Are you sure you want to delete this Category?");
+
+            if (confirmation) {
+                // Use fetch to send a DELETE request to your server endpoint
+                fetch(`/deletecat/${CategoryId}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Assuming the product is deleted successfully, you can reload the page or update the UI
+                            console.log('Category deleted successfully');
+                            location.reload();  // Reload the page
+                        } else {
+                            console.error('Failed to delete Category');
+                            // Handle error accordingly
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error accordingly
+                    });
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var indexingElements = document.querySelectorAll(".indexing");
+
+            indexingElements.forEach(function (element, index) {
+                element.textContent = index + 1;
+            });
+        });
+    </script>
+
+</body>
+
+</html>
