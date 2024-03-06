@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 
+const upload = require('../multer/multer')
 const adminController = require('../controllers/adminController');
 const product = require('../controllers/product');
 const requireAuth = require('../middleware/requireAuth');
@@ -23,7 +24,7 @@ router.get('/admin/product',requireAuth, product.renderProduct);
 // Route for updating the products
 router.put('/admin/product/:id',product.updateProduct)
 // Route for handling the addproducts form 
-router.post('/addproducts', product.handleProduct);
+router.post('/addproducts',upload.array('productImage', 3), product.handleProduct);
 // Route for handling the delete form 
 router.delete('/delete/:id', product.deleteProduct);
 
