@@ -53,13 +53,13 @@
                             {{#each category}}
                             <tr>
                                 <td class="indexing">{{@index}}</td>
-                                <td><img src="{{this.CategoryImage.[0]}}" alt="{{this.CategoryName}}"
-                                        class="img-thumbnal" style="width: 80px;"></td>
+                                <td><img src="{{CategoryImage.url}}" alt="{{this.CategoryName}}" class="img-thumbnail"
+                                        style="width: 80px;"></td>
                                 <td>{{this.CategoryName}}</td>
                                 <td>
                                     <button class="btn btn-warning" data-bs-toggle="modal"
                                         data-bs-target="#editCategoryModal"
-                                        onclick="editCategory('{{this.id}}', '{{this.CategoryName}}')">Edit</button>
+                                        onclick="editCategory('{{this.id}}', '{{this.CategoryName}}','{{CategoryImage.url}}')">Edit</button>
                                     <button class="btn btn-danger"
                                         onclick="deleteCategory('{{this.id}}')">Delete</button>
                                 </td>
@@ -82,11 +82,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+
+
                     <!-- Form to add a new Category -->
                     <form id="addCategoryForm" action="/addCategory" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="CategoryImage" class="form-label">Category Image</label>
-                            <input name="CategoryImage" type="file" class="form-control" id="CategoryImage" value="{{image4}}" required>
+                            <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
+                                value="{{CategoryImage.url}}" required>
                         </div>
                         <div class="mb-3">
                             <label name="CategoryName" for="CategoryName" class="form-label">Category
@@ -104,6 +107,7 @@
         </div>
     </div>
 
+
     <!-- Edit Category Modal -->
     <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
         aria-hidden="true">
@@ -115,8 +119,20 @@
                 </div>
                 <div class="modal-body">
                     <!-- Form to edit an existing Category -->
-                    <form id="editCategory" action="/updateCategory" method="post">
-                        <input type="hidden" id="editCategoryId" name="CategoryId" value="{{this.id}}" >
+                    {{!-- {{#each category}} --}}
+
+                    <form id="editCategory" action="/updateCategory" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="editCategoryId" name="CategoryId" value="{{this.id}}">
+
+                        <div class="mb-3">
+
+                            <label for="editCategoryImage" class="form-label">Category Image</label>
+                            <input name="CategoryImage" type="file" class="form-control" id="editCategoryImage"
+                                value="{{CategoryImage.url}}" required>
+                            <img id="editCategoryImagePreview" src="{{CategoryImage.url}}" alt="no image"
+                                style="max-width: 100px;"><br>
+                        </div>
+
                         <div class="mb-3">
                             <label for="editCategoryName" class="form-label">Category Name</label>
                             <input name="CategoryName" type="text" class="form-control" id="editCategoryName"
@@ -126,9 +142,13 @@
                         <!-- Add more input fields as needed -->
 
                         <button type="submit" class="btn btn-primary">Update Category</button>
+
                     </form>
+                    {{!-- {{/each}} --}}
+
                 </div>
             </div>
+
         </div>
     </div>
 
@@ -139,8 +159,11 @@
 
     <script>
 
-        function editCategory(id, CategoryName) {
+        function editCategory(id, CategoryName, CategoryImage) {
+            // Set the existing category data in the modal
             $('#editCategoryName').val(CategoryName);
+            // Display the existing image
+            $('#editCategoryImagePreview').attr('src', CategoryImage).show();
 
             var editCategoryModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
             editCategoryModal.show();
@@ -150,6 +173,7 @@
 
                 const updatedData = {
                     CategoryName: $('#editCategoryName').val(),
+                    CategoryImage: $('#editCategoryImage')[0].files[0],
                 };
 
                 const CategoryId = id;
@@ -158,16 +182,16 @@
             });
         }
 
-
         function updateCategory(CategoryId, updatedData) {
             const baseUrl = '/admin/category/';
 
+            const formData = new FormData();
+            formData.append('CategoryName', updatedData.CategoryName);
+            formData.append('CategoryImage', updatedData.CategoryImage);
+
             fetch(`${baseUrl}${CategoryId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedData),
+                body: formData,
             })
                 .then(response => {
                     if (!response.ok) {

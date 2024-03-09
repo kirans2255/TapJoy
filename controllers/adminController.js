@@ -5,7 +5,11 @@ const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');// Update the import based on your cloudinary setup
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
-const Category = require('../models/Category');
+// const multer = require('multer');
+// const Category = require('../models/Category');
+// const upload = multer({ dest: 'uploads/' });
+// const Category = require('../models/Category');
+// const { log } = require('handlebars/runtime');
 require('dotenv').config();
 
 
@@ -184,39 +188,41 @@ let resetPassword = async (req, res) => {
 ////Category
 const handleCategory = async (req, res) => {
   try {
-    const {
-      CategoryName,
-    } = req.body;
+    const { CategoryName } = req.body;
+    
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ success: false, message: "No file uploaded" });
+    }
 
+    const desiredWidth = 300;
+    const desiredHeight = 200;
 
-    let existingCategory = await Category.findOne({
-      name: CategoryName,
-  });
+    const result = await cloudinary.uploader.upload(req.files[0].path, {
+      width: desiredWidth,
+      height: desiredHeight,
+      crop: 'scale',
+    });
 
-  if (!existingCategory) {
-      const imageUrlss = [];
-      for (const file of req.files) {
-          const result = await cloudinary.uploader.upload(file.path);
-          imageUrlss.push(result.secure_url);
-      }
-      console.log(imageUrlss);
+    const newCategory = new Categorys({
+      CategoryName: CategoryName,
+      CategoryImage: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
+    });
 
-      const newCategory = new Category({
-          CategoryImage : imageUrlss,
-          CategoryName : CategoryName,
-      });
-
-      await newCategory.save();
-      res.redirect('/admin/category');
-       }
+    await newCategory.save();
+    res.redirect('/admin/category');
   } catch (error) {
-      console.error('Error adding Category:', error);
-      res.status(500).json({ error: 'Error adding the Category' });
+    console.error('Error adding Category:', error);
+    res.status(500).json({ error: 'Error adding the Category' });
   }
 };
 
+
 const editCategory = async (req, res) => {
   const CategoryId = req.body.CategoryId;
+  console.log(req.body);
 
   try {
     // Find the Category by ID
@@ -260,10 +266,7 @@ const deleteCategory = async (req, res) => {
 
 const updateCategory = async (req, res) => {
   const CategoryId = req.params.id;
-  const {
-    CategoryName,
-
-  } = req.body;
+  const { CategoryName } = req.body;
 
   try {
     const Category = await Categorys.findById(CategoryId);
@@ -273,7 +276,34 @@ const updateCategory = async (req, res) => {
     }
 
     // Update Category details
+    if (req.files && req.files.length > 0) {
+      // If there are files, update CategoryImage
+      const desiredWidth = 300;
+      const desiredHeight = 200;
+
+      const result = await cloudinary.uploader.upload(req.files[0].path, {
+        width: desiredWidth,
+        height: desiredHeight,
+        crop: 'scale',
+      });
+
+      
+      if (Category.CategoryImage && Category.CategoryImage.public_id) {
+        // Destroy the previous image on Cloudinary
+        await cloudinary.uploader.destroy(Category.CategoryImage.public_id);
+      }
+
+      Category.CategoryImage = {
+        public_id: result.public_id,
+        url: result.secure_url,
+      };
+    }
+    console.log(req.files);
+    // Update other fields as needed
     Category.CategoryName = CategoryName;
+
+
+    // Save the updated Category
     await Category.save();
     res.json({ message: 'Category updated successfully' });
   } catch (error) {
@@ -281,6 +311,8 @@ const updateCategory = async (req, res) => {
     res.status(500).json({ error: 'Error updating Category' });
   }
 };
+
+
 /////////Category Ending
 
 // Route handler for handling logout
@@ -310,11 +342,8 @@ module.exports = {
   updateCategory,
   handleSignin,
   renderCategory,
-  // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
-  // successGoogleLogin,
-  // failureGooglelogin,    
   handleLogout,
 };

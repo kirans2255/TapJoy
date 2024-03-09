@@ -26,13 +26,13 @@ router.put('/admin/product/:id',product.updateProduct)
 // Route for handling the addproducts form 
 router.post('/addproducts',upload.array('productImage', 3), product.handleProduct);
 // Route for handling the addproducts form of catgeory
-router.post('/addCategory',upload.array('CategoryImage', 3), adminController.handleCategory);
+router.post('/addCategory',upload.array('CategoryImage'), adminController.handleCategory);
 // Route for handling the delete form 
 router.delete('/delete/:id', product.deleteProduct);
 // Route for handling the delete form of Category
 router.delete('/deletecat/:id', adminController.deleteCategory);
 // Route for updating the category
-router.put('/admin/category/:id',adminController.updateCategory)
+router.put('/admin/category/:id',upload.array('CategoryImage'),adminController.updateCategory)
 // Route for handling the signin form submission
 router.post('/signin', adminController.handleSignin);
 
