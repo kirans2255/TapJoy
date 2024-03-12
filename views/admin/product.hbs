@@ -29,322 +29,355 @@
 
 <body>
     <div class="container mt-5">
-        <a href="/admin/dash" class="button-link">Dashboard</a </div>
+        <a href="/admin/dash" class="button-link">Dashboard</a>
+    </div>
 
-        <div class="container mt-5">
-            <h1 class="mb-4">Product Table</h1>
+    <div class="container mt-5">
+        <h1 class="mb-4">Product Table</h1>
 
-            <!-- Add Product Button -->
-            <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add
-                Product</button>
+        <!-- Add Product Button -->
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add
+            Product</button>
 
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            {{!-- <th>Image</th> --}}
-                            <th>Name</th>
-                            <th>Category</th>
-                            <th>Sub-Category</th>
-                            <th>Brand</th>
-                            <th>Color</th>
-                            <th>MRP</th>
-                            <th>Price</th>
-                            <th>Description</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Example Product Row -->
-                        {{#each products}}
-                        <tr>
-                            <td class="indexing">{{@index}}</td>
-                            <td><img src="{{this.productImage.[0]}}" alt="{{this.productName}}" class="img-thumbnail" style="width: 80px;">
-                            </td>
-                            <td>{{this.productName}}</td>
-                            <td>{{this.productCategory}}</td>
-                            <td>{{this.subproductCategory}}</td>
-                            <td>{{this.productBrand}}</td>
-                            <td>{{this.productColor}}</td>
-                            <td>{{this.productMrp}}</td>
-                            <td>{{this.productPrice}}</td>
-                            <td>{{this.productDescription}}</td>
-                            <td>
-                                <button class="btn btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#editProductModal"
-                                    onclick="editProduct('{{this.id}}', '{{this.productName}}', '{{this.productCategory}}', '{{this.subproductCategory}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
-                                <button class="btn btn-danger" onclick="deleteProduct('{{this.id}}')">Delete</button>
-                            </td>
-                        </tr>
-                        {{/each}}
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Sub-Category</th>
+                        <th>Brand</th>
+                        <th>Color</th>
+                        <th>MRP</th>
+                        <th>Price</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Example Product Row -->
+                    {{#each products}}
+                    <tr>
+                        <td class="indexing">{{@index}}</td>
+                        <td><img src="{{this.productImage.[0]}}" alt="{{this.productName}}" class="img-thumbnail"
+                                style="width: 80px;">
+                        </td>
+                        <td>{{this.productName}}</td>
+                        <td>{{this.productCategory}}</td>
+                        <td>{{this.subproductCategory}}</td>
+                        <td>{{this.productBrand}}</td>
+                        <td>{{this.productColor}}</td>
+                        <td>{{this.productMrp}}</td>
+                        <td>{{this.productPrice}}</td>
+                        <td>{{this.productDescription}}</td>
+                        <td>
+                            <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal"
+                                onclick="editProduct('{{this.id}}','{{this.productImage}}', '{{this.productName}}', '{{this.productCategory}}', '{{this.subproductCategory}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
+                            <button class="btn btn-danger" onclick="deleteProduct('{{this.id}}')">Delete</button>
+                        </td>
+                    </tr>
+                    {{/each}}
 
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
         </div>
+    </div>
 
-        <!-- Add Product Modal -->
-        <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Form to add a new product -->
-                        <form action="/addProducts" method="post" enctype="multipart/form-data">
-                            <div class="mb-3">
-                                <label for="productImage" class="form-label">Product Image</label>
-                                <input name="productImage" type="file" class="form-control" value="{{image1}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productImage" class="form-label">Product Image</label>
-                                <input name="productImage" type="file" class="form-control" value="{{image2}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productImage" class="form-label">Product Image</label>
-                                <input name="productImage" type="file" class="form-control" value="{{image3}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label name="productName" for="productName" class="form-label">Product Name</label>
-                                <input name="productName" type="text" class="form-control" id="productName" required>
-                            </div>
-                            {{!-- <div class="d-md-none mb-3"> <!-- Display for phones only -->
-                                <label for="productCategoryTextarea" class="form-label">Category</label>
-                                <select class="form-select" id="productCategory">
-                                    <option value="phone">Phone</option>
-                                    <option value="tablet">Tablet</option>
-                                </select>
-                            </div> --}}
-                            <div class="d-none d-md-block mb-3"> <!-- Hide for phones -->
-                                <label for="productCategory" class="form-label">Category</label>
-                                <select name="productCategory" class="form-select" id="productCategory">
-                                    <option name="Phone" value="Phone">Phone</option>
-                                    <option name="Tablet" value="Tablet">Tablet</option>
-                                </select>
-                            </div>
-                            {{!-- <div class="d-md-none mb-3"> <!-- Display for phones only -->
-                                <label for="subproductCategoryTextarea" class="form-label">Sub-Category</label>
-                                <select class="form-select" id="subproductCategory">
-                                    <option value="phone">Phone</option>
-                                    <option value="tablet">Tablet</option>
-                                </select>
-                            </div> --}}
-                            <div class="d-none d-md-block mb-3"> <!-- Hide for phones -->
-                                <label for="subproductCategory" class="form-label">Sub-Category</label>
-                                <select name="subproductCategory" class="form-select" id="subproductCategory">
-                                    <option name="SmartPhone" value="SmartPhone">SmartPhone</option>
-                                    <option name="KeypadPhone" value="KeypadPhone">KeypadPhone</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label name="" for="productBrand" class="form-label">Brand</label>
-                                <input name="productBrand" type="text" class="form-control" id="productBrand" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productColor" class="form-label">Color</label>
-                                <input name="productColor" type="text" class="form-control" id="productColor" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productMrp" class="form-label">MRP</label>
-                                <input name="productMrp" type="number" class="form-control" id="productMrp" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productPrice" class="form-label">Price</label>
-                                <input name="productPrice" type="number" class="form-control" id="productPrice"
-                                    required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="productDescription" class="form-label">Description</label>
-                                <input name="productDescription" type="text" class="form-control"
-                                    id="productDescription" required>
-                            </div>
+    <!-- Add Product Modal -->
+    <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to add a new product -->
+                    <form action="/addProducts" method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">Product Image</label>
+                            <input name="productImage" type="file" class="form-control"
+                                value="{{this.productImage.[0]}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">Product Image</label>
+                            <input name="productImage" type="file" class="form-control"
+                                value="{{this.productImage.[1]}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productImage" class="form-label">Product Image</label>
+                            <input name="productImage" type="file" class="form-control"
+                                value="{{this.productImage.[2]}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label name="productName" for="productName" class="form-label">Product Name</label>
+                            <input name="productName" type="text" class="form-control" id="productName" required>
+                        </div>
+                        {{!-- <div class="d-md-none mb-3"> <!-- Display for phones only -->
+                            <label for="productCategoryTextarea" class="form-label">Category</label>
+                            <select class="form-select" id="productCategory">
+                                <option value="phone">Phone</option>
+                                <option value="tablet">Tablet</option>
+                            </select>
+                        </div> --}}
+                        <div class="d-none d-md-block mb-3">
+                            <label for="productCategory" class="form-label">Category</label>
+                            <select name="productCategory" class="form-select" id="productCategory" required>
+                                {{#each category}}
+                                <option value='{{CategoryName}}'> {{CategoryName}} </option>
+                                {{/each}}
+                            </select>
+                        </div>
+                        <div class="d-none d-md-block mb-3">
+                            <label for="subproductCategory" class="form-label">Sub-Category</label>
+                            <select name="subproductCategory" class="form-select" id="subproductCategory" required>
+                                
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label name="" for="productBrand" class="form-label">Brand</label>
+                            <input name="productBrand" type="text" class="form-control" id="productBrand" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productColor" class="form-label">Color</label>
+                            <input name="productColor" type="text" class="form-control" id="productColor" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productMrp" class="form-label">MRP</label>
+                            <input name="productMrp" type="number" class="form-control" id="productMrp" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productPrice" class="form-label">Price</label>
+                            <input name="productPrice" type="number" class="form-control" id="productPrice" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="productDescription" class="form-label">Description</label>
+                            <input name="productDescription" type="text" class="form-control" id="productDescription"
+                                required>
+                        </div>
 
-                            <!-- Add more input fields as needed -->
+                        <!-- Add more input fields as needed -->
 
-                            <button type="submit" class="btn btn-primary" onclick="addProducts()">Add Product</button>
-                        </form>
-                    </div>
+                        <button type="submit" class="btn btn-primary" onclick="addProducts()">Add Product</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Edit Product Modal -->
-        <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Form to edit an existing product -->
-                        <form id="editProduct" action="/updateProduct" method="post">
-                            <input type="hidden" id="editProductId" name="productId" value="{{this.id}}">
-                            <div class="mb-3">
-                                <label for="editProductName" class="form-label">Product Name</label>
-                                <input name="productName" type="text" class="form-control" id="editProductName"
-                                    value="{{this.productName}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editProductCategory" class="form-label">Category</label>
-                                <select name="productCategory" class="form-select" id="editProductCategory"
-                                    value="{{this.productCategory}}">
-                                    <option value="Phone">Phone</option>
-                                    <option value="Tablet">Tablet</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editSubproductCategory" class="form-label">Sub-Category</label>
-                                <select name="subproductCategory" class="form-select" id="editSubproductCategory"
-                                    value="{{this.productCategory}}">
-                                    <option value="SmartPhone">SmartPhone</option>
-                                    <option value="KeypadPhone">KeypadPhone</option>
-                                </select>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editProductBrand" class="form-label">Brand</label>
-                                <input name="productBrand" type="text" class="form-control" id="editProductBrand"
-                                    value="{{this.productBrand}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editProductColor" class="form-label">Color</label>
-                                <input name="productColor" type="text" class="form-control" id="editProductColor"
-                                    value="{{this.productColor}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editProductMrp" class="form-label">MRP</label>
-                                <input name="productMrp" type="number" class="form-control" id="editProductMrp"
-                                    value="{{this.productMrp}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editProductPrice" class="form-label">Price</label>
-                                <input name="productPrice" type="number" class="form-control" id="editProductPrice"
-                                    value="{{this.productPrice}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label for="editProductDescription" class="form-label">Description</label>
-                                <input name="productDescription" type="text" class="form-control"
-                                    value="{{this.productDescription}}" id="editProductDescription" required>
-                            </div>
-                            <!-- Add more input fields as needed -->
+    <!-- Edit Product Modal -->
+    <div class="modal fade" id="editProductModal" tabindex="-1" aria-labelledby="editProductModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editProductModalLabel">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- Form to edit an existing product -->
+                    <form id="editProduct" action="/updateProduct" method="post" enctype="multipart/form-data">
+                        <input type="hidden" id="editProductId" name="productId" value="{{this.id}}">
+                        <div class="mb-3">
 
-                            <button type="submit" class="btn btn-primary">Update Product</button>
-                        </form>
-                    </div>
+                            <label for="editproductImage" class="form-label">Category Image</label>
+                            <input name="productImage" type="file" class="form-control" id="editproductImage0"
+                                value="{{this.productImage.[0]}}" required>
+                            <img id="editproductImagePreview0" src="{{this.productImage.[0]}}" alt="no image"
+                                style="max-width: 100px;"><br>
+                        </div>
+                        <div class="mb-3">
+
+                            <label for="editproductImage" class="form-label">Category Image</label>
+                            <input name="productImage" type="file" class="form-control" id="editproductImage1"
+                                value="{{this.productImage.[1]}}" required>
+                            <img id="editproductImagePreview1" src="{{this.productImage.[1]}}" alt="no image"
+                                style="max-width: 100px;"><br>
+                        </div>
+                        <div class="mb-3">
+
+                            <label for="editproductImage" class="form-label">Category Image</label>
+                            <input name="productImage" type="file" class="form-control" id="editproductImage2"
+                                value="{{this.productImage.[2]}}" required>
+                            <img id="editproductImagePreview2" src="{{this.productImage.[2]}}" alt="no image"
+                                style="max-width: 100px;"><br>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductName" class="form-label">Product Name</label>
+                            <input name="productName" type="text" class="form-control" id="editProductName"
+                                value="{{this.productName}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductCategory" class="form-label">Category</label>
+                            <select name="productCategory" class="form-select" id="editProductCategory"
+                                value="{{this.productCategory}}">
+                                <option value="Phone">Phone</option>
+                                <option value="Tablet">Tablet</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editSubproductCategory" class="form-label">Sub-Category</label>
+                            <select name="subproductCategory" class="form-select" id="editSubproductCategory"
+                                value="{{this.subproductCategory}}">
+                                <option value="SmartPhone">SmartPhone</option>
+                                <option value="KeypadPhone">KeypadPhone</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductBrand" class="form-label">Brand</label>
+                            <input name="productBrand" type="text" class="form-control" id="editProductBrand"
+                                value="{{this.productBrand}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductColor" class="form-label">Color</label>
+                            <input name="productColor" type="text" class="form-control" id="editProductColor"
+                                value="{{this.productColor}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductMrp" class="form-label">MRP</label>
+                            <input name="productMrp" type="number" class="form-control" id="editProductMrp"
+                                value="{{this.productMrp}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductPrice" class="form-label">Price</label>
+                            <input name="productPrice" type="number" class="form-control" id="editProductPrice"
+                                value="{{this.productPrice}}" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="editProductDescription" class="form-label">Description</label>
+                            <input name="productDescription" type="text" class="form-control"
+                                value="{{this.productDescription}}" id="editProductDescription" required>
+                        </div>
+                        <!-- Add more input fields as needed -->
+
+                        <button type="submit" class="btn btn-primary">Update Product</button>
+                    </form>
                 </div>
             </div>
         </div>
+    </div>
 
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
-        <!-- Assuming you are using jQuery for simplicity -->
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Assuming you are using jQuery for simplicity -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <script>
+    <script>
 
-            function editProduct(id, productName, productCategory, subproductCategory, productBrand, productColor, productMrp, productPrice, productDescription) {
-                $('#editProductName').val(productName);
-                $('#editProductCategory').val(productCategory);
-                $('#editSubproductCategory').val(subproductCategory);
-                $('#editProductBrand').val(productBrand);
-                $('#editProductColor').val(productColor);
-                $('#editProductMrp').val(productMrp);
-                $('#editProductPrice').val(productPrice);
-                $('#editProductDescription').val(productDescription);
+        function editProduct(id, productImage, productName, productCategory, subproductCategory, productBrand, productColor, productMrp, productPrice, productDescription) {
+            $('#editProductName').val(productName);
+            $('#editProductCategory').val(productCategory);
+            $('#editSubproductCategory').val(subproductCategory);
+            $('#editProductBrand').val(productBrand);
+            $('#editProductColor').val(productColor);
+            $('#editProductMrp').val(productMrp);
+            $('#editProductPrice').val(productPrice);
+            $('#editProductDescription').val(productDescription);
+            $('#editproductImagePreview0').attr('src', productImage[0]).show();
+            $('#editproductImagePreview1').attr('src', productImage[1]).show();
+            $('#editproductImagePreview2').attr('src', productImage[2]).show();
 
-                var editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
-                editProductModal.show();
+            var editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
+            editProductModal.show();
 
-                $('#editProduct').on('submit', function (e) {
-                    e.preventDefault();
+            $('#editProduct').on('submit', function (e) {
+                e.preventDefault();
 
-                    const updatedData = {
-                        productName: $('#editProductName').val(),
-                        productCategory: $('#editProductCategory').val(),
-                        subproductCategory: $('#editSubproductCategory').val(),
-                        productBrand: $('#editProductBrand').val(),
-                        productColor: $('#editProductColor').val(),
-                        productMrp: $('#editProductMrp').val(),
-                        productPrice: $('#editProductPrice').val(),
-                        productDescription: $('#editProductDescription').val(),
-                    };
+                const updatedData = {
+                    productName: $('#editProductName').val(),
+                    productCategory: $('#editProductCategory').val(),
+                    subproductCategory: $('#editSubproductCategory').val(),
+                    productBrand: $('#editProductBrand').val(),
+                    productColor: $('#editProductColor').val(),
+                    productMrp: $('#editProductMrp').val(),
+                    productPrice: $('#editProductPrice').val(),
+                    productDescription: $('#editProductDescription').val(),
+                    productImage: [
+                        $('#editproductImage0')[0].files[0],
+                        $('#editproductImage1')[0].files[0],
+                        $('#editproductImage2')[0].files[0]
+                    ],
+                };
+
+                const productId = id;
+
+                updateProduct(productId, updatedData);
+            });
+        }
 
 
-                    const productId = id;
 
-                    updateProduct(productId, updatedData);
+
+        function updateProduct(productId, updatedData) {
+            const baseUrl = '/admin/product/';
+
+            const formData = new FormData();
+            formData.append('productName', updatedData.productName);
+            formData.append('productImage', updatedData.productImage);
+
+
+            fetch(`${baseUrl}${productId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(updatedData),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error updating product: ${response.status} - ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Product updated successfully:', data);
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('Error updating product:', error.message);
                 });
-            }
+        }
 
+        // Function to delete a product
+        function deleteProduct(productId) {
+            // You can add additional confirmation logic here if needed
+            var confirmation = confirm("Are you sure you want to delete this product?");
 
-
-
-            function updateProduct(productId, updatedData) {
-                const baseUrl = '/admin/product/';
-
-                fetch(`${baseUrl}${productId}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(updatedData),
+            if (confirmation) {
+                // Use fetch to send a DELETE request to your server endpoint
+                fetch(`/delete/${productId}`, {
+                    method: 'DELETE',
                 })
                     .then(response => {
-                        if (!response.ok) {
-                            throw new Error(`Error updating product: ${response.status}`);
+                        if (response.ok) {
+                            // Assuming the product is deleted successfully, you can reload the page or update the UI
+                            location.reload();  // Reload the page
+                        } else {
+                            console.error('Failed to delete product');
+                            // Handle error accordingly
                         }
-                        return response.json();
-                    })
-                    .then(data => {
-                        console.log('Product updated successfully:', data);
-                        window.location.reload();
                     })
                     .catch(error => {
-                        console.error('Error updating product:', error);
+                        console.error('Error:', error);
+                        // Handle error accordingly
                     });
             }
+        }
+        
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            var indexingElements = document.querySelectorAll(".indexing");
 
-            // Function to delete a product
-            function deleteProduct(productId) {
-                // You can add additional confirmation logic here if needed
-                var confirmation = confirm("Are you sure you want to delete this product?");
-
-                if (confirmation) {
-                    // Use fetch to send a DELETE request to your server endpoint
-                    fetch(`/delete/${productId}`, {
-                        method: 'DELETE',
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                // Assuming the product is deleted successfully, you can reload the page or update the UI
-                                location.reload();  // Reload the page
-                            } else {
-                                console.error('Failed to delete product');
-                                // Handle error accordingly
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            // Handle error accordingly
-                        });
-                }
-            }
-        </script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                var indexingElements = document.querySelectorAll(".indexing");
-
-                indexingElements.forEach(function (element, index) {
-                    element.textContent = index + 1;
-                });
+            indexingElements.forEach(function (element, index) {
+                element.textContent = index + 1;
             });
-        </script>
+        });
+    </script>
 
 </body>
 

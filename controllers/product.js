@@ -2,17 +2,20 @@ const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose')
 const Product = require('../models/Product'); // Update the import based on your model file path
+const Category = require('../models/Category')
 const  cloudinary = require('../utils/cloudinary');// Update the import based on your cloudinary setup
 
 const renderProduct = async function (req, res) {
     try {
+        const category = await Category.find()
         const products = await Product.find();
-        res.render('admin/product', { products });
+        res.render('admin/product', { products,category });
     } catch (error) {
         console.error('Error fetching products:', error);
         res.status(500).json({ error: 'Error fetching products' });
     }
 };
+
 
 const handleProduct = async (req, res) => {
     try {
@@ -153,3 +156,5 @@ const handleProduct = async (req, res) => {
         deleteProduct,
         updateProduct,
     };
+
+
