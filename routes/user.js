@@ -22,7 +22,13 @@ router.post('/resethePassword',userController.resetPassword)
 router.get('/',isAuthenticated, userController.renderDashboard);
 
 // Render the profile view (requires authentication)
+router.get('/shop',userController.rendershop);
 
+router.get('/shops',userController.rendershops);
+
+router.get('/singleproduct',userController.rendersingleProduct)
+
+router.post('/singleproduct',userController.handlesingleProduct)
 
 router.get('/account',requireAuth, userController.renderAccount);
 

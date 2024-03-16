@@ -1,13 +1,14 @@
 const Users = require('../models/User');
-const Product = require('../models/Product');
 const authMiddleware = require('../middleware/authMiddleware');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const Product = require('../models/Product');
 require('dotenv').config();
+const mongoose = require("mongoose")
 
 const renderSignup = (req, res) => {
-    res.render('user/signup', { error: req.query.error || '' });
+  res.render('user/signup', { error: req.query.error || '' });
 };
 
 // Render the home view
@@ -15,23 +16,38 @@ const renderSignup = (req, res) => {
 //   res.render('user/login', { error: req.query.error || '' });
 // };
 
-const renderHome = (req, res) => {
-  const {user} = req;
-  if(req.cookies.jwt){
+const renderHome = async (req, res) => {
+  if (req.cookies.jwt) {
     res.redirect('/')
-  }else{
-  res.render('user/login',{user});
-};
+  } else {
+    res.render('user/login',);
+  };
 }
+
 
 const renderAccount = (req, res) => {
   res.render('user/account', { error: req.query.error || '' });
 };
 
+const rendershop = async (req, res) => {
+  const product = await Product.find({ productCategory: 'Tablet' });
+  res.render('user/shop-3', { product });
+};
+
+const rendershops = async (req, res) => {
+  const product = await Product.find({ productCategory: 'Phone' });
+  console.log(product)
+  res.render('user/shop-4', { product });
+};
+
 // Render the dashboard view
-const renderDashboard = (req, res) => {
-  const {user} = req;
-  res.render('user/dashboard',{user});
+const renderDashboard = async (req, res) => {
+  // const { user } = req;
+  const { name, email, password } = req.body
+  const user = await Users.findOne({ email });
+  const product = await Product.find();
+  // console.log(user)
+  res.render('user/dashboard', { user, product });
 };
 
 // Render the profile view
@@ -39,56 +55,70 @@ const renderProduct = (req, res) => {
   res.render('user/product');
 };
 
+const rendersingleProduct = async (req,res) => {
+  const product = await Product.find();
+
+  res.render('user/single-1',{product})
+}
+
+
+const handlesingleProduct = (req,res) => {
+
+
+
+}
+
+
 const handleSignup = async (req, res) => {
-    const { name, email, password } = req.body;
-  
-    try {
-      const existingUser = await Users.findOne({ email });
-  
-      if (existingUser) {
-        return res.redirect('/signup?error=user_exists');
-      }
-  
-      // Hash the password before saving it to the database
-      const hashedPassword = await bcrypt.hash(password, 10);
-  
-      const newUser = new Users({
-        name,
-        email,
-        password: hashedPassword, // Save the hashed password
-      });
-  
-      await newUser.save();
-  
-      // Generate JWT token for the new user
-      const token = jwt.sign(
-        {
-          id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-        },
-        process.env.JWT_KEY,
-        {
-          expiresIn: '24h',
-        }
-      );
-  
-      // Set JWT token in a cookie
-      res.cookie('jwt', token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
-  
-      // Redirect to the dashboard after successful signup
-      res.redirect('/');
-      console.log('User signed up and logged in: jwt created');
-    } catch (error) {
-      console.error(error);
-      res.status(500).send('Internal Server Error');
+  const { name, email, password } = req.body;
+
+  try {
+    const existingUser = await Users.findOne({ email });
+
+    if (existingUser) {
+      return res.redirect('/signup?error=user_exists');
     }
-  };
+
+    // Hash the password before saving it to the database
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new Users({
+      name,
+      email,
+      password: hashedPassword, // Save the hashed password
+    });
+
+    await newUser.save();
+
+    // Generate JWT token for the new user
+    const token = jwt.sign(
+      {
+        id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+      },
+      process.env.JWT_KEY,
+      {
+        expiresIn: '24h',
+      }
+    );
+
+    // Set JWT token in a cookie
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
+
+    // Redirect to the dashboard after successful signup
+    res.redirect('/');
+    console.log('User signed up and logged in: jwt created');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
 const handleSignin = async (req, res) => {
   const { email, password } = req.body;
-    // console.log(req.body);
+  // console.log(req.body);
   try {
     const user = await Users.findOne({ email });
     console.log('user');
@@ -127,6 +157,19 @@ const handleSignin = async (req, res) => {
   }
 };
 
+// Google OAuth callback handler
+// const handleGoogleCallback = (req, res) => {
+//   if (req.isAuthenticated()) {
+//     req.session.user = {
+//       id: req.user._id,
+//       name: req.user.name,
+//       email: req.user.email,
+//     };
+//     res.redirect('/');
+//   } else {
+//     res.redirect('/login');
+//   }
+// };
 
 // LOGIN WITH GOOGLE
 const successGoogleLogin = async (req, res) => {
@@ -261,7 +304,7 @@ let resetPassword = async (req, res) => {
     console.log(user);
 
     if (!user) {
-      
+
       return res.status(404).json({ message: "User not found" });
     }
 
@@ -299,10 +342,7 @@ const handleLogout = async (req, res) => {
   if (!token) {
     return res.redirect("/"); // If no token, redirect to login
   }
-
   try {
-
-
     res.clearCookie("jwt"); // Clear the JWT cookie
     res.redirect("/");
     console.log("User logged out");
@@ -320,6 +360,11 @@ module.exports = {
   handleSignup,
   handleSignin,
   renderAccount,
+  rendershop,
+  rendershops,
+  rendersingleProduct,
+  handlesingleProduct,
+  // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
