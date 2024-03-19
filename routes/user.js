@@ -26,9 +26,9 @@ router.get('/shop',userController.rendershop);
 
 router.get('/shops',userController.rendershops);
 
-router.get('/singleproduct',userController.rendersingleProduct)
+router.get('/singleproduct/:id', userController.rendersingleProduct);
 
-router.post('/singleproduct',userController.handlesingleProduct)
+// router.post('/singleproduct',userController.handlesingleProduct)
 
 router.get('/account',requireAuth, userController.renderAccount);
 

@@ -55,19 +55,28 @@ const renderProduct = (req, res) => {
   res.render('user/product');
 };
 
-const rendersingleProduct = async (req,res) => {
-  const product = await Product.find();
 
-  res.render('user/single-1',{product})
-}
+const rendersingleProduct = async (req, res) => {
+  const { id } = req.params; // Extract the product ID from request parameters
 
+  try {
+      // Fetch the product based on the provided ID
+      const product = await Product.findById(id);
 
-const handlesingleProduct = (req,res) => {
+      if (!product) {
+          // If product is not found, render an error page or handle accordingly
+          return res.status(404).render('error', { message: 'Product not found' });
+      }
+      // console.log(product);
+      // Render the single product page with the fetched product data
+      res.render('user/single-1', { product });
 
-
-
-}
-
+  } catch (error) {
+      // Handle any errors that occur during the process
+      console.error('Error rendering single product:', error);
+      res.status(500).render('error', { message: 'Internal Server Error' });
+  }
+};
 
 const handleSignup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -363,7 +372,7 @@ module.exports = {
   rendershop,
   rendershops,
   rendersingleProduct,
-  handlesingleProduct,
+  // handlesingleProduct,
   // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,

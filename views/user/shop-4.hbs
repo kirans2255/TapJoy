@@ -549,7 +549,7 @@
                     <div class="col-md-12">
                         <!-- Shop Top Area Start -->
                         <div class="shop-top-bar d-flex">
-                            <p class="compare-product"> <span>12</span> Product Found of <span>30</span></p>
+                            {{!-- <p class="compare-product"> <span>12</span> Product Found of <span>30</span></p> --}}
                             <!-- Left Side End -->
                             <div class="shop-tab nav">
                                 <button class="active" data-bs-target="#shop-grid" data-bs-toggle="tab">
@@ -598,7 +598,7 @@
                                                             <span class="new">New</span>
                                                         </span>
                                                         <div class="thumb">
-                                                            <a href="single-product.html" class="image">
+                                                            <a href="/singleproduct/{{this._id}}" class="image">
                                                                 <img src="{{this.productImage.[0]}}"
                                                                     alt="Product" />
                                                                 <img class="hover-image"
@@ -608,7 +608,7 @@
                                                         </div>
                                                         <div class="content">
                                                             <span class="category"><a href="#">{{this.productCategory}}</a></span>
-                                                            <h5 class="title"><a href="single-product.html">{{this.productName}}
+                                                            <h5 class="title"><a href="/singleproduct/{{this._id}}">{{this.productName}}
                                                                 </a>
                                                             </h5>
                                                             <span class="price">
@@ -624,10 +624,10 @@
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Wishlist"><i
                                                                     class="pe-7s-like"></i></button>
-                                                            <button class="action quickview"
+                                                            {{!-- <button class="action quickview"
                                                                 data-link-action="quickview" title="Quick view"
                                                                 data-bs-toggle="modal" data-bs-target="#exampleModal"><i
-                                                                    class="pe-7s-look"></i></button>
+                                                                    class="pe-7s-look"></i></button> --}}
                                                             <button class="action compare" title="Compare"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Compare"><i
@@ -669,7 +669,7 @@
                                                             </div>
                                                             <div class="box-inner">
                                                                 <span class="price">
-                                                                    <span class="new">{{this.productPrice}}</span>
+                                                                    <span class="new">₹{{this.productPrice}}</span>
                                                                 </span>
                                                                 <div class="actions">
                                                                     <button title="Add To Cart"
@@ -925,7 +925,7 @@
                                     <h2>{{this.productName}}</h2>
                                     <div class="pricing-meta">
                                         <ul class="d-flex">
-                                            <li class="new-price">{{this.productPrice}}</li>
+                                            <li class="new-price">₹{{this.productPrice}}</li>
                                         </ul>
                                     </div>
                                     <div class="pro-details-rating-wrap">

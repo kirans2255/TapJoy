@@ -74,7 +74,7 @@
                         <td>{{this.productDescription}}</td>
                         <td>
                             <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editProductModal"
-                                onclick="editProduct('{{this.id}}','{{this.productImage}}', '{{this.productName}}', '{{this.productCategory}}', '{{this.subproductCategory}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
+                                onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}', '{{this.subproductCategory}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
                             <button class="btn btn-danger" onclick="deleteProduct('{{this.id}}')">Delete</button>
                         </td>
                     </tr>
@@ -134,7 +134,9 @@
                         <div class="d-none d-md-block mb-3">
                             <label for="subproductCategory" class="form-label">Sub-Category</label>
                             <select name="subproductCategory" class="form-select" id="subproductCategory" required>
-                                
+                                {{#each category}}
+                                <option value='{{CategoryName}}'> {{CategoryName}} </option>
+                                {{/each}}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -183,25 +185,25 @@
                         <input type="hidden" id="editProductId" name="productId" value="{{this.id}}">
                         <div class="mb-3">
 
-                            <label for="editproductImage" class="form-label">Category Image</label>
-                            <input name="productImage" type="file" class="form-control" id="editproductImage0"
-                                value="{{this.productImage.[0]}}" required>
+                            <label for="editProductImage" class="form-label">Category Image</label>
+                            <input name="productImage" type="file" class="form-control" id="editProductImage0"
+                                value="{{this.productImage.[0]}}">
                             <img id="editproductImagePreview0" src="{{this.productImage.[0]}}" alt="no image"
                                 style="max-width: 100px;"><br>
                         </div>
                         <div class="mb-3">
 
-                            <label for="editproductImage" class="form-label">Category Image</label>
-                            <input name="productImage" type="file" class="form-control" id="editproductImage1"
-                                value="{{this.productImage.[1]}}" required>
+                            <label for="editProductImage" class="form-label">Category Image</label>
+                            <input name="productImage" type="file" class="form-control" id="editProductImage1"
+                                value="{{this.productImage.[1]}}">
                             <img id="editproductImagePreview1" src="{{this.productImage.[1]}}" alt="no image"
                                 style="max-width: 100px;"><br>
                         </div>
                         <div class="mb-3">
 
-                            <label for="editproductImage" class="form-label">Category Image</label>
-                            <input name="productImage" type="file" class="form-control" id="editproductImage2"
-                                value="{{this.productImage.[2]}}" required>
+                            <label for="editProductImage" class="form-label">Category Image</label>
+                            <input name="productImage" type="file" class="form-control" id="editProductImage2"
+                                value="{{this.productImage.[2]}}">
                             <img id="editproductImagePreview2" src="{{this.productImage.[2]}}" alt="no image"
                                 style="max-width: 100px;"><br>
                         </div>
@@ -212,18 +214,18 @@
                         </div>
                         <div class="mb-3">
                             <label for="editProductCategory" class="form-label">Category</label>
-                            <select name="productCategory" class="form-select" id="editProductCategory"
-                                value="{{this.productCategory}}">
-                                <option value="Phone">Phone</option>
-                                <option value="Tablet">Tablet</option>
+                            <select name="productCategory" class="form-select" id="editProductCategory">
+                                {{#each category}}
+                                <option value='{{CategoryName}}'> {{CategoryName}} </option>
+                                {{/each}}
                             </select>
                         </div>
                         <div class="mb-3">
                             <label for="editSubproductCategory" class="form-label">Sub-Category</label>
-                            <select name="subproductCategory" class="form-select" id="editSubproductCategory"
-                                value="{{this.subproductCategory}}">
-                                <option value="SmartPhone">SmartPhone</option>
-                                <option value="KeypadPhone">KeypadPhone</option>
+                            <select name="subproductCategory" class="form-select" id="editSubproductCategory" required>
+                                {{#each category}}
+                                <option value='{{CategoryName}}'> {{CategoryName}} </option>
+                                {{/each}}
                             </select>
                         </div>
                         <div class="mb-3">
@@ -297,9 +299,9 @@
                     productPrice: $('#editProductPrice').val(),
                     productDescription: $('#editProductDescription').val(),
                     productImage: [
-                        $('#editproductImage0')[0].files[0],
-                        $('#editproductImage1')[0].files[0],
-                        $('#editproductImage2')[0].files[0]
+                        $('#editProductImage0')[0].files[0],
+                        $('#editProductImage1')[0].files[0],
+                        $('#editProductImage2')[0].files[0]
                     ],
                 };
 
@@ -317,19 +319,32 @@
 
             const formData = new FormData();
             formData.append('productName', updatedData.productName);
-            formData.append('productImage', updatedData.productImage);
+            formData.append('productCategory', updatedData.productCategory);
+            formData.append('subproductCategory', updatedData.subproductCategory);
+            formData.append('productBrand', updatedData.productBrand);
+            formData.append('productColor', updatedData.productColor);
+            formData.append('productMrp', updatedData.productMrp);
+            formData.append('productPrice', updatedData.productPrice);
+            formData.append('productDescription', updatedData.productDescription);
 
+            // Check if new images are selected
+            if (updatedData.productImage[0]) {
+                formData.append('productImage', updatedData.productImage[0]);
+            }
+            if (updatedData.productImage[1]) {
+                formData.append('productImage', updatedData.productImage[1]);
+            }
+            if (updatedData.productImage[2]) {
+                formData.append('productImage', updatedData.productImage[2]);
+            }
 
             fetch(`${baseUrl}${productId}`, {
                 method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(updatedData),
+                body: formData,
             })
                 .then(response => {
                     if (!response.ok) {
-                        throw new Error(`Error updating product: ${response.status} - ${response.statusText}`);
+                        throw new Error(`Error updating product: ${response.status} `);
                     }
                     return response.json();
                 })
@@ -367,7 +382,7 @@
                     });
             }
         }
-        
+
     </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
