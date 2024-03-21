@@ -3,7 +3,6 @@ const router = express.Router();
 const passport = require('passport');
 
 const userController = require('../controllers/userController');
-// const authController = require('../controllers/authController');
 const requireAuth = require('../middleware/userrequire');
 const { isAuthenticated } = require('../middleware/authMiddleware');
 
@@ -17,6 +16,10 @@ router.get('/forgot-password',userController.forgotGetPage)
 router.post('/forget-password',userController.forgotEmailPostPage)
 
 router.post('/resethePassword',userController.resetPassword)
+//wishlist
+router.get('/wishlist',requireAuth,userController.renderwishlist);
+
+router.post('/wishlist/:productId',requireAuth ,userController.addToWishlist);
 
 // Render the dashboard view (requires authentication)
 router.get('/',isAuthenticated, userController.renderDashboard);
@@ -27,8 +30,6 @@ router.get('/shop',userController.rendershop);
 router.get('/shops',userController.rendershops);
 
 router.get('/singleproduct/:id', userController.rendersingleProduct);
-
-// router.post('/singleproduct',userController.handlesingleProduct)
 
 router.get('/account',requireAuth, userController.renderAccount);
 

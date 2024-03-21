@@ -7,26 +7,8 @@ const Product = require('../models/Product');
 require('dotenv').config();
 const mongoose = require("mongoose")
 
-const renderSignup = (req, res) => {
-  res.render('user/signup', { error: req.query.error || '' });
-};
-
-// Render the home view
-// const renderHome = (req, res) => {
-//   res.render('user/login', { error: req.query.error || '' });
-// };
-
-const renderHome = async (req, res) => {
-  if (req.cookies.jwt) {
-    res.redirect('/')
-  } else {
-    res.render('user/login',);
-  };
-}
-
-
-const renderAccount = (req, res) => {
-  res.render('user/account', { error: req.query.error || '' });
+const renderAccount = async (req, res) => {
+  res.render('user/account');
 };
 
 const rendershop = async (req, res) => {
@@ -40,14 +22,24 @@ const rendershops = async (req, res) => {
   res.render('user/shop-4', { product });
 };
 
+
+const renderbrand = async (req, res) => {
+  const product = await Product.find();
+  // console.log(product)
+  res.render('user/brand', { product });
+};
+
+
 // Render the dashboard view
 const renderDashboard = async (req, res) => {
   // const { user } = req;
   const { name, email, password } = req.body
   const user = await Users.findOne({ email });
-  const product = await Product.find();
+  const products = await Product.find({ productCategory: 'Tablet' });
+  const product = await Product.find({ productCategory: 'Phone' });
+
   // console.log(user)
-  res.render('user/dashboard', { user, product });
+  res.render('user/dashboard', { user, products, product });
 };
 
 // Render the profile view
@@ -55,28 +47,97 @@ const renderProduct = (req, res) => {
   res.render('user/product');
 };
 
-
 const rendersingleProduct = async (req, res) => {
   const { id } = req.params; // Extract the product ID from request parameters
 
   try {
-      // Fetch the product based on the provided ID
-      const product = await Product.findById(id);
+    // Fetch the product based on the provided ID
+    const product = await Product.findById(id);
 
-      if (!product) {
-          // If product is not found, render an error page or handle accordingly
-          return res.status(404).render('error', { message: 'Product not found' });
-      }
-      // console.log(product);
-      // Render the single product page with the fetched product data
-      res.render('user/single-1', { product });
+    if (!product) {
+      // If product is not found, render an error page or handle accordingly
+      return res.status(404).render('error', { message: 'Product not found' });
+    }
+    // console.log(product);
+    // Render the single product page with the fetched product data
+    res.render('user/single-1', { product });
 
   } catch (error) {
-      // Handle any errors that occur during the process
-      console.error('Error rendering single product:', error);
-      res.status(500).render('error', { message: 'Internal Server Error' });
+    // Handle any errors that occur during the process
+    console.error('Error rendering single product:', error);
+    res.status(500).render('error', { message: 'Internal Server Error' });
   }
 };
+
+
+
+const renderwishlist = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const wishlist = user.wishlist;
+    res.render('user/wishlist', { wishlist, user });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+};
+
+
+const addToWishlist = async (req, res) => {
+  const { productId } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // Find the user by ID
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Fetch the product details from the Product model
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    // Check if the wishlist is empty or undefined
+    if (!user.wishlist || !user.wishlist.products) {
+      user.wishlist = { products: [] }; // Initialize wishlist if it's empty or undefined
+    }
+
+    // Check if the product is already in the wishlist
+    const productIndexInWishlist = user.wishlist.products.findIndex(item => item.product === productId);
+    if (productIndexInWishlist !== -1) {
+      return res.status(400).json({ error: 'Product already in wishlist' });
+    }
+
+    // Push product details into the wishlist array
+    user.wishlist.products.push({
+      product: productId,
+      productName: product.productName,
+      productPrice: product.productPrice,
+      productImage: product.productImage,
+      // Add more fields as needed
+    });
+
+    await user.save();
+
+    res.status(200).json({ message: 'Product added to wishlist successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+//signup
+const renderSignup = (req, res) => {
+  res.render('user/signup', { error: req.query.error || '' });
+};
+
 
 const handleSignup = async (req, res) => {
   const { name, email, password } = req.body;
@@ -123,7 +184,21 @@ const handleSignup = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
-
+//signin
+const renderHome = async (req, res) => {
+  try {
+    const user = await Users.find(); // Corrected line
+    if (req.cookies.jwt) {
+      res.redirect('/');
+    } else {
+      res.render('user/login', { user }); // Passing user object to render function
+    }
+  } catch (error) {
+    console.error(error);
+    // Handle error appropriately, maybe by sending an error response
+    res.status(500).send('Internal Server Error');
+  }
+}
 
 const handleSignin = async (req, res) => {
   const { email, password } = req.body;
@@ -344,6 +419,28 @@ let resetPassword = async (req, res) => {
 // FORGOT PASSWORD -- ENDS HERE
 
 
+//Single product
+// const handlesingleProduct = async (req, res) => {
+//   const { id } = req.params;
+//   console.log(id);
+//   try {
+//     // Fetch the product based on the provided id
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Product not found' });
+//     }
+
+//     // Handle the fetched product, maybe render a view or send it as JSON
+//     res.render('user/single-1', { product });
+//   } catch (error) {
+//     console.error('Error handling single product:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
+
+
+
 // Route handler for handling logout
 const handleLogout = async (req, res) => {
   const token = req.cookies.jwt;
@@ -372,6 +469,9 @@ module.exports = {
   rendershop,
   rendershops,
   rendersingleProduct,
+  renderwishlist,
+  addToWishlist,
+  renderbrand,
   // handlesingleProduct,
   // handleGoogleCallback,
   forgotGetPage,
