@@ -333,7 +333,7 @@
                 </div>
                 <div class="foot">
                     <div class="buttons">
-                        <a href="wishlist.html" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
+                        <a href="/wishlist" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
                     </div>
                 </div>
             </div>
@@ -346,7 +346,7 @@
                     <span class="title">Cart</span>
                     <button class="offcanvas-close">×</button>
                 </div>
-                <div class="body customScroll">
+                {{!-- <div class="body customScroll">
                     <ul class="minicart-product-list">
                         <li>
                             <a href="single-product.html" class="image"><img src="assets/images/product-image/1.webp"
@@ -376,7 +376,7 @@
                             </div>
                         </li>
                     </ul>
-                </div>
+                </div> --}}
                 <div class="foot">
                     <div class="buttons mt-30px">
                         <a href="cart.html" class="btn btn-dark btn-hover-primary mb-30px">view cart</a>
@@ -458,7 +458,7 @@
                                 <li>
                                     <a href="#"><span class="menu-text">product Details Page</span></a>
                                     <ul class="sub-menu">
-                                        <li><a href="single-product.html">Product Single</a></li>
+                                        <li><a href="/brand">Product Single</a></li>
                                         <li><a href="single-product-variable.html">Product Variable</a></li>
                                         <li><a href="single-product-affiliate.html">Product Affiliate</a></li>
                                         <li><a href="single-product-group.html">Product Group</a></li>
@@ -599,16 +599,16 @@
                                                         </span>
                                                         <div class="thumb">
                                                             <a href="/singleproduct/{{this._id}}" class="image">
-                                                                <img src="{{this.productImage.[0]}}"
-                                                                    alt="Product" />
-                                                                <img class="hover-image"
-                                                                    src="{{this.productImage.[1]}}"
+                                                                <img src="{{this.productImage.[0]}}" alt="Product" />
+                                                                <img class="hover-image" src="{{this.productImage.[1]}}"
                                                                     alt="Product" />
                                                             </a>
                                                         </div>
                                                         <div class="content">
-                                                            <span class="category"><a href="#">{{this.productCategory}}</a></span>
-                                                            <h5 class="title"><a href="/singleproduct/{{this._id}}">{{this.productName}}
+                                                            <span class="category"><a
+                                                                    href="#">{{this.productCategory}}</a></span>
+                                                            <h5 class="title"><a
+                                                                    href="/singleproduct/{{this._id}}">{{this.productName}}
                                                                 </a>
                                                             </h5>
                                                             <span class="price">
@@ -621,6 +621,7 @@
                                                                 data-bs-target="#exampleModal-Cart"><i
                                                                     class="pe-7s-shopbag"></i></button>
                                                             <button class="action wishlist" title="Wishlist"
+                                                                onclick="addToWishlist('{{this._id}}')"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Wishlist"><i
                                                                     class="pe-7s-like"></i></button>
@@ -649,8 +650,7 @@
                                                                     <img src="{{this.productImage.[0]}}"
                                                                         alt="Product" />
                                                                     <img class="hover-image"
-                                                                        src="{{this.productImage.[1]}}"
-                                                                        alt="Product" />
+                                                                        src="{{this.productImage.[1]}}" alt="Product" />
                                                                 </a>
                                                                 <span class="badges">
                                                                     <span class="new">New</span>
@@ -678,6 +678,7 @@
                                                                         data-bs-target="#exampleModal-Cart"><i
                                                                             class="pe-7s-shopbag"></i></button>
                                                                     <button class="action wishlist" title="Wishlist"
+                                                                        onclick="addToWishlist('{{this._id}}')"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal-Wishlist"><i
                                                                             class="pe-7s-like"></i></button>
@@ -855,13 +856,12 @@
             <!-- Footer Area End -->
         </div>
         <!-- Modal -->
-        <div class="modal modal-2 fade" id="exampleModal" tabindex="-1" role="dialog">
+        {{!-- <div class="modal modal-2 fade" id="exampleModal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"> <i
                                 class="pe-7s-close"></i></button>
-                              {{#each product}}
 
                         <div class="row">
                             <div class="col-lg-6 col-sm-12 col-xs-12 mb-lm-30px mb-md-30px mb-sm-30px">
@@ -869,8 +869,7 @@
                                 <div class="swiper-container gallery-top">
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
-                                            <img class="img-responsive m-auto"
-                                                src="{{this.productImage.[0]}}" alt="">
+                                            <img class="img-responsive m-auto" src="{{this.productImage.[0]}}" alt="">
                                         </div>
                                         <div class="swiper-slide">
                                             <img class="img-responsive m-auto"
@@ -893,8 +892,7 @@
                                 <div class="swiper-container gallery-thumbs mt-20px slider-nav-style-1 small-nav">
                                     <div class="swiper-wrapper">
                                         <div class="swiper-slide">
-                                            <img class="img-responsive m-auto"
-                                                src="{{this.productImage.[0]}}" alt="">
+                                            <img class="img-responsive m-auto" src="{{this.productImage.[0]}}" alt="">
                                         </div>
                                         <div class="swiper-slide">
                                             <img class="img-responsive m-auto"
@@ -986,12 +984,11 @@
                                     </div>
                                 </div>
                             </div>
-                            {{/each}}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!-- Modal end -->
         <!-- Modal Cart -->
         <div class="modal customize-class fade" id="exampleModal-Cart" tabindex="-1" aria-hidden="true">
@@ -1018,17 +1015,19 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body text-center">
+                        <input type="hidden" id="userId">
+                        <input type="hidden" id="productId">
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                                 class="pe-7s-close"></i></button>
                         <div class="tt-modal-messages">
                             <i class="pe-7s-check"></i> Added to Wishlist successfully!
                         </div>
-                        <div class="tt-modal-product">
+                        {{!-- <div class="tt-modal-product">
                             <div class="tt-img">
-                                <img src="assets/images/product-image/1.webp" alt="Modern Smart Phone">
+                                <img src="{{product.productImage.[0]}}" alt="Modern Smart Phone">
                             </div>
-                            <h2 class="tt-title"><a href="#">Modern Smart Phone</a></h2>
-                        </div>
+                            <h2 class="tt-title"><a href="#">{{product.productName}}</a></h2>
+                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -1074,6 +1073,34 @@
 
         <!--Main JS (Common Activation Codes)-->
         <script src="assets/js/main.js"></script>
+
+        <script>
+            function addToWishlist(productId) {
+                fetch(`/wishlist/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, productId })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Failed to add product to wishlist');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Handle success message or update UI as needed
+                        console.log(data.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error or update UI as needed
+                    });
+            }
+
+        </script>
+
 </body>
 
 
