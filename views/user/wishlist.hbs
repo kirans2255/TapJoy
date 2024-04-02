@@ -115,9 +115,9 @@
                         <div class="col-lg-3 col">
                             <div class="header-actions">
                                 <!-- Single Wedge Start -->
-                                <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">
+                                {{!-- <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">
                                     <i class="pe-7s-like"></i>
-                                </a>
+                                </a> --}}
                                 <!-- Single Wedge End -->
                                 <a href="#offcanvas-cart"
                                     class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
@@ -444,8 +444,8 @@
                                     <a href="#"><span class="menu-text">Shop Page</span></a>
                                     <ul class="sub-menu">
                                         <li><a href="/shop">Shop 3 Column</a></li>
-                                        <li><a href="shop-4-column.html">Shop 4 Column</a></li>
-                                        <li><a href="/shops">Shop Left Sidebar</a></li>
+                                        <li><a href="/shops">Shop 4 Column</a></li>
+                                        <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
                                         <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
                                         <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a>
                                         </li>
@@ -559,6 +559,7 @@
                                             <th>Qty</th>
                                             <th>Subtotal</th>
                                             <th>Add To Cart</th>
+                                            <th>Remove</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -570,8 +571,8 @@
                                                         src="{{productImage.[0]}}" alt="" /></a>
                                             </td>
                                             <td class="product-name"><a href="#">{{productName}}</a></td>
-                                            <td class="product-price-cart"><span
-                                                    class="amount">{{productPrice}}</span></td>
+                                            <td class="product-price-cart"><span class="amount">{{productPrice}}</span>
+                                            </td>
                                             <td class="product-quantity">
                                                 <div class="cart-plus-minus">
                                                     <input class="cart-plus-minus-box" type="text" name="qtybutton"
@@ -582,8 +583,14 @@
                                             <td class="product-wishlist-cart">
                                                 <a href="#">Add to Cart</a>
                                             </td>
+
+                                            <td class="product-wishlist-cart">
+                                                <a href="#" onclick="removeFromWishlist('{{productName}}')">Remove</a>
+                                            </td>
+
+
                                         </tr>
-                                         {{/each}} 
+                                        {{/each}}
                                     </tbody>
                                 </table>
                             </div>
@@ -733,6 +740,7 @@
     <script src="assets/js/plugins/jquery-ui.min.js"></script>
     <script src="assets/js/plugins/mailchimp-ajax.js"></script>
 
+
     <!-- Minify Version -->
     <!-- <script src="assets/js/vendor.min.js"></script>
     <script src="assets/js/plugins.min.js"></script>
@@ -740,6 +748,25 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
+    <script>
+
+        function removeFromWishlist(productName) {
+            fetch(`/wishlist/${productName}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (response.ok) {
+                        // Refresh the page or update the wishlist view
+                        window.location.reload(); // Example: Refresh the page
+                    } else {
+                        console.error('Failed to remove product from wishlist');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error removing product from wishlist:', error);
+                });
+        }
+    </script>
 </body>
 
 

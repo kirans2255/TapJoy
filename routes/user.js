@@ -15,11 +15,22 @@ router.get('/forgot-password',userController.forgotGetPage)
 
 router.post('/forget-password',userController.forgotEmailPostPage)
 
+router.get('/brand/:brandName', userController.renderbrand);
+
+router.get('/brands/:brandName', userController.renderbrands);
+
 router.post('/resethePassword',userController.resetPassword)
 //wishlist
 router.get('/wishlist',requireAuth,userController.renderwishlist);
 
 router.post('/wishlist/:productId',requireAuth ,userController.addToWishlist);
+
+router.delete('/wishlist/:productName',requireAuth,userController.removeFromWishlist)
+
+//filter
+router.get('/shops/:category',userController.Getsort)
+
+router.get('/shop/:category',userController.sort)
 
 // Render the dashboard view (requires authentication)
 router.get('/',isAuthenticated, userController.renderDashboard);

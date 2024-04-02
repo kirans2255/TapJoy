@@ -88,7 +88,7 @@
                         <div class="col-lg-3 col">
                             <div class="header-actions">
                                 <!-- Single Wedge Start -->
-                                <a href="#offcanvas-wishlist" class="header-action-btn offcanvas-toggle">
+                                <a href="/wishlist" class="header-action-btn">
                                     <i class="pe-7s-like"></i>
                                 </a>
                                 <!-- Single Wedge End -->
@@ -215,7 +215,7 @@
                                             </ul>
                                             <ul class="d-block">
                                                 <li class="title"><a href="#">product Details Page</a></li>
-                                                <li><a href="single-product.html">Product Single</a></li>
+                                                <li><a href="/brand">Product Single</a></li>
                                                 <li><a href="single-product-variable.html">Product Variable</a></li>
                                                 <li><a href="single-product-affiliate.html">Product Affiliate</a></li>
                                                 <li><a href="single-product-group.html">Product Group</a></li>
@@ -347,7 +347,7 @@
                 </div>
                 <div class="foot">
                     <div class="buttons">
-                        <a href="wishlist.html" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
+                        <a href="/wishlist" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
                     </div>
                 </div>
             </div>
@@ -657,7 +657,7 @@
                         <div class="tab-slider d-md-flex justify-content-md-between align-items-md-center">
                             <ul class="product-tab-nav nav justify-content-start align-items-center">
                                 <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
-                                        data-bs-target="#newarrivals">New Arrivals</button>
+                                        data-bs-target="#newarrivals">Tablet</button>
                                 </li>
                                 {{!-- <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab"
                                         data-bs-target="#toprated">Top Rated</button>
@@ -671,6 +671,70 @@
                     </div>
                 </div>
                 <!-- Section Title & Tab End -->
+                <div class="row">
+                    <div class="col">
+                        <div class="tab-content mt-60px">
+                            <!-- 1st tab start -->
+                            <div class="tab-pane fade show active" id="newarrivals">
+                                <div class="row mb-n-30px">
+                                    {{#each products}}
+                                    <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
+                                        <!-- Single Prodect -->
+                                        <div class="product">
+                                            <span class="badges">
+                                                <span class="new">New</span>
+                                            </span>
+                                            <div class="thumb">
+                                                <a href="/singleproduct/{{this._id}}" class="image">
+                                                    <img src="{{this.productImage.[0]}}" alt="Product" />
+                                                    <img class="hover-image" src="{{this.productImage.[1]}}"
+                                                        alt="Product" />
+                                                </a>
+                                            </div>
+                                            <div class="content">
+                                                <span class="category"><a href="#">{{this.productCategory}}</a></span>
+                                                <h5 class="title"><a href="single-product.html">{{this.productName}}
+                                                    </a>
+                                                </h5>
+                                                <span class="price">
+                                                    <span class="new">₹{{this.productPrice}}</span>
+                                                </span>
+                                            </div>
+                                            <div class="actions">
+                                                <button title="Add To Cart" class="action add-to-cart"
+                                                    data-bs-toggle="modal" data-bs-target="#exampleModal-Cart"><i
+                                                        class="pe-7s-shopbag"></i></button>
+                                                <button class="action wishlist" title="Wishlist" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal-Wishlist"><i
+                                                        class="pe-7s-like"></i></button>
+                                                <button class="action quickview" data-link-action="quickview"
+                                                    title="Quick view" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal"><i class="pe-7s-look"></i></button>
+                                                <button class="action compare" title="Compare" data-bs-toggle="modal"
+                                                    data-bs-target="#exampleModal-Compare"><i
+                                                        class="pe-7s-refresh-2"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{/each}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-slider d-md-flex justify-content-md-between align-items-md-center">
+                            <ul class="product-tab-nav nav justify-content-start align-items-center">
+                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#newarrivals">Phone</button>
+                                </li>
+                                {{!-- <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab"
+                                        data-bs-target="#toprated">Top Rated</button>
+                                </li>
+                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                                        data-bs-target="#featured">Featured</button>
+                                </li> --}}
+                            </ul>
+                        </div>
                 <div class="row">
                     <div class="col">
                         <div class="tab-content mt-60px">

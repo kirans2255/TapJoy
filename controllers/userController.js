@@ -7,6 +7,7 @@ const Product = require('../models/Product');
 require('dotenv').config();
 const mongoose = require("mongoose")
 
+
 const renderAccount = async (req, res) => {
   res.render('user/account');
 };
@@ -24,9 +25,25 @@ const rendershops = async (req, res) => {
 
 
 const renderbrand = async (req, res) => {
-  const product = await Product.find();
-  // console.log(product)
-  res.render('user/brand', { product });
+  const brandName = req.params.brandName;
+  try {
+    const products = await Product.find({ productBrand: brandName, productCategory: 'Tablet' });
+    res.render('user/brand', { product: products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
+};
+
+const renderbrands = async (req, res) => {
+  const brandName = req.params.brandName;
+  try {
+    const products = await Product.find({ productBrand: brandName, productCategory: 'Phone' });
+    res.render('user/brandd', { product: products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server Error');
+  }
 };
 
 
@@ -70,6 +87,9 @@ const rendersingleProduct = async (req, res) => {
 };
 
 
+// const renderwishlist = (req, res) => {
+//   res.render('user/wishlist', { error: req.query.error || '' });
+// };
 
 const renderwishlist = async (req, res) => {
   try {
@@ -79,13 +99,13 @@ const renderwishlist = async (req, res) => {
       return res.status(404).send('User not found');
     }
     const wishlist = user.wishlist;
+    // console.log(wishlist);
     res.render('user/wishlist', { wishlist, user });
   } catch (error) {
-    console.error(error);
+    // console.error(error);
     res.status(500).send('Internal Server Error');
   }
 };
-
 
 const addToWishlist = async (req, res) => {
   const { productId } = req.params;
@@ -95,13 +115,13 @@ const addToWishlist = async (req, res) => {
     // Find the user by ID
     const user = await Users.findById(userId);
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json({ errorMessage: 'User not found' });
     }
 
-    // Fetch the product details from the Product model
+    // Fetch the product details from the Product mo del
     const product = await Product.findById(productId);
     if (!product) {
-      return res.status(404).json({ error: 'Product not found' });
+      return res.status(404).json({ errorMessage: 'Product not found' });
     }
 
     // Check if the wishlist is empty or undefined
@@ -109,12 +129,17 @@ const addToWishlist = async (req, res) => {
       user.wishlist = { products: [] }; // Initialize wishlist if it's empty or undefined
     }
 
-    // Check if the product is already in the wishlist
-    const productIndexInWishlist = user.wishlist.products.findIndex(item => item.product === productId);
-    if (productIndexInWishlist !== -1) {
-      return res.status(400).json({ error: 'Product already in wishlist' });
-    }
+    // Check if the product is already in the wishlist based on product name or image
+    const isProductInWishlist = user.wishlist.products.some(item => {
+      return item.productName === product.productName || item.productImage === product.productImage;
+    });
 
+    if (isProductInWishlist) {
+      const errorMessage = "Invalid password";
+      return res.status(400).render('user/shop-4',{  error: errorMessage});
+      // const errorMessage = "Invalid password";
+      // return res.status(401).render('user/login', { error: errorMessage });
+    }
     // Push product details into the wishlist array
     user.wishlist.products.push({
       product: productId,
@@ -125,13 +150,47 @@ const addToWishlist = async (req, res) => {
     });
 
     await user.save();
-
-    res.status(200).json({ message: 'Product added to wishlist successfully' });
+    res.status(200).json({ successMessage: 'Added to Wishlist successfully' });
   } catch (err) {
     console.error(err);
+    res.status(500).json({ errorMessage: 'Internal server error' });
+  }
+};
+
+
+
+
+
+// Route handler to remove product from wishlist by productName
+const removeFromWishlist = async (req, res) => {
+  const { productName } = req.params;
+  const userId = req.user.id;
+
+  try {
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find index of product in wishlist by productName
+    const index = user.wishlist.products.findIndex(item => item.productName === productName);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Product not found in wishlist' });
+    }
+
+    // Remove product from wishlist
+    user.wishlist.products.splice(index, 1);
+    await user.save();
+    // console.log(user);
+
+    res.status(200).json({ message: 'Product removed from wishlist successfully' });
+  } catch (error) {
+    console.error('Error removing product from wishlist:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+
 
 //signup
 const renderSignup = (req, res) => {
@@ -240,20 +299,6 @@ const handleSignin = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
-
-// Google OAuth callback handler
-// const handleGoogleCallback = (req, res) => {
-//   if (req.isAuthenticated()) {
-//     req.session.user = {
-//       id: req.user._id,
-//       name: req.user.name,
-//       email: req.user.email,
-//     };
-//     res.redirect('/');
-//   } else {
-//     res.redirect('/login');
-//   }
-// };
 
 // LOGIN WITH GOOGLE
 const successGoogleLogin = async (req, res) => {
@@ -416,30 +461,63 @@ let resetPassword = async (req, res) => {
   }
 };
 
-// FORGOT PASSWORD -- ENDS HERE
+const sort = async (req, res) => {
+  try {
+    const category = req.params.category.toLowerCase(); // Extract the category parameter and convert to lowercase
+
+    let filteredProducts;
+
+    if (category === 'allproducts' || category === 'sortbypopularity') {
+      filteredProducts = await Product.find({ productCategory: 'Tablet' }).exec();
+    } else if (category === 'alphabeticallyaz') {
+      filteredProducts = await Product.find({ productCategory: 'Tablet' }).sort({ productName: 1 }).exec();
+    } else if (category === 'alphabeticallya') {
+      filteredProducts = await Product.find({ productCategory: 'Tablet' }).sort({ productName: -1 }).exec();
+    } else if (category === 'sortbyhightolow') {
+      filteredProducts = await Product.find({ productCategory: 'Tablet' }).sort({ productPrice: -1 }).exec();
+    } else if (category === 'sortbylowtohigh') {
+      filteredProducts = await Product.find({ productCategory: 'Tablet' }).sort({ productPrice: 1 }).exec();
+    } else {
+      filteredProducts = await Product.find({ productCategory: 'Tablet' }).exec();
+    }
+
+    res.render('user/shop-3', { category: category, product: filteredProducts });
+  } catch (err) {
+    // Handle errors
+    console.error('Error fetching products:', err);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 
-//Single product
-// const handlesingleProduct = async (req, res) => {
-//   const { id } = req.params;
-//   console.log(id);
-//   try {
-//     // Fetch the product based on the provided id
-//     const product = await Product.findById(id);
 
-//     if (!product) {
-//       return res.status(404).json({ message: 'Product not found' });
-//     }
+const Getsort = async (req, res) => {
+  try {
+    const category = req.params.category.toLowerCase(); // Extract the category parameter and convert to lowercase
 
-//     // Handle the fetched product, maybe render a view or send it as JSON
-//     res.render('user/single-1', { product });
-//   } catch (error) {
-//     console.error('Error handling single product:', error);
-//     res.status(500).json({ error: 'Internal Server Error' });
-//   }
-// };
+    let filteredProducts;
 
+    if (category === 'allproducts' || category === 'sortbypopularity') {
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).exec();
+    } else if (category === 'alphabeticallyaz') {
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productName: 1 }).exec();
+    } else if (category === 'alphabeticallya') {
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productName: -1 }).exec();
+    } else if (category === 'sortbyhightolow') {
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productPrice: -1 }).exec();
+    } else if (category === 'sortbylowtohigh') {
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productPrice: 1 }).exec();
+    } else {
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).exec();
+    }
 
+    res.render('user/shop-4', { category: category, product: filteredProducts });
+  } catch (err) {
+    // Handle errors
+    console.error('Error fetching products:', err);
+    res.status(500).send('Internal Server Error');
+  }
+};
 
 // Route handler for handling logout
 const handleLogout = async (req, res) => {
@@ -472,8 +550,10 @@ module.exports = {
   renderwishlist,
   addToWishlist,
   renderbrand,
-  // handlesingleProduct,
-  // handleGoogleCallback,
+  renderbrands,
+  removeFromWishlist,
+  sort,
+  Getsort,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
