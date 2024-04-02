@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const wishlist = new mongoose.Schema({
   products: [{
     _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    productId: {type: mongoose.Schema.Types.ObjectId},
     productName: { type: String },
     productPrice: { type: Number },
     productImage: { type: Array },

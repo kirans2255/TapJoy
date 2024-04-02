@@ -112,41 +112,35 @@ const addToWishlist = async (req, res) => {
   const userId = req.user.id;
 
   try {
-    // Find the user by ID
     const user = await Users.findById(userId);
     if (!user) {
       return res.status(404).json({ errorMessage: 'User not found' });
     }
 
-    // Fetch the product details from the Product mo del
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ errorMessage: 'Product not found' });
     }
 
-    // Check if the wishlist is empty or undefined
     if (!user.wishlist || !user.wishlist.products) {
-      user.wishlist = { products: [] }; // Initialize wishlist if it's empty or undefined
+      user.wishlist = { products: [] };
     }
 
-    // Check if the product is already in the wishlist based on product name or image
-    const isProductInWishlist = user.wishlist.products.some(item => {
-      return item.productName === product.productName || item.productImage === product.productImage;
-    });
-
-    if (isProductInWishlist) {
-      const errorMessage = "Invalid password";
-      return res.status(400).render('user/shop-4',{  error: errorMessage});
-      // const errorMessage = "Invalid password";
-      // return res.status(401).render('user/login', { error: errorMessage });
+    // Check if the product is already in the wishlist based on productId
+    const isProductInWishlistIndex = user.wishlist.products.findIndex(item => item.productId.toString() === productId);
+    if (isProductInWishlistIndex !== -1) {
+      // If product is found in wishlist, remove it
+      user.wishlist.products.splice(isProductInWishlistIndex, 1);
+      await user.save();
+      return res.status(201).json({ errorMessage: 'Removed from Wishlist successfully' });
     }
-    // Push product details into the wishlist array
+
+    // If product not found in wishlist, add it
     user.wishlist.products.push({
-      product: productId,
+      productId: productId,
       productName: product.productName,
       productPrice: product.productPrice,
       productImage: product.productImage,
-      // Add more fields as needed
     });
 
     await user.save();

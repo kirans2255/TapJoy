@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="/assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="/assets/css/plugins.min.css">
     <link rel="stylesheet" href="/assets/css/style.min.css"> -->
@@ -190,8 +192,8 @@
                                         <li class="d-flex">
                                             <ul class="d-block">
                                                 <li class="title"><a href="#">Shop Page</a></li>
-                                                <li><a href="shop-3-column.html">Shop 3 Column</a></li>
-                                                <li><a href="shop-4-column.html">Shop 4 Column</a></li>
+                                                <li><a href="/shop">Shop 3 Column</a></li>
+                                                <li><a href="/shops">Shop 4 Column</a></li>
                                                 <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
                                                 <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
                                                 <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a>
@@ -443,9 +445,9 @@
                                 <li>
                                     <a href="#"><span class="menu-text">Shop Page</span></a>
                                     <ul class="sub-menu">
-                                        <li><a href="shop-3-column.html">Shop 3 Column</a></li>
+                                        <li><a href="/shop">Shop 3 Column</a></li>
                                         <li><a href="shop-4-column.html">Shop 4 Column</a></li>
-                                        <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
+                                        <li><a href="/shops">Shop Left Sidebar</a></li>
                                         <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
                                         <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a>
                                         </li>
@@ -565,14 +567,16 @@
                                     <p>Sort By:</p>
                                 </div>
                                 <!-- Single Wedge End -->
-                                 <div class="header-bottom-set dropdown">
+                                <div class="header-bottom-set dropdown">
                                     <button class="dropdown-toggle header-action-btn" data-bs-toggle="dropdown">Default
                                         <i class="fa fa-angle-down"></i></button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         <li><a class="dropdown-item" href="/shop/alphabeticallyaz">Name, A to Z</a></li>
                                         <li><a class="dropdown-item" href="/shop/alphabeticallya">Name, Z to A</a></li>
-                                        <li><a class="dropdown-item" href="/shop/sortbylowtohigh">Price, low to high</a></li>
-                                        <li><a class="dropdown-item" href="/shop/sortbyhightolow">Price, high to low</a></li>
+                                        <li><a class="dropdown-item" href="/shop/sortbylowtohigh">Price, low to high</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="/shop/sortbyhightolow">Price, high to low</a>
+                                        </li>
                                         <li><a class="dropdown-item" href="#">Sort By new</a></li>
                                         <li><a class="dropdown-item" href="#">Sort By old</a></li>
                                     </ul>
@@ -1108,27 +1112,29 @@
         </div>
     </div>
     <!-- Modal wishlist -->
-    <div class="modal customize-class fade" id="exampleModal-Wishlist" tabindex="-1" aria-hidden="true">
+    {{!-- <div class="modal customize-class fade" id="exampleModal-Wishlist" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body text-center">
-                    <input type="hidden" id="userId">
-                    <input type="hidden" id="productId">
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><i
                             class="pe-7s-close"></i></button>
                     <div class="tt-modal-messages">
                         <i class="pe-7s-check"></i> Added to Wishlist successfully!
                     </div>
-                    {{!-- <div class="tt-modal-product">
+                    <div class="tt-modal-product">
                         <div class="tt-img">
                             <img src="{{product.productImage.[0]}}" alt="Modern Smart Phone">
                         </div>
                         <h2 class="tt-title"><a href="#">{{product.productName}}</a></h2>
-                    </div> --}}
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
+
+    <input type="hidden" id="userId">
+    <input type="hidden" id="productId">
     <!-- Modal compare -->
     <div class="modal customize-class fade" id="exampleModal-Compare" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -1167,6 +1173,8 @@
     <!-- <script src="/assets/js/vendor.min.js"></script>
     <script src="/assets/js/plugins.min.js"></script>
     <script src="/assets/js/main.min.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
     <!--Main JS (Common Activation Codes)-->
     <script src="/assets/js/main.js"></script>
@@ -1182,13 +1190,38 @@
             })
                 .then(response => {
                     if (!response.ok) {
+                        console.log("a")
                         throw new Error('Failed to add product to wishlist');
                     }
+
                     return response.json();
                 })
-                .then(data => {
+                .then(response => {
+                    console.log("pop", response)
+                    if (response.errorMessage === 'Removed from Wishlist successfully') {
+                        Toastify({
+                            text: "Removed From Wishlist",
+                            duration: 1000, // 3 seconds
+                            gravity: "top", // Display at the top
+                            position: 'right', // Display on the right side
+                            backgroundColor: "black", // Background color
+                            stopOnFocus: true, // Stop the timer when the toast is focused
+                        }).showToast();
+                    }
+                    else {
+                        Toastify({
+                            text: "Added to Wishlist",
+                            duration: 1000, // 3 seconds
+                            gravity: "top", // Display at the top
+                            position: 'right', // Display on the right side
+                            backgroundColor: "black", // Background color
+                            stopOnFocus: true, // Stop the timer when the toast is focused
+                        }).showToast();
+                    }
+                    console.log("b")
+
                     // Handle success message or update UI as needed
-                    console.log(data.message);
+                    console.log(response.message);
                 })
                 .catch(error => {
                     console.error('Error:', error);
