@@ -29,6 +29,20 @@
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="/assets/css/plugins.min.css">
     <link rel="stylesheet" href="/assets/css/style.min.css"> -->
+    <style>
+        .image-box {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .image-box img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+    </style>
+
 
 </head>
 
@@ -734,12 +748,26 @@
                                         Cart</button>
                                 </div>
                                 <div class="pro-details-compare-wishlist pro-details-wishlist ">
-                                    <a class="action wishlist" title="Wishlist" onclick="addToWishlist('{{product._id}}')"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal-Wishlist"><i
-                                            class="pe-7s-like"></i></a>
+                                    <a class="action wishlist" title="Wishlist"
+                                        onclick="addToWishlist('{{product._id}}')" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModal-Wishlist"><i class="pe-7s-like"></i></a>
                                 </div>
                                 <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                     <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
+                                </div>
+                            </div>
+                            <div class="container">
+                                <div class="row">
+                                    {{!-- {{#each product}} --}}
+                                    <div class="col-md-4">
+                                        <div class="image-box">
+                                            <a href="/singleproduct/{{productId}}">
+                                                <img src="{{productImage}}" alt="Image 1">
+                                                {{!-- <p>{{this.productName}}</p> --}}
+                                            </a>
+                                        </div>
+                                    </div>
+                                    {{!-- {{/each} } --}}
                                 </div>
                             </div>
                         </div>
@@ -1579,7 +1607,7 @@
         <!--Main JS (Common Activation Codes)-->
         <script src="/assets/js/main.js"></script>
 
-         <script>
+        <script>
             function addToWishlist(productId) {
                 fetch(`/wishlist/${productId}`, {
                     method: 'POST',
@@ -1597,7 +1625,7 @@
                         return response.json();
                     })
                     .then(response => {
-                        console.log("pop",response)
+                        console.log("pop", response)
                         if (response.errorMessage === 'Removed from Wishlist successfully') {
                             Toastify({
                                 text: "Removed From Wishlist",

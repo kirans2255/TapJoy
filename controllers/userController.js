@@ -64,6 +64,28 @@ const renderProduct = (req, res) => {
   res.render('user/product');
 };
 
+// const rendersingleProduct = async (req, res) => {
+//   const { id } = req.params; // Extract the product ID from request parameters
+
+//   try {
+//     // Fetch the product based on the provided ID
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       // If product is not found, render an error page or handle accordingly
+//       return res.status(404).render('error', { message: 'Product not found' });
+//     }
+//     // console.log(product);
+//     // Render the single product page with the fetched product data
+//     res.render('user/single-1', { product });
+
+//   } catch (error) {
+//     // Handle any errors that occur during the process
+//     console.error('Error rendering single product:', error);
+//     res.status(500).render('error', { message: 'Internal Server Error' });
+//   }
+// };
+
 const rendersingleProduct = async (req, res) => {
   const { id } = req.params; // Extract the product ID from request parameters
 
@@ -75,9 +97,23 @@ const rendersingleProduct = async (req, res) => {
       // If product is not found, render an error page or handle accordingly
       return res.status(404).render('error', { message: 'Product not found' });
     }
-    // console.log(product);
+
+    // Check if there are other products with the same name
+    const similarProducts = await Product.find({ productName: product.productName });
+
+    // Use the image of the first similar product found
+    if (similarProducts.length > 1) {
+      const alternateProduct = similarProducts.find(p => p._id.toString() !== id);
+      if (alternateProduct) {
+        productImage = alternateProduct.productImage[0];
+        productId = alternateProduct._id
+         // Assuming image is a property of the product
+        // console.log(`Using image from product ${alternateProduct._id} ${alternateProduct.productImage[0]} (${alternateProduct.productName})`);
+      }
+    }
+
     // Render the single product page with the fetched product data
-    res.render('user/single-1', { product });
+    res.render('user/single-1', { product,productImage,productId});
 
   } catch (error) {
     // Handle any errors that occur during the process
@@ -85,6 +121,9 @@ const rendersingleProduct = async (req, res) => {
     res.status(500).render('error', { message: 'Internal Server Error' });
   }
 };
+
+
+
 
 
 // const renderwishlist = (req, res) => {
