@@ -48,7 +48,7 @@
                                     <li><a href="tel:0123456789"><i class="fa fa-phone"></i> +012 3456 789</a></li>
                                     <li><a href="mailto:demo@example.com"><i class="fa fa-envelope-o"></i>
                                             demo@example.com</a></li>
-                                    <li><a href="my-account.html"><i class="fa fa-user"></i> Account</a></li>
+                                    <li><a href="/account"><i class="fa fa-user"></i> Account</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -185,52 +185,10 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown position-static"><a href="#">Shop <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="mega-menu d-block">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Shop Page</a></li>
-                                                <li><a href="/shop">Shop 3 Column</a></li>
-                                                <li><a href="/shops">Shop 4 C olumn</a></li>
-                                                <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
-                                                <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
-                                                <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a>
-                                                </li>
-                                                <li><a href="shop-list-right-sidebar.html">Shop List Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">product Details Page</a></li>
-                                                <li><a href="single-product.html">Product Single</a></li>
-                                                <li><a href="single-product-variable.html">Product Variable</a></li>
-                                                <li><a href="single-product-affiliate.html">Product Affiliate</a></li>
-                                                <li><a href="single-product-group.html">Product Group</a></li>
-                                                <li><a href="single-product-tabstyle-2.html">Product Tab 2</a></li>
-                                                <li><a href="single-product-tabstyle-3.html">Product Tab 3</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Single Product Page</a></li>
-                                                <li><a href="single-product-slider.html">Product Slider</a></li>
-                                                <li><a href="single-product-gallery-left.html">Product Gallery Left</a>
-                                                <li><a href="single-product-gallery-right.html">Product Gallery
-                                                        Right</a> </li>
-                                                <li><a href="single-product-sticky-left.html">Product Sticky Left</a>
-                                                </li>
-                                                <li><a href="single-product-sticky-right.html">Product Sticky Right</a>
-                                                </li>
-                                                <li><a href="cart.html">Cart Page</a></li>
-                                            </ul>
-                                            <ul class="d-block p-0 border-0">
-                                                <li class="title"><a href="#">Single Product Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="compare.html">Compare Page</a></li>
-                                                <li><a href="wishlist.html">Wishlist Page</a></li>
-                                                <li><a href="my-account.html">Account Page</a></li>
-                                                <li><a href="login.html">Login & Register Page</a></li>
-                                                <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                                            </ul>
-                                        </li>
+                                <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
+                                    <ul class="sub-menu">
+                                        <li><a href="/shop">Tablet</a></li>
+                                        <li><a href="/shops">Phone</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
@@ -599,7 +557,7 @@
                                                     <!-- Single Prodect -->
                                                     <div class="product">
                                                         <span class="badges">
-                                                            <span class="new">New</span>
+                                                            {{!-- <span class="new">New</span> --}}
                                                         </span>
                                                         <div class="thumb">
                                                             <a href="/singleproduct/{{this._id}}" class="image">
@@ -612,11 +570,15 @@
                                                             <span class="category"><a
                                                                     href="#">{{this.productCategory}}</a></span>
                                                             <h5 class="title"><a
-                                                                    href="/singleproduct/{{this._id}}">{{this.productName}}
-                                                                </a>
+                                                                    href="/singleproduct/{{this._id}}">{{this.productName}}</a>
                                                             </h5>
                                                             <span class="price">
-                                                                <span class="new">₹{{this.productPrice}}</span>
+                                                                {{#if this.variants}}
+                                                                <span class="new" class="data-link"
+                                                                    data-price="{{this.variants.[0].productPrice}}">₹{{this.variants.[0].productPrice}}</span>
+                                                                {{else}}
+                                                                <span class="new">Price not available</span>
+                                                                {{/if}}
                                                             </span>
                                                         </div>
                                                         <div class="actions">
@@ -625,10 +587,11 @@
                                                                 data-bs-target="#exampleModal-Cart"><i
                                                                     class="pe-7s-shopbag"></i></button>
                                                             <button class="action wishlist" title="Wishlist"
-                                                                onclick="addToWishlist('{{this._id}}')"
+                                                                onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productPrice}}')"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Wishlist"><i
                                                                     class="pe-7s-like"></i></button>
+
                                                             {{!-- <button class="action quickview"
                                                                 data-link-action="quickview" title="Quick view"
                                                                 data-bs-toggle="modal" data-bs-target="#exampleModal"><i
@@ -642,6 +605,7 @@
                                                 </div>
                                                 {{/each}}
                                             </div>
+
                                         </div>
                                         <div class="tab-pane fade mb-n-30px" id="shop-list">
                                             <div class="shop-list-wrapper mb-30px">
@@ -673,7 +637,12 @@
                                                             </div>
                                                             <div class="box-inner">
                                                                 <span class="price">
-                                                                    <span class="new">₹{{this.productPrice}}</span>
+                                                                    {{#if this.variants}}
+                                                                    <span class="new" class="data-link"
+                                                                        data-price="{{this.variants.[0].productPrice}}">₹{{this.variants.[0].productPrice}}</span>
+                                                                    {{else}}
+                                                                    <span class="new">Price not available</span>
+                                                                    {{/if}}
                                                                 </span>
                                                                 <div class="actions">
                                                                     <button title="Add To Cart"
@@ -686,11 +655,11 @@
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal-Wishlist"><i
                                                                             class="pe-7s-like"></i></button>
-                                                                    <button class="action quickview"
+                                                                    {{!-- <button class="action quickview"
                                                                         data-link-action="quickview" title="Quick view"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal"><i
-                                                                            class="pe-7s-look"></i></button>
+                                                                            class="pe-7s-look"></i></button> --}}
                                                                     <button class="action compare" title="Compare"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal-Compare"><i
@@ -725,7 +694,7 @@
                                     </div>
                                 </div>
                                 <!--  Pagination Area End -->
-                                <div class="col-lg-3 order-lg-first col-md-12 order-md-last">
+                                <div class="col-lg-2 order-lg-first col-md-12 order-md-last">
                                     <div class="shop-sidebar-wrap">
                                         <!-- Sidebar single item -->
                                         {{!-- <div class="sidebar-widget">
@@ -749,7 +718,7 @@
                                                 </ul>
                                             </div>
                                         </div> --}}
-                                        <div class="sidebar-widget">
+                                        <div class="sidebar -title">
                                             <h4 class="sidebar-title">Brands</h4>
                                             <div class="sidebar-widget-brand">
                                                 <ul>
@@ -777,7 +746,7 @@
                                             </div>
                                         </div> --}}
                                         <!-- Sidebar single item -->
-                                        <div class="sidebar-widget">
+                                        {{!-- <div class="sidebar-widget">
                                             <h4 class="sidebar-title">Color</h4>
                                             <div class="sidebar-widget-color">
                                                 <ul class="d-flex flex-wrap">
@@ -797,7 +766,7 @@
                                                     <li><a href="#" class="color-14"></a></li>
                                                 </ul>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <!-- Sidebar single item -->
                                         {{!-- <div class="sidebar-widget">
                                             <h4 class="sidebar-title">Size</h4>
@@ -1135,7 +1104,8 @@
 
 
 
-                    {{!-- </div>
+                        {{!--
+                    </div>
                 </div>
             </div>
         </div> --}}
@@ -1186,13 +1156,13 @@
         <script src="/assets/js/main.js"></script>
 
         <script>
-            function addToWishlist(productId) {
+            function addToWishlist(productId, price) {
                 fetch(`/wishlist/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ userId, productId })
+                    body: JSON.stringify({ userId, productId, price })
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -1203,7 +1173,7 @@
                         return response.json();
                     })
                     .then(response => {
-                        console.log("pop",response)
+                        console.log("pop", response)
                         if (response.errorMessage === 'Removed from Wishlist successfully') {
                             Toastify({
                                 text: "Removed From Wishlist",

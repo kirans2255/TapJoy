@@ -5,7 +5,7 @@ const verifyToken = (req, res, next) => {
   
   if (!token) {
     // return res.status(401).json({ error: 'Access denied. No token provided.' });
-    return res.redirect("/")
+    return res.redirect("/signin")
   }
 
   try {
@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (error) {
-    return res.status(403).redirect("/")
+    return res.status(403).redirect("/signin")
   }
 };
 

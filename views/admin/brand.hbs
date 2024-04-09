@@ -105,15 +105,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="/admin/brand">
+                    <a class="nav-link text-white active bg-gradient-primary " href="/admin/brand">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">receipt_long</i>
                         </div>
-                        <span class="nav-link-text ms-1">Brand</span>
+                        <span class="nav-link-text ms-1">Brand </span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active bg-gradient-primary"  href="/admin/category">
+                    <a class="nav-link text-white"  href="/admin/category">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">view_in_ar</i>
                         </div>
@@ -190,9 +190,9 @@
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
                         </li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Category</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Brand</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Category</h6>
+                    <h6 class="font-weight-bolder mb-0">Brand</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -323,11 +323,11 @@
         <div class="col-lg-12 mt-4 mb-3">
             <div class="card z-index-2 ">
                 <div class="container mt-5">
-                    <h1 class="mb-4">Category Table</h1>
+                    <h1 class="mb-4">Brand Table</h1>
 
                     <!-- Add Product Button -->
-                    <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add
-                        Category</button>
+                    <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#addBrandModal">Add
+                        Brand</button>
 
                     <div class="table-responsive">
                         <table class="table table-striped">
@@ -342,18 +342,18 @@
                             </thead>
                             <tbody>
                                 <!-- Example Product Row -->
-                                {{#each category}}
+                                {{#each brand}}
                                 <tr>
                                     <td class="indexing">{{@index}}</td>
-                                    <td><img src="{{CategoryImage.url}}" alt="{{this.CategoryName}}"
+                                    <td><img src="{{BrandImage.url}}" alt="{{this.BrandName}}"
                                             class="img-thumbnail" style="width: 80px;"></td>
-                                    <td>{{this.CategoryName}}</td>
+                                    <td>{{this.BrandName}}</td>
                                     <td>
                                         <button class="btn btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editCategoryModal"
-                                            onclick="editCategory('{{this.id}}', '{{this.CategoryName}}','{{CategoryImage.url}}')">Edit</button>
+                                            data-bs-target="#editBrandModal"
+                                            onclick="editBrand('{{this.id}}', '{{this.BrandName}}','{{BrandImage.url}}')">Edit</button>
                                         <button class="btn btn-danger"
-                                            onclick="deleteCategory('{{this.id}}')">Delete</button>
+                                            onclick="deleteBrand('{{this.id}}')">Delete</button>
                                     </td>
                                 </tr>
                                 {{/each}}
@@ -364,40 +364,40 @@
             </div>
         </div>
 
-        <!-- Add Category Modal -->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        <!-- Add Brand Modal -->
+        <div class="modal fade" id="addBrandModal" tabindex="-1" aria-labelledby="addBrandModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                        <h5 class="modal-title" id="addBrandModalLabel">Add Brand</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
 
-                        <!-- Form to add a new Category -->
-                        <form id="addCategoryForm" action="/addCategory" method="post" enctype="multipart/form-data">
+                        <!-- Form to add a new Brand -->
+                        <form id="addBrandForm" action="/addBrand" method="post" enctype="multipart/form-data">
                             {{!-- <div class="mb-3">
-                                <label for="CategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
-                                    value="{{CategoryImage.url.[0]}}" required>
+                                <label for="BrandImage" class="form-label">Brand Image</label>
+                                <input name="BrandImage" type="file" class="form-control" id="BrandImage"
+                                    value="{{BrandImage.url.[0]}}" required>
                             </div> --}}
                             <div class="mb-3">
-                                <label for="CategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
-                                    value="{{CategoryImage.url}}" required>
+                                <label for="BrandImage" class="form-label">Brand Image</label>
+                                <input name="BrandImage" type="file" class="form-control" id="BrandImage"
+                                    value="{{BrandImage.url}}" required>
                             </div>
                             <div class="mb-3">
-                                <label name="CategoryName" for="CategoryName" class="form-label">Category
+                                <label name="BrandName" for="BrandName" class="form-label">Brand
                                     Name</label>
-                                <input name="CategoryName" type="text" class="form-control" id="CategoryName" required>
+                                <input name="BrandName" type="text" class="form-control" id="BrandName" required>
                             </div>
 
                             <!-- Add more input fields as needed -->
 
-                            <button type="submit" class="btn btn-primary" onclick="addCategory()">Add
-                                Category</button>
+                            <button type="submit" class="btn btn-primary" onclick="addBrand()">Add
+                                Brand</button>
                         </form>
                     </div>
                 </div>
@@ -405,40 +405,40 @@
         </div>
 
 
-        <!-- Edit Category Modal -->
-        <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+        <!-- Edit Brand Modal -->
+        <div class="modal fade" id="editBrandModal" tabindex="-1" aria-labelledby="editBrandModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                        <h5 class="modal-title" id="editBrandModalLabel">Edit Brand</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Form to edit an existing Category -->
+                        <!-- Form to edit an existing Brand -->
                         {{!-- {{#each category}} --}}
 
-                        <form id="editCategory" action="/updateCategory" method="post" enctype="multipart/form-data">
-                            <input type="hidden" id="editCategoryId" name="CategoryId" value="{{this.id}}">
+                        <form id="editBrand" action="/updateBrand" method="post" enctype="multipart/form-data">
+                            <input type="hidden" id="editBrandId" name="BrandId" value="{{this.id}}">
 
                             <div class="mb-3">
 
-                                <label for="editCategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="editCategoryImage"
-                                    value="{{CategoryImage.url}}">
-                                <img id="editCategoryImagePreview" src="{{CategoryImage.url}}" alt="no image"
+                                <label for="editBrandImage" class="form-label">Brand Image</label>
+                                <input name="BrandImage" type="file" class="form-control" id="editBrandImage"
+                                    value="{{BrandImage.url}}">
+                                <img id="editBrandImagePreview" src="{{BrandImage.url}}" alt="no image"
                                     style="max-width: 100px;"><br>
                             </div>
 
                             <div class="mb-3">
-                                <label for="editCategoryName" class="form-label">Category Name</label>
-                                <input name="CategoryName" type="text" class="form-control" id="editCategoryName"
-                                    value="{{this.CategoryName}}" required>
+                                <label for="editBrandName" class="form-label">Brand Name</label>
+                                <input name="BrandName" type="text" class="form-control" id="editBrandName"
+                                    value="{{this.BrandName}}" required>
                             </div>
 
                             <!-- Add more input fields as needed -->
 
-                            <button type="submit" class="btn btn-primary">Update Category</button>
+                            <button type="submit" class="btn btn-primary">Update Brand</button>
 
                         </form>
                         {{!-- {{/each}} --}}
@@ -814,37 +814,37 @@
 
     <script>
 
-         function editCategory(id, CategoryName, CategoryImage) {
+         function editBrand(id, BrandName, BrandImage) {
             // Set the existing category data in the modal
-            $('#editCategoryName').val(CategoryName);
+            $('#editBrandName').val(BrandName);
             // Display the existing image
-            $('#editCategoryImagePreview').attr('src', CategoryImage).show();
+            $('#editBrandImagePreview').attr('src', BrandImage).show();
 
-            var editCategoryModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-            editCategoryModal.show();
+            var editBrandModal = new bootstrap.Modal(document.getElementById('editBrandModal'));
+            editBrandModal.show();
 
-            $('#editCategory').on('submit', function (e) {
+            $('#editBrand').on('submit', function (e) {
                 e.preventDefault();
 
                 const updatedData = {
-                    CategoryName: $('#editCategoryName').val(),
-                    CategoryImage: $('#editCategoryImage')[0].files[0],
+                    BrandName: $('#editBrandName').val(),
+                    BrandImage: $('#editBrandImage')[0].files[0],
                 };
 
-                const CategoryId = id;
+                const BrandId = id;
 
-                updateCategory(CategoryId, updatedData);
+                updateBrand(BrandId, updatedData);
             });
         }
 
-        function updateCategory(CategoryId, updatedData) {
-            const baseUrl = '/admin/category/';
+        function updateBrand(BrandId, updatedData) {
+            const baseUrl = '/admin/brand/';
 
             const formData = new FormData();
-            formData.append('CategoryName', updatedData.CategoryName);
-            formData.append('CategoryImage', updatedData.CategoryImage);
+            formData.append('BrandName', updatedData.BrandName);
+            formData.append('BrandImage', updatedData.BrandImage);
 
-            fetch(`${baseUrl}${CategoryId}`, {
+            fetch(`${baseUrl}${BrandId}`, {
                 method: 'PUT',
                 body: formData,
             })
@@ -864,22 +864,22 @@
         }
 
         // Function to delete a product
-        function deleteCategory(CategoryId) {
+        function deleteBrand(BrandId) {
             // You can add additional confirmation logic here if needed
-            var confirmation = confirm("Are you sure you want to delete this Category?");
+            var confirmation = confirm("Are you sure you want to delete this Brand?");
 
             if (confirmation) {
                 // Use fetch to send a DELETE request to your server endpoint
-                fetch(`/deletecat/${CategoryId}`, {
+                fetch(`/deleteca/${BrandId}`, {
                     method: 'DELETE',
                 })
                     .then(response => {
                         if (response.ok) {
                             // Assuming the product is deleted successfully, you can reload the page or update the UI
-                            console.log('Category deleted successfully');
+                            console.log('Brand deleted successfully');
                             location.reload();  // Reload the page
                         } else {
-                            console.error('Failed to delete Category');
+                            console.error('Failed to delete Brand');
                             // Handle error accordingly
                         }
                     })

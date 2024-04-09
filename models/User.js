@@ -8,6 +8,8 @@ const wishlist = new mongoose.Schema({
     productName: { type: String },
     productPrice: { type: Number },
     productImage: { type: Array },
+    productRam: { type: String },
+    productRom: { type: String },
     // stockQuantity: {type: Number}
   }]
 })

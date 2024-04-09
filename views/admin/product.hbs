@@ -1,17 +1,3 @@
-<!--
-=========================================================
-* Material Dashboard 2 - v3.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-dashboard
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-* Licensed under MIT (https://www.creative-tim.com/license)
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
--->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -80,6 +66,10 @@
             border-color: #00b39b;
             /* Button border color on hover */
         }
+
+        .thead {
+            margin-left: 20vh;
+        }
     </style>
 
 </head>
@@ -117,11 +107,11 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="../pages/billing.html">
+                    <a class="nav-link text-white " href="/admin/brand">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">receipt_long</i>
                         </div>
-                        <span class="nav-link-text ms-1">Billing</span>
+                        <span class="nav-link-text ms-1">Brand</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -332,7 +322,7 @@
             </div>
         </nav>
         <!-- End Navbar -->
-    
+
         <div class="container mt-5">
             <h1 class="mb-4">Product Table</h1>
 
@@ -342,16 +332,18 @@
 
             <div class="table-responsive">
                 <table class="table table-striped">
-                    <thead>
+                    <thead class="thead">
                         <tr>
                             <th>ID</th>
                             <th>Image</th>
                             <th>Name</th>
                             <th>Category</th>
-                            <th>Sub-Category</th>
                             <th>Brand</th>
                             <th>Color</th>
                             <th>MRP</th>
+                            <th>Ram</th>
+                            <th>Rom</th>
+                            <th>Quantity</th>
                             <th>Price</th>
                             {{!-- <th>Description</th> --}}
                             <th>Action</th>
@@ -367,21 +359,29 @@
                             </td>
                             <td>{{this.productName}}</td>
                             <td>{{this.productCategory}}</td>
-                            <td>{{this.subproductCategory}}</td>
                             <td>{{this.productBrand}}</td>
                             <td>{{this.productColor}}</td>
                             <td>{{this.productMrp}}</td>
+                            {{!-- <td>{{this.productRam}}</td>
+                            <td>{{this.productRom}}</td>
+                            <td>{{this.productQuantity}}</td> --}}
+                            {{#each this.variants}}
+                            <td>{{this.productRam}}</td>
+                            <td>{{this.productRom}}</td>
+                            <td>{{this.productQuantity}}</td>
                             <td>{{this.productPrice}}</td>
+                            {{/each}}
+                            
+                            {{!-- <td>{{this.productPrice}}</td> --}}
                             {{!-- <td>{{this.productDescription}}</td> --}}
                             <td>
                                 <button class="btn btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#editProductModal"
-                                    onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}', '{{this.subproductCategory}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
+                                    onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}', '{{this.productRamandrom}}','{{this.productQuantity}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
                                 <button class="btn btn-danger" onclick="deleteProduct('{{this.id}}')">Delete</button>
                             </td>
                         </tr>
                         {{/each}}
-
                     </tbody>
                 </table>
             </div>
@@ -402,29 +402,22 @@
                             <div class="mb-3">
                                 <label for="productImage" class="form-label">Product Image</label>
                                 <input name="productImage" type="file" class="form-control"
-                                    value="{{this.productImage.[0]}}" required>
+                                    value="{{this.productImage.[0]}}" multiple>
                             </div>
                             <div class="mb-3">
                                 <label for="productImage" class="form-label">Product Image</label>
                                 <input name="productImage" type="file" class="form-control"
-                                    value="{{this.productImage.[1]}}" required>
+                                    value="{{this.productImage.[1]}}" multiple>
                             </div>
                             <div class="mb-3">
                                 <label for="productImage" class="form-label">Product Image</label>
                                 <input name="productImage" type="file" class="form-control"
-                                    value="{{this.productImage.[2]}}" required>
+                                    value="{{this.productImage.[2]}}" multiple>
                             </div>
                             <div class="mb-3">
                                 <label name="productName" for="productName" class="form-label">Product Name</label>
                                 <input name="productName" type="text" class="form-control" id="productName" required>
                             </div>
-                            {{!-- <div class="d-md-none mb-3"> <!-- Display for phones only -->
-                                <label for="productCategoryTextarea" class="form-label">Category</label>
-                                <select class="form-select" id="productCategory">
-                                    <option value="phone">Phone</option>
-                                    <option value="tablet">Tablet</option>
-                                </select>
-                            </div> --}}
                             <div class="d-none d-md-block mb-3">
                                 <label for="productCategory" class="form-label">Category</label>
                                 <select name="productCategory" class="form-select" id="productCategory" required>
@@ -433,16 +426,9 @@
                                     {{/each}}
                                 </select>
                             </div>
-                            <div class="d-none d-md-block mb-3">
-                                <label for="subproductCategory" class="form-label">Sub-Category</label>
-                                <select name="subproductCategory" class="form-select" id="subproductCategory" required>
-                                    {{#each category}}
-                                    <option value='{{CategoryName}}'> {{CategoryName}} </option>
-                                    {{/each}}
-                                </select>
-                            </div>
+
                             <div class="mb-3">
-                                <label name="" for="productBrand" class="form-label">Brand</label>
+                                <label name="productBrand" for="productBrand" class="form-label">Brand</label>
                                 <input name="productBrand" type="text" class="form-control" id="productBrand" required>
                             </div>
                             <div class="mb-3">
@@ -454,19 +440,50 @@
                                 <input name="productMrp" type="number" class="form-control" id="productMrp" required>
                             </div>
                             <div class="mb-3">
-                                <label for="productPrice" class="form-label">Price</label>
-                                <input name="productPrice" type="number" class="form-control" id="productPrice"
-                                    required>
-                            </div>
-                            <div class="mb-3">
                                 <label for="productDescription" class="form-label">Description</label>
                                 <input name="productDescription" type="text" class="form-control"
                                     id="productDescription" required>
                             </div>
 
-                            <!-- Add more input fields as needed -->
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Price</label>
+                                <input name="variants[0][productPrice]" type="number" class="form-control"
+                                    id="productPrice">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productQuantity" class="form-label">Quantity</label>
+                                <input name="variants[0][productQuantity]" type="number" class="form-control"
+                                    id="productQuantity">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productRam" class="form-label">Ram</label>
+                                <input name="variants[0][productRam]" type="text" class="form-control" id="productRam">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productRom" class="form-label">Rom</label>
+                                <input name="variants[0][productRom]" type="text" class="form-control" id="productRom">
+                            </div>
 
-                            <button type="submit" class="btn btn-primary" onclick="addProducts()">Add Product</button>
+                            <div class="mb-3">
+                                <label for="productPrice" class="form-label">Price</label>
+                                <input name="variants[1][productPrice]" type="number" class="form-control"
+                                    id="productPrice">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productQuantity" class="form-label">Quantity</label>
+                                <input name="variants[1][productQuantity]" type="number" class="form-control"
+                                    id="productQuantity">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productRam" class="form-label">Ram</label>
+                                <input name="variants[1][productRam]" type="text" class="form-control" id="productRam">
+                            </div>
+                            <div class="mb-3">
+                                <label for="productRom" class="form-label">Rom</label>
+                                <input name="variants[1][productRom]" type="text" class="form-control" id="productRom">
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Add Product</button>
                         </form>
                     </div>
                 </div>
@@ -524,6 +541,17 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label name="editproductRamandrom" class="form-label">Ram and Rom</label>
+                                <input name="productRamandrom" type="text" class="form-control"
+                                    id="editproductRamandrom" value="{{this.productRamandrom}}" required>
+                            </div>
+
+                            <div class="mb-3">
+                                <label name="editproductQuantity" class="form-label">Quantity</label>
+                                <input name="productQuantity" type="text" class="form-control" id="editproductQuantity"
+                                    value="{{this.productQuantity}}" required>
+                            </div>
+                            {{!-- <div class="mb-3">
                                 <label for="editSubproductCategory" class="form-label">Sub-Category</label>
                                 <select name="subproductCategory" class="form-select" id="editSubproductCategory"
                                     required>
@@ -531,7 +559,7 @@
                                     <option value='{{CategoryName}}'> {{CategoryName}} </option>
                                     {{/each}}
                                 </select>
-                            </div>
+                            </div> --}}
                             <div class="mb-3">
                                 <label for="editProductBrand" class="form-label">Brand</label>
                                 <input name="productBrand" type="text" class="form-control" id="editProductBrand"
@@ -931,11 +959,11 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-
-        function editProduct(id, productImage, productName, productCategory, subproductCategory, productBrand, productColor, productMrp, productPrice, productDescription) {
+        function editProduct(id, productImage, productName, productCategory, productRamandrom, productQuantity, productBrand, productColor, productMrp, productPrice, productDescription) {
             $('#editProductName').val(productName);
             $('#editProductCategory').val(productCategory);
-            $('#editSubproductCategory').val(subproductCategory);
+            $('#editproductRamandrom').val(productRamandrom);
+            $('#editproductQuantity').val(productQuantity);
             $('#editProductBrand').val(productBrand);
             $('#editProductColor').val(productColor);
             $('#editProductMrp').val(productMrp);
@@ -954,7 +982,8 @@
                 const updatedData = {
                     productName: $('#editProductName').val(),
                     productCategory: $('#editProductCategory').val(),
-                    subproductCategory: $('#editSubproductCategory').val(),
+                    productRamandrom: $('#editproductRamandrom').val(),
+                    productQuantity: $('#editproductQuantity').val(),
                     productBrand: $('#editProductBrand').val(),
                     productColor: $('#editProductColor').val(),
                     productMrp: $('#editProductMrp').val(),
@@ -982,7 +1011,8 @@
             const formData = new FormData();
             formData.append('productName', updatedData.productName);
             formData.append('productCategory', updatedData.productCategory);
-            formData.append('subproductCategory', updatedData.subproductCategory);
+            formData.append('productRamandrom', updatedData.productRamandrom);
+            formData.append('productQuantity', updatedData.productQuantity);
             formData.append('productBrand', updatedData.productBrand);
             formData.append('productColor', updatedData.productColor);
             formData.append('productMrp', updatedData.productMrp);
@@ -1053,6 +1083,8 @@
                 element.textContent = index + 1;
             });
         });
+
+
     </script>
 
 </body>

@@ -13,42 +13,41 @@ router.get('/signup', userController.renderSignup);
 
 router.get('/forgot-password',userController.forgotGetPage)
 
-router.post('/forget-password',userController.forgotEmailPostPage)
+router.get('/shop',userController.rendershop);
+
+router.get('/shops',userController.rendershops);
 
 router.get('/brand/:brandName', userController.renderbrand);
 
-router.get('/brands/:brandName', userController.renderbrands);
+router.post('/forget-password',userController.forgotEmailPostPage)
 
 router.post('/resethePassword',userController.resetPassword)
-//wishlist
+
+router.get('/brands/:brandName', userController.renderbrands);
+
+// Render the dashboard view (requires authentication)
+router.get('/',isAuthenticated, userController.renderDashboard);
+
+router.get('/singleproduct/:id', userController.rendersingleProduct);
+
+router.get('/shops/:category',userController.Getsort)
+
+router.get('/shop/:category',userController.sort)
+
 router.get('/wishlist',requireAuth,userController.renderwishlist);
 
 router.post('/wishlist/:productId',requireAuth ,userController.addToWishlist);
 
 router.delete('/wishlist/:productName',requireAuth,userController.removeFromWishlist)
-
-//filter
-router.get('/shops/:category',userController.Getsort)
-
-router.get('/shop/:category',userController.sort)
-
-// Render the dashboard view (requires authentication)
-router.get('/',isAuthenticated, userController.renderDashboard);
-
 // Render the profile view (requires authentication)
-router.get('/shop',userController.rendershop);
+// Route for handling the signin form submission
+router.post('/login', userController.handleSignin);
 
-router.get('/shops',userController.rendershops);
-
-router.get('/singleproduct/:id', userController.rendersingleProduct);
+//varaint color
 
 router.get('/account',requireAuth, userController.renderAccount);
 
 router.post('/signup', userController.handleSignup);
-
-// Route for handling the signin form submission
-router.post('/login', userController.handleSignin);
-
 
 router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
 router.get(

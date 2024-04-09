@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="assets/css/plugins.min.css">
     <link rel="stylesheet" href="assets/css/style.min.css"> -->
@@ -55,15 +57,11 @@
                                     {{!-- <li><a href="/account"><i class="fa fa-user"></i> Account</a></li> --}}
                                     {{!-- --}}
                                     {{!-- {{log:user}} --}}
-                                    {{#if user}}
-                                    <li><a href="/signin"><i class="fa fa-user"></i> Account</a></li>
-                                    {{else}}
                                     <li><a href="/account"><i class="fa fa-user"></i> Account</a></li>
-                                    {{/if}}
                                 </ul>
                             </div>
                         </div>
-                    </div>
+                    </div>`
                 </div>
             </div>
             <!-- Header top area end -->
@@ -198,52 +196,10 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown position-static"><a href="#">Shop <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="mega-menu d-block">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Shop Page</a></li>
-                                                <li><a href="/shop">Shop 3 Column</a></li>
-                                                <li><a href="/shops">Shop 4 Column</a></li>
-                                                <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
-                                                <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
-                                                <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a>
-                                                </li>
-                                                <li><a href="shop-list-right-sidebar.html">Shop List Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">product Details Page</a></li>
-                                                <li><a href="/brand">Product Single</a></li>
-                                                <li><a href="single-product-variable.html">Product Variable</a></li>
-                                                <li><a href="single-product-affiliate.html">Product Affiliate</a></li>
-                                                <li><a href="single-product-group.html">Product Group</a></li>
-                                                <li><a href="single-product-tabstyle-2.html">Product Tab 2</a></li>
-                                                <li><a href="single-product-tabstyle-3.html">Product Tab 3</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Single Product Page</a></li>
-                                                <li><a href="single-product-slider.html">Product Slider</a></li>
-                                                <li><a href="single-product-gallery-left.html">Product Gallery Left</a>
-                                                <li><a href="single-product-gallery-right.html">Product Gallery
-                                                        Right</a> </li>
-                                                <li><a href="single-product-sticky-left.html">Product Sticky Left</a>
-                                                </li>
-                                                <li><a href="single-product-sticky-right.html">Product Sticky Right</a>
-                                                </li>
-                                                <li><a href="cart.html">Cart Page</a></li>
-                                            </ul>
-                                            <ul class="d-block p-0 border-0">
-                                                <li class="title"><a href="#">Single Product Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="compare.html">Compare Page</a></li>
-                                                <li><a href="wishlist.html">Wishlist Page</a></li>
-                                                <li><a href="my-account.html">Account Page</a></li>
-                                                <li><a href="login.html">Login & Register Page</a></li>
-                                                <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                                            </ul>
-                                        </li>
+                                <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
+                                    <ul class="sub-menu">
+                                        <li><a href="/shop">Tablet</a></li>
+                                        <li><a href="/shops">Phone</a></li>
                                     </ul>
                                 </li>
                                 <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
@@ -704,7 +660,8 @@
                                                 <button title="Add To Cart" class="action add-to-cart"
                                                     data-bs-toggle="modal" data-bs-target="#exampleModal-Cart"><i
                                                         class="pe-7s-shopbag"></i></button>
-                                                <button class="action wishlist" title="Wishlist" data-bs-toggle="modal"
+                                                <button class="action wishlist" title="Wishlist"
+                                                    onclick="addToWishlist('{{this._id}}')" data-bs-toggle="modal"
                                                     data-bs-target="#exampleModal-Wishlist"><i
                                                         class="pe-7s-like"></i></button>
                                                 <button class="action quickview" data-link-action="quickview"
@@ -723,18 +680,18 @@
                     </div>
                 </div>
                 <div class="tab-slider d-md-flex justify-content-md-between align-items-md-center">
-                            <ul class="product-tab-nav nav justify-content-start align-items-center">
-                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
-                                        data-bs-target="#newarrivals">Phone</button>
-                                </li>
-                                {{!-- <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab"
-                                        data-bs-target="#toprated">Top Rated</button>
-                                </li>
-                                <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
-                                        data-bs-target="#featured">Featured</button>
-                                </li> --}}
-                            </ul>
-                        </div>
+                    <ul class="product-tab-nav nav justify-content-start align-items-center">
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                                data-bs-target="#newarrivals">Phone</button>
+                        </li>
+                        {{!-- <li class="nav-item"><button class="nav-link active" data-bs-toggle="tab"
+                                data-bs-target="#toprated">Top Rated</button>
+                        </li>
+                        <li class="nav-item"><button class="nav-link" data-bs-toggle="tab"
+                                data-bs-target="#featured">Featured</button>
+                        </li> --}}
+                    </ul>
+                </div>
                 <div class="row">
                     <div class="col">
                         <div class="tab-content mt-60px">
@@ -742,6 +699,7 @@
                             <div class="tab-pane fade show active" id="newarrivals">
                                 <div class="row mb-n-30px">
                                     {{#each product}}
+
                                     <div class="col-lg-4 col-xl-3 col-md-6 col-sm-6 col-xs-6 mb-30px">
                                         <!-- Single Prodect -->
                                         <div class="product">
@@ -761,14 +719,19 @@
                                                     </a>
                                                 </h5>
                                                 <span class="price">
-                                                    <span class="new">₹{{this.productPrice}}</span>
+                                                    {{#if this.variants.[0]}}
+                                                    <span class="new">₹{{this.variants.[0].productPrice}}</span>
+                                                    {{else}}
+                                                    <span class="new">Price not available</span>
+                                                    {{/if}}
                                                 </span>
                                             </div>
                                             <div class="actions">
                                                 <button title="Add To Cart" class="action add-to-cart"
                                                     data-bs-toggle="modal" data-bs-target="#exampleModal-Cart"><i
                                                         class="pe-7s-shopbag"></i></button>
-                                                <button class="action wishlist" title="Wishlist" data-bs-toggle="modal"
+                                                <button class="action wishlist" title="Wishlist"
+                                                    onclick="addToWishlist('{{this._id}}')" data-bs-toggle="modal"
                                                     data-bs-target="#exampleModal-Wishlist"><i
                                                         class="pe-7s-like"></i></button>
                                                 <button class="action quickview" data-link-action="quickview"
@@ -780,6 +743,7 @@
                                             </div>
                                         </div>
                                     </div>
+
                                     {{/each}}
                                 </div>
                             </div>
@@ -1172,7 +1136,7 @@
                 </div>
             </div>
             <!-- Modal wishlist -->
-            <div class="modal customize-class fade" id="exampleModal-Wishlist" tabindex="-1" aria-hidden="true">
+            {{!-- <div class="modal customize-class fade" id="exampleModal-Wishlist" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-body text-center">
@@ -1190,7 +1154,11 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
+
+            <input type="hidden" id="userId">
+            <input type="hidden" id="productId">
+
             <!-- Modal compare -->
             <div class="modal customize-class fade" id="exampleModal-Compare" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -1233,8 +1201,62 @@
     <script src="assets/js/main.min.js"></script> -->
 
             <!--Main JS (Common Activation Codes)-->
-            {{!--
-            <script src="assets/js/main.js"></script> --}}
+            <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+            <script src="assets/js/main.js"></script>
+
+            <script>
+                function addToWishlist(productId) {
+                    fetch(`/wishlist/${productId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ userId, productId })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                console.log("a")
+                                throw new Error('Failed to add product to wishlist');
+                            }
+
+                            return response.json();
+                        })
+                        .then(response => {
+                            console.log("pop", response)
+                            if (response.errorMessage === 'Removed from Wishlist successfully') {
+                                Toastify({
+                                    text: "Removed From Wishlist",
+                                    duration: 1000, // 3 seconds
+                                    gravity: "top", // Display at the top
+                                    position: 'right', // Display on the right side
+                                    backgroundColor: "black", // Background color
+                                    stopOnFocus: true, // Stop the timer when the toast is focused
+                                }).showToast();
+                            }
+                            else {
+                                Toastify({
+                                    text: "Added to Wishlist",
+                                    duration: 1000, // 3 seconds
+                                    gravity: "top", // Display at the top
+                                    position: 'right', // Display on the right side
+                                    backgroundColor: "black", // Background color
+                                    stopOnFocus: true, // Stop the timer when the toast is focused
+                                }).showToast();
+                            }
+                            console.log("b")
+
+                            // Handle success message or update UI as needed
+                            console.log(response.message);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            // Handle error or update UI as needed
+                        });
+                }
+
+            </script>
+
 </body>
 
 

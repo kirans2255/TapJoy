@@ -5,30 +5,71 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const Product = require('../models/Product');
 require('dotenv').config();
-const mongoose = require("mongoose")
+const mongoose = require("mongoose");
+const { log } = require('handlebars');
+
+
+// Render the home view
+// const renderHome = (req, res) => {
+//   res.render('user/login', { error: req.query.error || '' });
+// };
 
 
 const renderAccount = async (req, res) => {
-  res.render('user/account');
+  const user = await Users.find();
+  res.render('user/account', user);
 };
 
 const rendershop = async (req, res) => {
-  const product = await Product.find({ productCategory: 'Tablet' });
-  res.render('user/shop-3', { product });
+  const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Tablet' });
+
+  // Query for one product per unique product name
+  const uniqueProducts = await Promise.all(
+    uniqueProductNames.map(async (productName) => {
+      const product = await Product.findOne({ productName });
+      return product;
+    })
+  );
+
+  // console.log(uniqueProducts);
+  res.render('user/shop-3', { product: uniqueProducts });
 };
 
+
 const rendershops = async (req, res) => {
-  const product = await Product.find({ productCategory: 'Phone' });
-  console.log(product)
-  res.render('user/shop-4', { product });
+  try {
+    // Get unique product names
+    const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Phone' });
+    // Query for one product per unique product name
+    const uniqueProducts = await Promise.all(
+      uniqueProductNames.map(async (productName) => {
+        const product = await Product.findOne({ productName });
+        return product;
+      })
+    );
+
+    // console.log(uniqueProducts);
+    res.render('user/shop-4', { product: uniqueProducts });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 };
 
 
 const renderbrand = async (req, res) => {
   const brandName = req.params.brandName;
   try {
-    const products = await Product.find({ productBrand: brandName, productCategory: 'Tablet' });
-    res.render('user/brand', { product: products });
+    const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Tablet', productBrand: brandName });
+
+    // Query for one product per unique product name
+    const uniqueProducts = await Promise.all(
+      uniqueProductNames.map(async (productName) => {
+        const product = await Product.findOne({ productName });
+        return product;
+      })
+    );
+    res.render('user/brand', { product: uniqueProducts });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');
@@ -38,14 +79,32 @@ const renderbrand = async (req, res) => {
 const renderbrands = async (req, res) => {
   const brandName = req.params.brandName;
   try {
-    const products = await Product.find({ productBrand: brandName, productCategory: 'Phone' });
-    res.render('user/brandd', { product: products });
+    const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Phone', productBrand: brandName });
+
+    // Query for one product per unique product name
+    const uniqueProducts = await Promise.all(
+      uniqueProductNames.map(async (productName) => {
+        const product = await Product.findOne({ productName });
+        return product;
+      })
+    );
+    res.render('user/brand', { product: uniqueProducts });
   } catch (error) {
     console.error(error);
     res.status(500).send('Server Error');
   }
 };
 
+// const renderbrandcategory = async (req, res) => {
+//   const category = req.params.category;
+//   try {
+//      const products = await Product.find({ productCategory: category }); 
+//     res.render('user/brand', { product: products });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send('Server Error');
+//   }
+// };
 
 // Render the dashboard view
 const renderDashboard = async (req, res) => {
@@ -53,11 +112,19 @@ const renderDashboard = async (req, res) => {
   const { name, email, password } = req.body
   const user = await Users.findOne({ email });
   const products = await Product.find({ productCategory: 'Tablet' });
-  const product = await Product.find({ productCategory: 'Phone' });
+  const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Phone' });
 
-  // console.log(user)
-  res.render('user/dashboard', { user, products, product });
+  const uniqueProducts = await Promise.all(
+    uniqueProductNames.map(async (productName) => {
+      const product = await Product.findOne({ productName });
+      return product;
+    })
+  );
+  uniqueProducts.length = 4
+  // res.render('user/brand', { product: uniqueProducts });
+  res.render('user/dashboard', { user, products, product: uniqueProducts });
 };
+
 
 // Render the profile view
 const renderProduct = (req, res) => {
@@ -65,6 +132,7 @@ const renderProduct = (req, res) => {
 };
 
 
+//Single product page
 const rendersingleProduct = async (req, res) => {
   const { id } = req.params; // Extract the product ID from request parameters
 
@@ -77,24 +145,11 @@ const rendersingleProduct = async (req, res) => {
       return res.status(404).render('error', { message: 'Product not found' });
     }
 
-    // Check if there are other products with the same name
+    // Fetch all products with the same name
     const similarProducts = await Product.find({ productName: product.productName });
 
-    // Use the image of the first similar product found
-    let productImag ;
-    let productId
-    if (similarProducts.length > 1) {
-      const alternateProduct = similarProducts.find(p => p._id.toString() !== id);
-      if (alternateProduct) {
-        productImag = alternateProduct.productImage[0];
-        productId = alternateProduct._id
-         // Assuming image is a property of the product
-        // console.log(`Using image from product ${alternateProduct._id} ${alternateProduct.productImage[0]} (${alternateProduct.productName})`);
-      }
-    }
-
     // Render the single product page with the fetched product data
-    res.render('user/single-1', { product,productImage:productImag,productId});
+    res.render('user/single-1', { product, similarProducts });
 
   } catch (error) {
     // Handle any errors that occur during the process
@@ -102,6 +157,29 @@ const rendersingleProduct = async (req, res) => {
     res.status(500).render('error', { message: 'Internal Server Error' });
   }
 };
+
+
+// const rendersingleProduct = async (req, res) => {
+//   const { id } = req.params; // Extract the product ID from request parameters
+
+//   try {
+//     // Fetch the product based on the provided ID
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       // If product is not found, render an error page or handle accordingly
+//       return res.status(404).render('error', { message: 'Product not found' });
+//     }
+//     // console.log(product);
+//     // Render the single product page with the fetched product data
+//     res.render('user/single-1', { product });
+
+//   } catch (error) {
+//     // Handle any errors that occur during the process
+//     console.error('Error rendering single product:', error);
+//     res.status(500).render('error', { message: 'Internal Server Error' });
+//   }
+// };
 
 
 // const renderwishlist = (req, res) => {
@@ -124,8 +202,14 @@ const renderwishlist = async (req, res) => {
   }
 };
 
+
+
+
 const addToWishlist = async (req, res) => {
+ 
+  const {ram, rom} = req.body
   const { productId } = req.params;
+  const { price } = req.body; 
   const userId = req.user.id;
 
   try {
@@ -143,21 +227,24 @@ const addToWishlist = async (req, res) => {
       user.wishlist = { products: [] };
     }
 
-    // Check if the product is already in the wishlist based on productId
-    const isProductInWishlistIndex = user.wishlist.products.findIndex(item => item.productId.toString() === productId);
+    // Check if the product variant is already in the wishlist
+    const isProductInWishlistIndex = user.wishlist.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom );
+
     if (isProductInWishlistIndex !== -1) {
-      // If product is found in wishlist, remove it
+      // If product variant is found in the wishlist, remove it
       user.wishlist.products.splice(isProductInWishlistIndex, 1);
       await user.save();
       return res.status(201).json({ errorMessage: 'Removed from Wishlist successfully' });
     }
 
-    // If product not found in wishlist, add it
+    // If product variant not found in wishlist, add it
     user.wishlist.products.push({
       productId: productId,
       productName: product.productName,
-      productPrice: product.productPrice,
+      productPrice: price, 
       productImage: product.productImage,
+      productRam:ram,
+      productRom:rom
     });
 
     await user.save();
@@ -194,7 +281,7 @@ const removeFromWishlist = async (req, res) => {
     await user.save();
     // console.log(user);
 
-    res.status(200).json({ message: 'Product removed from wishlist successfully' });
+    res.status(200).json({ errorMessage: 'Removed from Wishlist successfully' });
   } catch (error) {
     console.error('Error removing product from wishlist:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -310,6 +397,20 @@ const handleSignin = async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
+// Google OAuth callback handler
+// const handleGoogleCallback = (req, res) => {
+//   if (req.isAuthenticated()) {
+//     req.session.user = {
+//       id: req.user._id,
+//       name: req.user.name,
+//       email: req.user.email,
+//     };
+//     res.redirect('/');
+//   } else {
+//     res.redirect('/login');
+//   }
+// };
 
 // LOGIN WITH GOOGLE
 const successGoogleLogin = async (req, res) => {
@@ -472,6 +573,19 @@ let resetPassword = async (req, res) => {
   }
 };
 
+//sort filter products
+
+// const Getsort = async (req, res) => {
+//   try {
+//     const filteredProducts = await Product.find({ productCategory: 'Tablet' }).exec();
+//     return res.render('user/shop-3', { product: filteredProducts });
+//   } catch (err) {
+//     console.error('Error fetching products:', err);
+//     res.status(500).send('Internal Server Error');
+//   }
+// };
+
+
 const sort = async (req, res) => {
   try {
     const category = req.params.category.toLowerCase(); // Extract the category parameter and convert to lowercase
@@ -501,7 +615,6 @@ const sort = async (req, res) => {
 };
 
 
-
 const Getsort = async (req, res) => {
   try {
     const category = req.params.category.toLowerCase(); // Extract the category parameter and convert to lowercase
@@ -515,12 +628,17 @@ const Getsort = async (req, res) => {
     } else if (category === 'alphabeticallya') {
       filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productName: -1 }).exec();
     } else if (category === 'sortbyhightolow') {
-      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productPrice: -1 }).exec();
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ "variants.productPrice": -1 }).exec();
     } else if (category === 'sortbylowtohigh') {
-      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ productPrice: 1 }).exec();
+      filteredProducts = await Product.find({ productCategory: 'Phone' }).sort({ "variants.productPrice": 1 }).exec();
     } else {
       filteredProducts = await Product.find({ productCategory: 'Phone' }).exec();
     }
+
+    // Retrieve only distinct products based on productName
+    filteredProducts = filteredProducts.reduce((unique, item) => {
+      return unique.some(i => i.productName === item.productName) ? unique : [...unique, item];
+    }, []);
 
     res.render('user/shop-4', { category: category, product: filteredProducts });
   } catch (err) {
@@ -529,6 +647,35 @@ const Getsort = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
+
+//variant-filter
+
+
+// FORGOT PASSWORD -- ENDS HERE
+
+
+//Single product
+// const handlesingleProduct = async (req, res) => {
+//   const { id } = req.params;
+//   console.log(id);
+//   try {
+//     // Fetch the product based on the provided id
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Product not found' });
+//     }
+
+//     // Handle the fetched product, maybe render a view or send it as JSON
+//     res.render('user/single-1', { product });
+//   } catch (error) {
+//     console.error('Error handling single product:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
+
+
 
 // Route handler for handling logout
 const handleLogout = async (req, res) => {
@@ -561,10 +708,13 @@ module.exports = {
   renderwishlist,
   addToWishlist,
   renderbrand,
+  // renderbrandcategory,
   renderbrands,
   removeFromWishlist,
   sort,
   Getsort,
+  // handlesingleProduct,
+  // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,

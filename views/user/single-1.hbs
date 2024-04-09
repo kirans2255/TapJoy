@@ -26,9 +26,7 @@
     <link rel="stylesheet" href="/assets/css/style.css">
 
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    <!-- Minify Version -->
-    <!-- <link rel="stylesheet" href="/assets/css/plugins.min.css">
-    <link rel="stylesheet" href="/assets/css/style.min.css"> -->
+
     <style>
         .image-box {
             border: 1px solid #ccc;
@@ -41,12 +39,44 @@
             height: auto;
             display: block;
         }
+
+
+        .clickable-box {
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .clickable-box:hover {
+            background-color: #f0f0f0;
+        }
+
+        .ram-rom-link {
+            color: #000;
+            /* or any other color you prefer */
+            text-decoration: none;
+            /* remove underline */
+        }
+
+        .ram-rom-link:hover {
+            text-decoration: underline;
+            /* underline on hover */
+        }
     </style>
 
+
+    <!-- Minify Version -->
+    <!-- <link rel="stylesheet" href="/assets/css/plugins.min.css">
+    <link rel="stylesheet" href="/assets/css/style.min.css"> -->
 
 </head>
 
 <style>
+    .new-price {
+        font-size: 200px;
+        /* Adjust the font size as needed */
+        font-weight: bold;
+    }
+
     .pro-details-categories-info {
         font-family: Arial, sans-serif;
         font-size: 17px;
@@ -88,7 +118,7 @@
                                     <li><a href="tel:0123456789"><i class="fa fa-phone"></i> +012 3456 789</a></li>
                                     <li><a href="mailto:demo@example.com"><i class="fa fa-envelope-o"></i>
                                             demo@example.com</a></li>
-                                    <li><a href="my-account.html"><i class="fa fa-user"></i> Account</a></li>
+                                    <li><a href="/account"><i class="fa fa-user"></i> Account</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -225,90 +255,10 @@
                                         </li>
                                     </ul>
                                 </li>
-                                <li class="dropdown position-static"><a href="#">Shop <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="mega-menu d-block">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Shop Page</a></li>
-                                                <li><a href="/shop">Shop 3 Column</a></li>
-                                                <li><a href="/shops">Shop 4 Column</a></li>
-                                                <li><a href="shop-left-sidebar.html">Shop Left Sidebar</a></li>
-                                                <li><a href="shop-right-sidebar.html">Shop Right Sidebar</a></li>
-                                                <li><a href="shop-list-left-sidebar.html">Shop List Left Sidebar</a>
-                                                </li>
-                                                <li><a href="shop-list-right-sidebar.html">Shop List Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">product Details Page</a></li>
-                                                <li><a href="single-product.html">Product Single</a></li>
-                                                <li><a href="single-product-variable.html">Product Variable</a></li>
-                                                <li><a href="single-product-affiliate.html">Product Affiliate</a></li>
-                                                <li><a href="single-product-group.html">Product Group</a></li>
-                                                <li><a href="single-product-tabstyle-2.html">Product Tab 2</a></li>
-                                                <li><a href="single-product-tabstyle-3.html">Product Tab 3</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Single Product Page</a></li>
-                                                <li><a href="single-product-slider.html">Product Slider</a></li>
-                                                <li><a href="single-product-gallery-left.html">Product Gallery Left</a>
-                                                <li><a href="single-product-gallery-right.html">Product Gallery
-                                                        Right</a> </li>
-                                                <li><a href="single-product-sticky-left.html">Product Sticky Left</a>
-                                                </li>
-                                                <li><a href="single-product-sticky-right.html">Product Sticky Right</a>
-                                                </li>
-                                                <li><a href="cart.html">Cart Page</a></li>
-                                            </ul>
-                                            <ul class="d-block p-0 border-0">
-                                                <li class="title"><a href="#">Single Product Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="compare.html">Compare Page</a></li>
-                                                <li><a href="wishlist.html">Wishlist Page</a></li>
-                                                <li><a href="my-account.html">Account Page</a></li>
-                                                <li><a href="login.html">Login & Register Page</a></li>
-                                                <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
+                                <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
-                                        <li class="dropdown position-static"><a href="blog-grid-left-sidebar.html">Blog
-                                                Grid
-                                                <i class="fa fa-angle-right"></i></a>
-                                            <ul class="sub-menu sub-menu-2">
-                                                <li><a href="blog-grid.html">Blog Grid</a></li>
-                                                <li><a href="blog-grid-left-sidebar.html">Blog Grid Left Sidebar</a>
-                                                </li>
-                                                <li><a href="blog-grid-right-sidebar.html">Blog Grid Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown position-static"><a href="blog-list-left-sidebar.html">Blog
-                                                List
-                                                <i class="fa fa-angle-right"></i></a>
-                                            <ul class="sub-menu sub-menu-2">
-                                                <li><a href="blog-list.html">Blog List</a></li>
-                                                <li><a href="blog-list-left-sidebar.html">Blog List Left Sidebar</a>
-                                                </li>
-                                                <li><a href="blog-list-right-sidebar.html">Blog List Right Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                        <li class="dropdown position-static"><a
-                                                href="blog-single-left-sidebar.html">Single
-                                                Blog <i class="fa fa-angle-right"></i></a>
-                                            <ul class="sub-menu sub-menu-2">
-                                                <li><a href="blog-single.html">Single Blog</a>
-                                                <li><a href="blog-single-left-sidebar.html">Single Blog Left Sidebar</a>
-                                                </li>
-                                                <li><a href="blog-single-right-sidebar.html">Single Blog Right
-                                                        Sidebar</a>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                        <li><a href="/shop">Tablet</a></li>
+                                        <li><a href="/shops">Phone</a></li>
                                     </ul>
                                 </li>
                                 <li><a href="contact.html">Contact</a></li>
@@ -690,9 +640,15 @@
                     <div class="col-lg-6 col-sm-12 col-xs-12" data-aos="fade-up" data-aos-delay="200">
                         <div class="product-details-content quickview-content ml-25px">
                             <h2>{{product.productName}}</h2>
-                            <div class="pricing-meta">
+                            <div class="pricing-meta" id="pricing-meta">
                                 <ul class="d-flex">
-                                    <li class="new-price">₹{{product.productPrice}}</li>
+                                    {{!-- {{#each product.variants}}
+                                    <li class="new-price">₹{{this.productPrice}}</li>
+                                    {{/each}} --}}
+                                    {{!-- <div id="variant-price"> --}}
+                                        <li class="new-price">₹</li>
+                                        {{!--
+                                    </div> --}}
                                 </ul>
                             </div>
                             <div class="pro-details-rating-wrap">
@@ -717,17 +673,24 @@
                                     </li> --}}
                                 </ul>
                             </div>
+
                             <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
-                                <span>Brand: </span>
-                                <ul class="d-flex">
-                                    <li>
-                                        <a href="#">{{product.productBrand}} </a>
-                                    </li>
-                                    {{!-- <li>
-                                        <a href="#">Phone</a>
-                                    </li> --}}
-                                </ul>
+                                <span>RAM and ROM:</span>
+                                {{#each product.variants}}
+                                <div class="clickable-box" style="margin-left: 10px;">
+                                    <ul class="d-flex ">
+                                        <li class="">
+                                            <a href="#" class="ram-rom-link" data-ram="{{this.productRam}}"
+                                                data-rom="{{this.productRom}}"
+                                                data-price="{{this.productPrice}}">{{this.productRam}} |
+                                                {{this.productRom}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                {{/each}}
                             </div>
+
                             <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
                                 <span>Color: </span>
                                 <li>
@@ -744,8 +707,7 @@
                                     <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
                                 </div>
                                 <div class="pro-details-cart">
-                                    <button class="add-cart"> Add To
-                                        Cart</button>
+                                    <button class="add-cart"> Add To Cart</button>
                                 </div>
                                 <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                     <a class="action wishlist" title="Wishlist"
@@ -758,16 +720,16 @@
                             </div>
                             <div class="container">
                                 <div class="row">
-                                    {{#if productImage}}
+                                    {{#each similarProducts}}
                                     <div class="col-md-4">
                                         <div class="image-box">
-                                            <a href="/singleproduct/{{productId}}">
-                                                <img src="{{productImage}}" alt="Image 1">
+                                            <a href="/singleproduct/{{this._id}}">
+                                                <img src="{{this.productImage.[0]}}" alt="Image 1">
                                                 {{!-- <p>{{this.productName}}</p> --}}
                                             </a>
                                         </div>
                                     </div>
-                                    {{/if}}
+                                    {{/each}}
                                 </div>
                             </div>
                         </div>
@@ -1604,17 +1566,51 @@
 
         <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
+        <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
         <!--Main JS (Common Activation Codes)-->
         <script src="/assets/js/main.js"></script>
 
         <script>
+
+            document.querySelectorAll('.ram-rom-link').forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    // Remove active class from previously selected variant
+                    document.querySelectorAll('.ram-rom-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    // Mark this variant as active
+                    this.classList.add('active');
+                    // Update price display
+                    const price = this.getAttribute('data-price');
+                    document.querySelector('.new-price').textContent = '₹' + price;
+                });
+            });
+
             function addToWishlist(productId) {
+                const selectedVariant = document.querySelector('.ram-rom-link.active');
+            
+                    const rom = selectedVariant.getAttribute('data-rom');
+                    const ram = selectedVariant.getAttribute('data-ram');
+              
+                if (!selectedVariant) {
+                    swal({
+                        title: "Please select a variant first.",
+                        icon: "warning",
+                        buttons: false,
+                        timer: 1000 
+                    });
+                    return;
+                }
+                const price = selectedVariant.getAttribute('data-price');
+                const variantInfo = selectedVariant.getAttribute('data-variant-info'); // Additional variant information
                 fetch(`/wishlist/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ userId, productId })
+                    body: JSON.stringify({ userId, productId, price, variantInfo ,rom, ram })
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -1656,6 +1652,8 @@
                         // Handle error or update UI as needed
                     });
             }
+
+
 
         </script>
 

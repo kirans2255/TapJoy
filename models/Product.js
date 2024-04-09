@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
+
 const productSchema = new mongoose.Schema({
-  productImage: [{ 
-    type: Array,
-    required: true
-  }],
+  productImage: { 
+    type:Array,
+    requires:true,
+    },
   productName: {
     type: String,
     required: true
@@ -13,9 +14,26 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  subproductCategory: {
-    type: String,
-  },
+  variants: [
+    {
+      productPrice: {
+        type: Number,
+        required: true
+      },
+      productQuantity: {
+        type: Number,
+        required: true
+      },
+      productRam: {
+        type: String,
+        required: true
+      },
+      productRom: {
+        type: String,
+        required: true
+      },
+    }
+  ], 
   productBrand: {
     type: String,
     required: true
@@ -25,10 +43,6 @@ const productSchema = new mongoose.Schema({
     required: true
   },
   productMrp: {
-    type: Number,
-    required: true
-  },
-  productPrice: {
     type: Number,
     required: true
   },
