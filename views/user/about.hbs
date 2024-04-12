@@ -2,13 +2,13 @@
 <html lang="zxx" dir="ltr">
 
 
-<!-- Mirrored from htmldemo.net/hmart/hmart/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
+<!-- Mirrored from htmldemo.net/hmart/hmart/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:18 GMT -->
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hmart - Login page</title>
+    <title>Hmart - Contact page</title>
     <meta name="robots" content="index, follow" />
     <meta name="description" content="Hmart-Smart Product eCommerce html Template">
     <!-- Favicon -->
@@ -24,6 +24,13 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .about-sections {
+            margin-left: 800px;
+            margin-top: -330px;
+        }
+    </style>
+
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="assets/css/plugins.min.css">
     <link rel="stylesheet" href="assets/css/style.min.css"> -->
@@ -75,8 +82,8 @@
                         <div class="col-lg-3 col">
                             <div class="header-actions">
                                 <!-- Single Wedge Start -->
-                                <a href="/wishlist" class="header-action-btn">
-                                    <i class="pe-7s-like"></i>
+                                <a href="/wishlist" class="header-action-btn ">
+                                    <i class="pe-7s-like"></i>  
                                 </a>
                                 <!-- Single Wedge End -->
                                 <a href="/cart" class="header-action-btn ">
@@ -140,11 +147,12 @@
                             <ul>
                                 {{!-- <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
-                                        <li><a href="index.html">Home 1</a></li>
+                                        <li><a href="/">Home 1</a></li>
                                         <li><a href="index-2.html">Home 2</a></li>
                                     </ul>
                                 </li> --}}
                                 <li><a href="/">Home </a></li>
+
                                 <li><a href="/about">About</a></li>
                                 <li class="dropdown position-static"><a href="about.html">Pages <i
                                             class="fa fa-angle-down"></i></a>
@@ -289,7 +297,7 @@
                 </div>
                 <div class="foot">
                     <div class="buttons">
-                        <a href="wishlist.html" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
+                        <a href="/wishlist" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
                     </div>
                 </div>
             </div>
@@ -349,7 +357,7 @@
                 <ul>
                     <li><a href="tel:0123456789"><i class="fa fa-phone"></i> +012 3456 789</a></li>
                     <li><a href="mailto:demo@example.com"><i class="fa fa-envelope-o"></i> demo@example.com</a></li>
-                    <li><a href="my-account.html"><i class="fa fa-user"></i> Account</a></li>
+                    <li><a href="/account"><i class="fa fa-user"></i> Account</a></li>
                 </ul>
             </div>
             <div class="inner customScroll">
@@ -480,69 +488,30 @@
                 </div>
             </div>
         </div>
-        <!-- OffCanvas Menu End -->
-        <!-- breadcrumb-area start -->
-        {{!-- <div class="breadcrumb-area">
-            <div class="container">
-                <div class="row align-items-center justify-content-center">
-                    <div class="col-12 text-center">
-                        <h2 class="breadcrumb-title">Login</h2>
-                        <!-- breadcrumb-list start -->
-                        <ul class="breadcrumb-list">
-                            <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                            <li class="breadcrumb-item active">Login</li>
-                        </ul>
-                        <!-- breadcrumb-list end -->
-                    </div>
+        <!--About Area Start -->
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 about-section">
+                    <img class="profile-img mx-auto d-block" src="assets/images/product-image/pad/col.jpg"
+                        alt="Your Photo">
                 </div>
-            </div>
-        </div> --}}
-        <!-- breadcrumb-area end -->
-        <!-- login area start -->
-        <div class="login-register-area pt-100px pb-100px">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-7 col-md-12 ml-auto mr-auto">
-                        <div class="login-register-wrapper">
-                            <div class="login-register-tab-list nav">
-                                <a href="/signin">
-                                    <h4>Login</h4>
-                                </a>
-                                <a href="/signup">
-                                    <h4>Register</h4>
-                                </a>
-                            </div>
-                            <div class="tab-content">
-                                <div id="lg1" class="tab-pane active">
-                                    <div class="login-form-container">
-                                        <div class="login-register-form">
-                                            <form action="/login" method="post">
-                                                <input name="email" placeholder="Email" type="email" /required>
-                                                <input type="password" name="password" placeholder="Password" /required>
-                                                <div class="button-box">
-                                                    <div class="login-toggle-btn">
-                                                        <input type="checkbox" />
-                                                        <a class="flote-none" href="javascript:void(0)">Remember me</a>
-                                                        <a href="/forgot-password">Forgot Password?</a>
-                                                    </div>
-                                                    <button type="submit"><span>Login</span></button>
-                                                    {{#if error}}
-                                                    <div class="alert alert-danger" role="alert">
-                                                        {{error}}
-                                                    </div>
-                                                    {{/if}}
-                                                </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col-md-6 about-sections">
+                    <p>Welcome to <b>PhonZone</b>, your ultimate destination for all things mobile! We're passionate about
+                        bringing you the latest smartphones, tablets, and accessories to enhance your digital lifestyle.
+                        At PhonZone, we carefully curate our product selection to ensure you have access to the most
+                        innovative devices on the market. Whether you're an Android aficionado, an iOS enthusiast, or
+                        simply in need of reliable communication tools, we've got you covered. Our team is committed to
+                        providing you with a seamless shopping experience, from browsing our user-friendly website to
+                        swift delivery right to your doorstep. With PhonZone, it's not just about buying a device—it's
+                        about unlocking a world of possibilities. Thank you for choosing PhonZone as your trusted mobile
+                        partner. Let's stay connected!
+
+                    </p>
                 </div>
             </div>
         </div>
-        <!-- login area end -->
+
+        <!--About Area End -->
         <!-- Footer Area Start -->
         <div class="footer-area">
             <div class="footer-container">
@@ -690,9 +659,18 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
+
+    <!-- Include SweetAlert library -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+    <script>
+
+    </script>
+
 </body>
 
 
-<!-- Mirrored from htmldemo.net/hmart/hmart/login.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
+<!-- Mirrored from htmldemo.net/hmart/hmart/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:20 GMT -->
 
 </html>

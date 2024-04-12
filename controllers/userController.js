@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const Product = require('../models/Product');
+const Brand = require('../models/Brand');
 require('dotenv').config();
 const mongoose = require("mongoose");
 const { log } = require('handlebars');
@@ -30,9 +31,10 @@ const rendershop = async (req, res) => {
       return product;
     })
   );
+  const brand = await Brand.find();
 
   // console.log(uniqueProducts);
-  res.render('user/shop-3', { product: uniqueProducts });
+  res.render('user/shop-3', { product: uniqueProducts, brand });
 };
 
 
@@ -47,9 +49,9 @@ const rendershops = async (req, res) => {
         return product;
       })
     );
-
+    const brand = await Brand.find();
     // console.log(uniqueProducts);
-    res.render('user/shop-4', { product: uniqueProducts });
+    res.render('user/shop-4', { product: uniqueProducts, brand });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -111,7 +113,7 @@ const renderDashboard = async (req, res) => {
   // const { user } = req;
   const { name, email, password } = req.body
   const user = await Users.findOne({ email });
-  const products = await Product.find({ productCategory: 'Tablet' });
+  const uniqueProductName = await Product.distinct("productName", { productCategory: 'Tablet' });
   const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Phone' });
 
   const uniqueProducts = await Promise.all(
@@ -120,9 +122,16 @@ const renderDashboard = async (req, res) => {
       return product;
     })
   );
+  const uniqueProduct = await Promise.all(
+    uniqueProductName.map(async (productName) => {
+      const product = await Product.findOne({ productName });
+      return product;
+    })
+  )
   uniqueProducts.length = 4
+  uniqueProduct.length = 4
   // res.render('user/brand', { product: uniqueProducts });
-  res.render('user/dashboard', { user, products, product: uniqueProducts });
+  res.render('user/dashboard', { user, products: uniqueProduct, product: uniqueProducts });
 };
 
 
@@ -206,10 +215,10 @@ const renderwishlist = async (req, res) => {
 
 
 const addToWishlist = async (req, res) => {
- 
-  const {ram, rom} = req.body
+
+  const { ram, rom } = req.body
   const { productId } = req.params;
-  const { price } = req.body; 
+  const { price } = req.body;
   const userId = req.user.id;
 
   try {
@@ -228,7 +237,7 @@ const addToWishlist = async (req, res) => {
     }
 
     // Check if the product variant is already in the wishlist
-    const isProductInWishlistIndex = user.wishlist.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom );
+    const isProductInWishlistIndex = user.wishlist.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom);
 
     if (isProductInWishlistIndex !== -1) {
       // If product variant is found in the wishlist, remove it
@@ -241,10 +250,10 @@ const addToWishlist = async (req, res) => {
     user.wishlist.products.push({
       productId: productId,
       productName: product.productName,
-      productPrice: price, 
+      productPrice: price,
       productImage: product.productImage,
-      productRam:ram,
-      productRom:rom
+      productRam: ram,
+      productRom: rom
     });
 
     await user.save();
@@ -694,6 +703,130 @@ const handleLogout = async (req, res) => {
   }
 };
 
+
+//contact
+const renderContact = async (req, res) => {
+  try {
+    res.render('user/contact');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+const handleContact = (req, res) => {
+  let transporter = nodemailer.createTransport({
+    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    auth: {
+      user: process.env.APP_EMAIL,
+      pass: process.env.APP_PASSWORD,
+    },
+  });
+
+  // Setup email data with unicode symbols
+  const { name, email, message } = req.body;
+  let mailOptions = {
+    from: email,
+    to: process.env.APP_EMAIL,
+    text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`
+  };
+
+  // Send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message sent: ', info.messageId);
+    // Response to client
+    res.send('Message sent successfully!');
+  });
+};
+
+////////////////// 
+//About us
+
+const renderAbout = async (req, res) => {
+  try {
+    res.render('user/about');
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+/////////////////////////////////////////////////////////// 
+//Cart
+
+
+const renderCart = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const cart = user.cart;
+    console.log(cart);
+    res.render('user/cart',{user,cart});
+  } catch (error) {
+    // console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+const addToCart = async (req, res) => {
+
+  const { ram, rom } = req.body
+  const { productId } = req.params;
+  const { price } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ errorMessage: 'User not found' });
+    }
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ errorMessage: 'Product not found' });
+    }
+
+    if (!user.cart || !user.cart.products) {
+      user.cart = { products: [] };
+    }
+
+    // Check if the product variant is already in the cart
+    const isProductInCartIndex = user.cart.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom);
+
+    if (isProductInCartIndex !== -1) {
+      // If product variant is found in the cart, remove it
+      user.cart.products.splice(isProductInCartIndex, 1);
+      await user.save();
+      return res.status(201).json({ errorMessage: 'Removed from Cart successfully' });
+    }
+
+    // If product variant not found in cart, add it
+    user.cart.products.push({
+      productId: productId,
+      productName: product.productName,
+      productPrice: price,
+      productImage: product.productImage,
+      productRam: ram,
+      productRom: rom
+    });
+
+    await user.save();
+    res.status(200).json({ successMessage: 'Added to Cart successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ errorMessage: 'Internal server error' });
+  }
+};
+
 module.exports = {
   renderDashboard,
   renderHome,
@@ -713,6 +846,11 @@ module.exports = {
   removeFromWishlist,
   sort,
   Getsort,
+  renderContact,
+  handleContact,
+  renderAbout,
+  renderCart,
+  addToCart,
   // handlesingleProduct,
   // handleGoogleCallback,
   forgotGetPage,

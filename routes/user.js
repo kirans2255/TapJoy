@@ -45,6 +45,24 @@ router.post('/login', userController.handleSignin);
 
 //varaint color
 
+//contact
+
+router.get('/contact', userController.renderContact);
+
+router.post('/send-mail',requireAuth,userController.handleContact)
+
+//////////////////
+//About
+
+router.get('/about', userController.renderAbout);
+
+////////////////////////////////////
+//Cart
+
+router.get('/cart',requireAuth, userController.renderCart);
+
+router.post('/cart/:productId',requireAuth ,userController.addToCart);
+
 router.get('/account',requireAuth, userController.renderAccount);
 
 router.post('/signup', userController.handleSignup);

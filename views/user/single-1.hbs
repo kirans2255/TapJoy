@@ -150,11 +150,8 @@
                                     <i class="pe-7s-like"></i>
                                 </a>
                                 <!-- Single Wedge End -->
-                                <a href="#offcanvas-cart"
-                                    class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
+                                <a href="/cart" class="header-action-btn ">
                                     <i class="pe-7s-shopbag"></i>
-                                    <span class="header-action-num">01</span>
-                                    <!-- <span class="cart-amount">€30.00</span> -->
                                 </a>
                                 <a href="#offcanvas-mobile-menu"
                                     class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -212,13 +209,14 @@
                     <div class="header-nav">
                         <div class="main-menu position-relative">
                             <ul>
-                                <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
+                                {{!-- <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="index.html">Home 1</a></li>
                                         <li><a href="index-2.html">Home 2</a></li>
                                     </ul>
-                                </li>
-                                <li><a href="about.html">About</a></li>
+                                </li> --}}
+                                <li><a href="/">Home </a></li>
+                                <li><a href="/about">About</a></li>
                                 <li class="dropdown position-static"><a href="about.html">Pages <i
                                             class="fa fa-angle-down"></i></a>
                                     <ul class="mega-menu d-block">
@@ -261,7 +259,7 @@
                                         <li><a href="/shops">Phone</a></li>
                                     </ul>
                                 </li>
-                                <li><a href="contact.html">Contact</a></li>
+                                <li><a href="/contact">Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -706,8 +704,12 @@
                                 <div class="cart-plus-minus">
                                     <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
                                 </div>
-                                <div class="pro-details-cart">
+                                {{!-- <div class="pro-details-cart">
                                     <button class="add-cart"> Add To Cart</button>
+                                </div> --}}
+                                   <div class="pro-details-cart">
+                                    <button class="add-cart" onclick="addToCart( '{{product._id}}')"> Add To
+                                        Cart</button>
                                 </div>
                                 <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                     <a class="action wishlist" title="Wishlist"
@@ -1468,7 +1470,7 @@
                                         <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
                                     </div>
                                     <div class="pro-details-cart">
-                                        <button class="add-cart"> Add To
+                                        <button class="action cart" onclick="addToCart( '{{this._id}}')"> Add To
                                             Cart</button>
                                     </div>
                                     <div class="pro-details-compare-wishlist pro-details-wishlist ">
@@ -1590,16 +1592,16 @@
 
             function addToWishlist(productId) {
                 const selectedVariant = document.querySelector('.ram-rom-link.active');
-            
-                    const rom = selectedVariant.getAttribute('data-rom');
-                    const ram = selectedVariant.getAttribute('data-ram');
-              
+
+                const rom = selectedVariant.getAttribute('data-rom');
+                const ram = selectedVariant.getAttribute('data-ram');
+
                 if (!selectedVariant) {
                     swal({
                         title: "Please select a variant first.",
                         icon: "warning",
                         buttons: false,
-                        timer: 1000 
+                        timer: 1000
                     });
                     return;
                 }
@@ -1610,7 +1612,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ userId, productId, price, variantInfo ,rom, ram })
+                    body: JSON.stringify({ userId, productId, price, variantInfo, rom, ram })
                 })
                     .then(response => {
                         if (!response.ok) {
@@ -1653,7 +1655,70 @@
                     });
             }
 
+            function addToCart(productId) {
+                const selectedVariant = document.querySelector('.ram-rom-link.active');
 
+                const rom = selectedVariant.getAttribute('data-rom');
+                const ram = selectedVariant.getAttribute('data-ram');
+
+                if (!selectedVariant) {
+                    swal({
+                        title: "Please select a variant first.",
+                        icon: "warning",
+                        buttons: false,
+                        timer: 1000
+                    });
+                    return;
+                }
+                const price = selectedVariant.getAttribute('data-price');
+                const variantInfo = selectedVariant.getAttribute('data-variant-info'); // Additional variant information
+                fetch(`/cart/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, productId, price, variantInfo, rom, ram })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.log("a");
+                            throw new Error('Failed to add product to Cart');
+                        }
+
+                        return response.json();
+                    })
+                    .then(response => {
+                        console.log("pop", response);
+                        if (response.errorMessage === 'Removed from Cart successfully') {
+                            Toastify({
+                                text: "Removed From Cart",
+                                duration: 1000, // 3 seconds
+                                gravity: "top", // Display at the top
+                                position: 'right', // Display on the right side
+                                backgroundColor: "black", // Background color
+                                stopOnFocus: true, // Stop the timer when the toast is focused
+                            }).showToast();
+                        }
+                        else {
+                            Toastify({
+                                text: "Added to Cart",
+                                duration: 1000, // 3 seconds
+                                gravity: "top", // Display at the top
+                                position: 'right', // Display on the right side
+                                backgroundColor: "black", // Background color
+                                stopOnFocus: true, // Stop the timer when the toast is focused
+                            }).showToast();
+                        }
+                        console.log("b");
+
+                        // Handle success message or update UI as needed
+                        console.log(response.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error or update UI as needed
+                    });
+            }
 
         </script>
 

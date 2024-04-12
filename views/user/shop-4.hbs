@@ -80,11 +80,11 @@
                                     <i class="pe-7s-like"></i>
                                 </a>
                                 <!-- Single Wedge End -->
-                                <a href="#offcanvas-cart"
-                                    class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
+                                <a href="/cart" class="header-action-btn">
                                     <i class="pe-7s-shopbag"></i>
-                                    <span class="header-action-num">01</span>
-                                    <!-- <span class="cart-amount">€30.00</span> -->
+                                </a>
+                                <span class="header-action-num">01</span>
+                                <!-- <span class="cart-amount">€30.00</span> -->
                                 </a>
                                 <a href="#offcanvas-mobile-menu"
                                     class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -142,13 +142,14 @@
                     <div class="header-nav">
                         <div class="main-menu position-relative">
                             <ul>
-                                <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
+                                {{!-- <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="index.html">Home 1</a></li>
                                         <li><a href="index-2.html">Home 2</a></li>
                                     </ul>
-                                </li>
-                                <li><a href="about.html">About</a></li>
+                                </li> --}}
+                                <li><a href="/">Home </a></li>
+                                <li><a href="/about">About</a></li>
                                 <li class="dropdown position-static"><a href="about.html">Pages <i
                                             class="fa fa-angle-down"></i></a>
                                     <ul class="mega-menu d-block">
@@ -191,7 +192,7 @@
                                         <li><a href="/shops">Phone</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
+                                {{!-- <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li class="dropdown position-static"><a href="blog-grid-left-sidebar.html">Blog
                                                 Grid
@@ -228,8 +229,8 @@
                                             </ul>
                                         </li>
                                     </ul>
-                                </li>
-                                <li><a href="contact.html">Contact</a></li>
+                                </li> --}}
+                                <li><a href="/contact">Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -458,7 +459,7 @@
                                 <li><a href="blog-single-right-sidebar.html">Single Right Sidbar</a>
                             </ul>
                         </li>
-                        <li><a href="contact.html">Contact Us</a></li>
+                        <li><a href="/contact">Contact Us</a></li>
                     </ul>
                 </div>
                 <!-- OffCanvas Menu End -->
@@ -582,8 +583,9 @@
                                                             </span>
                                                         </div>
                                                         <div class="actions">
-                                                            <button title="Add To Cart" class="action add-to-cart"
+                                                            <button title="Add To Cart" class="action cart"
                                                                 data-bs-toggle="modal"
+                                                                onclick="addToCart( '{{this._id}}','{{this.variants.[0].productPrice}}')"
                                                                 data-bs-target="#exampleModal-Cart"><i
                                                                     class="pe-7s-shopbag"></i></button>
                                                             <button class="action wishlist" title="Wishlist"
@@ -722,11 +724,11 @@
                                             <h4 class="sidebar-title">Brands</h4>
                                             <div class="sidebar-widget-brand">
                                                 <ul>
-                                                    {{#each product}}
+                                                    {{#each brand}}
                                                     <li>
-                                                        <a href="/brands/{{this.productBrand}}"
-                                                            data-brand="{{this.productBrand}}" class="">
-                                                            {{this.productBrand}}
+                                                        <a href="/brands/{{this.BrandName}}"
+                                                            data-brand="{{this.BrandName}}" class="">
+                                                            {{this.BrandName}}
                                                         </a>
                                                     </li>
                                                     {{/each}}
@@ -1062,7 +1064,7 @@
         </div>
         <!-- Modal end -->
         <!-- Modal Cart -->
-        <div class="modal customize-class fade" id="exampleModal-Cart" tabindex="-1" aria-hidden="true">
+        {{!-- <div class="modal customize-class fade" id="exampleModal-Cart" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-body text-center">
@@ -1080,7 +1082,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
         <!-- Modal wishlist -->
         {{!-- <div class="modal customize-class fade" id="exampleModal-Wishlist" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
@@ -1205,6 +1207,54 @@
                     });
             }
 
+            function addToCart(productId, price) {
+                fetch(`/cart/${productId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ userId, productId, price })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            console.log("a");
+                            throw new Error('Failed to add product to Cart');
+                        }
+
+                        return response.json();
+                    })
+                    .then(response => {
+                        console.log("pop", response);
+                        if (response.errorMessage === 'Removed from Cart successfully') {
+                            Toastify({
+                                text: "Removed From Cart",
+                                duration: 1000, // 3 seconds
+                                gravity: "top", // Display at the top
+                                position: 'right', // Display on the right side
+                                backgroundColor: "black", // Background color
+                                stopOnFocus: true, // Stop the timer when the toast is focused
+                            }).showToast();
+                        }
+                        else {
+                            Toastify({
+                                text: "Added to Cart",
+                                duration: 1000, // 3 seconds
+                                gravity: "top", // Display at the top
+                                position: 'right', // Display on the right side
+                                backgroundColor: "black", // Background color
+                                stopOnFocus: true, // Stop the timer when the toast is focused
+                            }).showToast();
+                        }
+                        console.log("b");
+
+                        // Handle success message or update UI as needed
+                        console.log(response.message);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error or update UI as needed
+                    });
+            }
         </script>
 
 </body>

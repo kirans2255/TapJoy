@@ -90,11 +90,8 @@
                                     <i class="pe-7s-like"></i>
                                 </a>
                                 <!-- Single Wedge End -->
-                                <a href="#offcanvas-cart"
-                                    class="header-action-btn header-action-btn-cart offcanvas-toggle pr-0">
+                                <a href="/cart" class="header-action-btn">
                                     <i class="pe-7s-shopbag"></i>
-                                    <span class="header-action-num">01</span>
-                                    <!-- <span class="cart-amount">€30.00</span> -->
                                 </a>
                                 <a href="#offcanvas-mobile-menu"
                                     class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -153,13 +150,15 @@
                     <div class="header-nav">
                         <div class="main-menu position-relative">
                             <ul>
-                                <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
+                                {{!-- <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="index.html">Home 1</a></li>
                                         <li><a href="index-2.html">Home 2</a></li>
                                     </ul>
-                                </li>
-                                <li><a href="about.html">About</a></li>
+                                </li> --}}
+                                <li><a href="/">Home </a></li>
+
+                                <li><a href="/about">About</a></li>
                                 <li class="dropdown position-static"><a href="about.html">Pages <i
                                             class="fa fa-angle-down"></i></a>
                                     <ul class="mega-menu d-block">
@@ -202,7 +201,7 @@
                                         <li><a href="/shops">Phone</a></li>
                                     </ul>
                                 </li>
-                                <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
+                                {{!-- <li class="dropdown "><a href="#">Blog <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li class="dropdown position-static"><a href="blog-grid-left-sidebar.html">Blog
                                                 Grid
@@ -239,8 +238,8 @@
                                             </ul>
                                         </li>
                                     </ul>
-                                </li>
-                                <li><a href="contact.html">Contact</a></li>
+                                </li> --}}
+                                <li><a href="/contact">Contact</a></li>
                             </ul>
                         </div>
                     </div>
@@ -456,7 +455,7 @@
                                 </li>
                             </ul>
                         </li>
-                        <li><a href="#"><span class="menu-text">Blog</span></a>
+                        {{!-- <li><a href="#"><span class="menu-text">Blog</span></a>
                             <ul class="sub-menu">
                                 <li><a href="blog-grid.html">Blog Grid Page</a></li>
                                 <li><a href="blog-grid-left-sidebar.html">Grid Left Sidebar</a></li>
@@ -468,7 +467,7 @@
                                 <li><a href="blog-single-left-sidebar.html">Single Left Sidebar</a></li>
                                 <li><a href="blog-single-right-sidebar.html">Single Right Sidbar</a>
                             </ul>
-                        </li>
+                        </li> --}}
                         <li><a href="contact.html">Contact Us</a></li>
                     </ul>
                 </div>
@@ -653,7 +652,12 @@
                                                     </a>
                                                 </h5>
                                                 <span class="price">
-                                                    <span class="new">₹{{this.productPrice}}</span>
+                                                    {{#if this.variants}}
+                                                    <span class="new" class="data-link"
+                                                        data-price="{{this.variants.[0].productPrice}}">₹{{this.variants.[0].productPrice}}</span>
+                                                    {{else}}
+                                                    <span class="new">Price not available</span>
+                                                    {{/if}}
                                                 </span>
                                             </div>
                                             <div class="actions">
