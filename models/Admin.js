@@ -6,6 +6,20 @@ const userDataSchema = new mongoose.Schema({
   password: String,
   otp: { type: String },
   otpExpiration: { type: Date },
+  Banner: [{
+    BannerImage: {
+      public_id: {
+        type: String,
+        required: true
+      },
+      url: {
+        type: String,
+        required: true,
+      }
+    },
+    Position: { type: String },
+    Text: { type: String },
+  }]
 });
 
 module.exports = mongoose.model('Admin', userDataSchema);

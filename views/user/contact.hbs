@@ -147,42 +147,7 @@
                                 <li><a href="/">Home </a></li>
 
                                 <li><a href="/about">About</a></li>
-                                <li class="dropdown position-static"><a href="about.html">Pages <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="mega-menu d-block">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Inner Pages</a></li>
-                                                <li><a href="404.html">404 Page</a></li>
-                                                <li><a href="order-tracking.html">Order Tracking</a></li>
-                                                <li><a href="faq.html">Faq Page</a></li>
-                                                <li><a href="coming-soon.html">Coming Soon Page</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Other Shop Pages</a></li>
-                                                <li><a href="cart.html">Cart Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="compare.html">Compare Page</a></li>
-                                                <li><a href="wishlist.html">Wishlist Page</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Related Shop Pages</a></li>
-                                                <li><a href="my-account.html">Account Page</a></li>
-                                                <li><a href="login.html">Login & Register Page</a></li>
-                                                <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                                                <li><a href="thank-you-page.html">Thank You Page</a></li>
-                                            </ul>
-                                            <ul
-                                                class="d-flex align-items-center p-0 border-0 flex-column justify-content-center">
-                                                <li>
-                                                    <a class="p-0" href="shop-left-sidebar.html"><img
-                                                            class="img-responsive w-100"
-                                                            src="/assets/images/banner/menu-banner.png" alt=""></a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
+
                                 <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="/shop">Tablet</a></li>
@@ -228,6 +193,20 @@
                                     </ul>
                                 </li> --}}
                                 <li><a href="/contact">Contact</a></li>
+                                <li class="dropdown position-static"><a href="about.html">Pages <i
+                                            class="fa fa-angle-down"></i></a>
+                                    <ul class="sub-menu">
+                                        <li class="d-flex">
+                                            <ul class="d-block">
+                                                {{!-- <li class="title"><a href="#">Profile</a></li> --}}
+                                                <li><a href="/account">Profile</a></li>
+                                                <li><a href="order-tracking.html">Orders</a></li>
+                                                <li><a href="/logoutt">Logout</a></li>
+                                                {{!-- <li><a href="coming-soon.html">Coming Soon Page</a></li> --}}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -515,16 +494,21 @@
                                 <form class="contact-form-style" id="contact-form" action="/send-mail" method="post">
                                     <div class="row">
                                         <div class="col-lg-6">
-                                            <input name="name" placeholder="Name*" type="text" />
+                                            <input name="name" placeholder="Name*" type="text" required>
+                                            <div class="error-msg" id="name-error"></div>
                                         </div>
                                         <div class="col-lg-6">
-                                            <input name="email" placeholder="Email*" type="email" />
+                                            <input name="email" placeholder="Email*" type="email" / required>
+                                            <div class="error-msg" id="email-error"></div>
+
                                         </div>
                                         {{!-- <div class="col-lg-12">
                                             <input name="subject" placeholder="Subject*" type="text" />
                                         </div> --}}
                                         <div class="col-lg-12 text-center">
-                                            <textarea name="message" placeholder="Your Message*"></textarea>
+                                            <textarea name="message" placeholder="Your Message*" required></textarea>
+                                            <div class="error-msg" id="message-error"></div>
+
                                             <button class="btn btn-primary" type="submit">Send Message</button>
                                         </div>
                                     </div>
@@ -596,8 +580,7 @@
                                     <div class="footer-logo">
                                         <a href="index.html"><img src="assets/images/logo/footer-logo.png" alt=""></a>
                                     </div>
-                                    <p class="about-text">Lorem ipsum dolor sit amet consl adipisi elit, sed do eiusmod
-                                        templ incididunt ut labore
+                                    <p class="about-text">Your tech sanctuary
                                     </p>
                                     <ul class="link-follow">
                                         <li>
@@ -630,16 +613,16 @@
                                     <div class="footer-links">
                                         <div class="footer-row">
                                             <ul class="align-items-center">
-                                                <li class="li"><a class="single-link" href="my-account.html">My
+                                                <li class="li"><a class="single-link" href="/account">My
                                                         Account</a></li>
-                                                <li class="li"><a class="single-link" href="contact.html">Contact</a>
+                                                <li class="li"><a class="single-link" href="/contact">Contact</a>
                                                 </li>
-                                                <li class="li"><a class="single-link" href="cart.html">Shopping cart</a>
+                                                <li class="li"><a class="single-link" href="/cart">Shopping cart</a>
                                                 </li>
                                                 <li class="li"><a class="single-link"
-                                                        href="shop-left-sidebar.html">Shop</a></li>
-                                                <li class="li"><a class="single-link" href="login.html">Services
-                                                        Login</a></li>
+                                                        href="/shop">Shop</a></li>
+                                                {{!-- <li class="li"><a class="single-link" href="">Services
+                                                        Login</a></li> --}}
                                             </ul>
                                         </div>
                                     </div>
@@ -647,7 +630,7 @@
                             </div>
                             <!-- End single blog -->
                             <!-- Start single blog -->
-                            <div class="col-md-6 col-lg-3 col-sm-6 mb-lm-30px pl-lg-40px">
+                            {{!-- <div class="col-md-6 col-lg-3 col-sm-6 mb-lm-30px pl-lg-40px">
                                 <div class="single-wedge">
                                     <h4 class="footer-herading">My Account</h4>
                                     <div class="footer-links">
@@ -667,7 +650,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </div> --}}
                             <!-- End single blog -->
                             <!-- Start single blog -->
                             <div class="col-md-6 col-lg-3 col-sm-12">
@@ -696,12 +679,12 @@
                                     <div class="payment-mth"><a href="#"><img class="img img-fluid"
                                                 src="assets/images/icons/payment.png" alt="payment-image"></a></div>
                                 </div>
-                                <div class="col-md-6 text-center text-md-start">
+                                {{!-- <div class="col-md-6 text-center text-md-start">
                                     <p class="copy-text"> © 2022 <strong>Hmart</strong> Made With <i class="fa fa-heart"
                                             aria-hidden="true"></i> By <a class="company-name"
                                             href="https://themeforest.net/user/codecarnival/portfolio">
                                             <strong> Codecarnival </strong></a>.</p>
-                                </div>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
@@ -710,6 +693,10 @@
         </div>
         <!-- Footer Area End -->
     </div>
+
+
+
+
     <!-- Global Vendor, plugins JS -->
     <!-- JS Files
     ============================================ -->
@@ -735,10 +722,72 @@
     <!-- Include SweetAlert library -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-            
+        document.querySelector('a[href="/logoutt"]').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            Swal.fire({
+                title: 'Are you sure you want to logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, logout',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to logout page or perform logout action
+                    window.location.href = "/logoutt"; // Change to your logout URL
+                }
+            });
+        });
     </script>
+
+    <script>
+        document.getElementById('contact-form').addEventListener('submit', function (event) {
+            // Prevent form submission
+            event.preventDefault();
+
+            // Clear previous error messages
+            document.querySelectorAll('.error-msg').forEach(function (element) {
+                element.textContent = '';
+            });
+
+            // Fetch form elements
+            const name = document.querySelector('input[name="name"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const message = document.querySelector('textarea[name="message"]').value.trim();
+
+            // Set flag to track form validity
+            let isValid = true;
+
+            // Validate name
+            if (name === '') {
+                document.getElementById('name-error').textContent = 'Please enter your name.';
+                isValid = false;
+            }
+
+            // Validate email
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                document.getElementById('email-error').textContent = 'Please enter a valid email address.';
+                isValid = false;
+            }
+
+            // Validate message
+            if (message === '') {
+                document.getElementById('message-error').textContent = 'Please enter your message.';
+                isValid = false;
+            }
+
+            // If form is valid, submit the form
+            if (isValid) {
+                this.submit();
+            }
+        });
+
+    </script>
+
 
 </body>
 

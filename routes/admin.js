@@ -49,6 +49,13 @@ router.put('/admin/brand/:id',upload.array('BrandImage'),product.updateBrand)
 
 router.delete('/deleteca/:id', product.deleteBrand);
 
+//banner
+router.get('/admin/banner',product.renderBanner);
+
+router.post('/addBanner',upload.array('BannerImage'), product.handleBanner);
+
+router.delete('/deleteb/:id', product.deleteBanner);
+
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);
 

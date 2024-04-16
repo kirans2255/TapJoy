@@ -2,13 +2,13 @@
 <html lang="zxx" dir="ltr">
 
 
-<!-- Mirrored from htmldemo.net/hmart/hmart/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:18 GMT -->
+<!-- Mirrored from htmldemo.net/hmart/hmart/about.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:02 GMT -->
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hmart - Contact page</title>
+    <title>Hmart - About Us</title>
     <meta name="robots" content="index, follow" />
     <meta name="description" content="Hmart-Smart Product eCommerce html Template">
     <!-- Favicon -->
@@ -24,13 +24,6 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .about-sections {
-            margin-left: 800px;
-            margin-top: -330px;
-        }
-    </style>
-
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="assets/css/plugins.min.css">
     <link rel="stylesheet" href="assets/css/style.min.css"> -->
@@ -82,8 +75,8 @@
                         <div class="col-lg-3 col">
                             <div class="header-actions">
                                 <!-- Single Wedge Start -->
-                                <a href="/wishlist" class="header-action-btn ">
-                                    <i class="pe-7s-like"></i>  
+                                <a href="/wishlist" class="header-action-btn">
+                                    <i class="pe-7s-like"></i>
                                 </a>
                                 <!-- Single Wedge End -->
                                 <a href="/cart" class="header-action-btn ">
@@ -147,49 +140,12 @@
                             <ul>
                                 {{!-- <li class="dropdown"><a href="#">Home <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
-                                        <li><a href="/">Home 1</a></li>
+                                        <li><a href="index.html">Home 1</a></li>
                                         <li><a href="index-2.html">Home 2</a></li>
                                     </ul>
                                 </li> --}}
                                 <li><a href="/">Home </a></li>
-
                                 <li><a href="/about">About</a></li>
-                                <li class="dropdown position-static"><a href="about.html">Pages <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="mega-menu d-block">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Inner Pages</a></li>
-                                                <li><a href="404.html">404 Page</a></li>
-                                                <li><a href="order-tracking.html">Order Tracking</a></li>
-                                                <li><a href="faq.html">Faq Page</a></li>
-                                                <li><a href="coming-soon.html">Coming Soon Page</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Other Shop Pages</a></li>
-                                                <li><a href="cart.html">Cart Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="compare.html">Compare Page</a></li>
-                                                <li><a href="wishlist.html">Wishlist Page</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Related Shop Pages</a></li>
-                                                <li><a href="my-account.html">Account Page</a></li>
-                                                <li><a href="login.html">Login & Register Page</a></li>
-                                                <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                                                <li><a href="thank-you-page.html">Thank You Page</a></li>
-                                            </ul>
-                                            <ul
-                                                class="d-flex align-items-center p-0 border-0 flex-column justify-content-center">
-                                                <li>
-                                                    <a class="p-0" href="shop-left-sidebar.html"><img
-                                                            class="img-responsive w-100"
-                                                            src="/assets/images/banner/menu-banner.png" alt=""></a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
                                 <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="/shop">Tablet</a></li>
@@ -235,6 +191,20 @@
                                     </ul>
                                 </li> --}}
                                 <li><a href="/contact">Contact</a></li>
+                                <li class="dropdown position-static"><a href="about.html">Pages <i
+                                            class="fa fa-angle-down"></i></a>
+                                    <ul class="sub-menu">
+                                        <li class="d-flex">
+                                            <ul class="d-block">
+                                                {{!-- <li class="title"><a href="#">Profile</a></li> --}}
+                                                <li><a href="/account">Profile</a></li>
+                                                <li><a href="order-tracking.html">Orders</a></li>
+                                                <li><a href="/logoutt">Logout</a></li>
+                                                {{!-- <li><a href="coming-soon.html">Coming Soon Page</a></li> --}}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -297,7 +267,7 @@
                 </div>
                 <div class="foot">
                     <div class="buttons">
-                        <a href="/wishlist" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
+                        <a href="wishlist.html" class="btn btn-dark btn-hover-primary mt-30px">view wishlist</a>
                     </div>
                 </div>
             </div>
@@ -488,30 +458,51 @@
                 </div>
             </div>
         </div>
-        <!--About Area Start -->
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 about-section">
-                    <img class="profile-img mx-auto d-block" src="assets/images/product-image/pad/col.jpg"
-                        alt="Your Photo">
-                </div>
-                <div class="col-md-6 about-sections">
-                    <p>Welcome to <b>PhonZone</b>, your ultimate destination for all things mobile! We're passionate about
-                        bringing you the latest smartphones, tablets, and accessories to enhance your digital lifestyle.
-                        At PhonZone, we carefully curate our product selection to ensure you have access to the most
-                        innovative devices on the market. Whether you're an Android aficionado, an iOS enthusiast, or
-                        simply in need of reliable communication tools, we've got you covered. Our team is committed to
-                        providing you with a seamless shopping experience, from browsing our user-friendly website to
-                        swift delivery right to your doorstep. With PhonZone, it's not just about buying a device—it's
-                        about unlocking a world of possibilities. Thank you for choosing PhonZone as your trusted mobile
-                        partner. Let's stay connected!
+        <!-- OffCanvas Menu End -->
+        <!-- breadcrumb-area start -->
 
-                    </p>
+        <!-- breadcrumb-area end -->
+        <!-- About section Start -->
+        <div class="about-area pt-100px">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="about-wrapper text-center">
+                            <div class="about-contant">
+                                <h2 class="title">
+                                    <span>Phone Zone </span>
+                                    Your tech sanctuary
+                                </h2>
+                                <p>
+                                    Welcome to PhonZone – your go-to for all things mobile! From the latest smartphones
+                                    to top-notch accessories, we've got you covered. Discover innovation, convenience,
+                                    and seamless service – all in one place.</p>
+                            </div>
+                            <div class="promo-video">
+                                <img src="assets/images/product-image/pad/g.jpeg" alt=""
+                                    style="margin-top:-80px; max-width: 100vh; max-height: 65vh;">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <!-- About section End -->
 
-        <!--About Area End -->
+
+        <!-- Feature Area End -->
+
+        <!-- Testimonial area end-->
+        <!-- Blog area start from here -->
+        <div class="main-blog-area pb-100px pt-100px">
+            <div class="container">
+                <!-- section title start -->
+
+                <!-- section title start -->
+
+            </div>
+        </div>
+        <!-- Blog area end here -->
         <!-- Footer Area Start -->
         <div class="footer-area">
             <div class="footer-container">
@@ -652,6 +643,10 @@
     <script src="assets/js/plugins/jquery-ui.min.js"></script>
     <script src="assets/js/plugins/mailchimp-ajax.js"></script>
 
+
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+
     <!-- Minify Version -->
     <!-- <script src="assets/js/vendor.min.js"></script>
     <script src="assets/js/plugins.min.js"></script>
@@ -660,17 +655,83 @@
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
 
-    <!-- Include SweetAlert library -->
-    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-
-
     <script>
+        function addToWishlist(productId) {
+            fetch(`/wishlist/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ userId, productId })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        console.log("a")
+                        throw new Error('Failed to add product to wishlist');
+                    }
+
+                    return response.json();
+                })
+                .then(response => {
+                    console.log("pop", response)
+                    if (response.errorMessage === 'Removed from Wishlist successfully') {
+                        Toastify({
+                            text: "Removed From Wishlist",
+                            duration: 1000, // 3 seconds
+                            gravity: "top", // Display at the top
+                            position: 'right', // Display on the right side
+                            backgroundColor: "black", // Background color
+                            stopOnFocus: true, // Stop the timer when the toast is focused
+                        }).showToast();
+                    }
+                    else {
+                        Toastify({
+                            text: "Added to Wishlist",
+                            duration: 1000, // 3 seconds
+                            gravity: "top", // Display at the top
+                            position: 'right', // Display on the right side
+                            backgroundColor: "black", // Background color
+                            stopOnFocus: true, // Stop the timer when the toast is focused
+                        }).showToast();
+                    }
+                    console.log("b")
+
+                    // Handle success message or update UI as needed
+                    console.log(response.message);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // Handle error or update UI as needed
+                });
+        }
 
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.querySelector('a[href="/logoutt"]').addEventListener('click', function (event) {
+            event.preventDefault(); // Prevent default link behavior
+
+            Swal.fire({
+                title: 'Are you sure you want to logout?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, logout',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to logout page or perform logout action
+                    window.location.href = "/logoutt"; // Change to your logout URL
+                }
+            });
+        });
+    </script>
+
 
 </body>
 
 
-<!-- Mirrored from htmldemo.net/hmart/hmart/contact.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:20 GMT -->
+<!-- Mirrored from htmldemo.net/hmart/hmart/about.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
 
 </html>

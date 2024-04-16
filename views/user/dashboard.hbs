@@ -25,6 +25,24 @@
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <style>
+        .title-1 {
+            color: black;
+            /* Set the color to black */
+
+        }
+
+        #pos {
+            color: black;
+            /* Set the color to black */
+
+        }
+
+        .black-text {
+            color: black;
+            /* Set the color to black */
+        }
+    </style>
 
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="assets/css/plugins.min.css">
@@ -159,42 +177,7 @@
                                 <li><a href="/">Home </a></li>
 
                                 <li><a href="/about">About</a></li>
-                                <li class="dropdown position-static"><a href="about.html">Pages <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="mega-menu d-block">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Inner Pages</a></li>
-                                                <li><a href="404.html">404 Page</a></li>
-                                                <li><a href="order-tracking.html">Order Tracking</a></li>
-                                                <li><a href="faq.html">Faq Page</a></li>
-                                                <li><a href="coming-soon.html">Coming Soon Page</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Other Shop Pages</a></li>
-                                                <li><a href="cart.html">Cart Page</a></li>
-                                                <li><a href="checkout.html">Checkout Page</a></li>
-                                                <li><a href="compare.html">Compare Page</a></li>
-                                                <li><a href="wishlist.html">Wishlist Page</a></li>
-                                            </ul>
-                                            <ul class="d-block">
-                                                <li class="title"><a href="#">Related Shop Pages</a></li>
-                                                <li><a href="my-account.html">Account Page</a></li>
-                                                <li><a href="login.html">Login & Register Page</a></li>
-                                                <li><a href="empty-cart.html">Empty Cart Page</a></li>
-                                                <li><a href="thank-you-page.html">Thank You Page</a></li>
-                                            </ul>
-                                            <ul
-                                                class="d-flex align-items-center p-0 border-0 flex-column justify-content-center">
-                                                <li>
-                                                    <a class="p-0" href="shop-left-sidebar.html"><img
-                                                            class="img-responsive w-100"
-                                                            src="assets/images/banner/menu-banner.png" alt=""></a>
-                                                </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
+
                                 <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="/shop">Tablet</a></li>
@@ -240,6 +223,20 @@
                                     </ul>
                                 </li> --}}
                                 <li><a href="/contact">Contact</a></li>
+                                <li class="dropdown position-static"><a href="about.html">Pages <i
+                                            class="fa fa-angle-down"></i></a>
+                                    <ul class="sub-menu">
+                                        <li class="d-flex">
+                                            <ul class="d-block">
+                                                {{!-- <li class="title"><a href="#">Profile</a></li> --}}
+                                                <li><a href="/account">Profile</a></li>
+                                                <li><a href="order-tracking.html">Orders</a></li>
+                                                <li><a href="/logoutt">Logout</a></li>
+                                                {{!-- <li><a href="coming-soon.html">Coming Soon Page</a></li> --}}
+                                            </ul>
+                                        </li>
+                                    </ul>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -499,18 +496,19 @@
             <div class="hero-slider swiper-container slider-nav-style-1 slider-dot-style-1">
                 <!-- Hero slider Active -->
                 <div class="swiper-wrapper">
+                    {{#each banner}}
+
                     <!-- Single slider item -->
                     <div class="hero-slide-item slider-height swiper-slide bg-color1"
                         data-bg-image="assets/images/hero/bg/hero-bg-1.webp">
                         <div class="container h-100">
+
                             <div class="row h-100">
                                 <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 align-self-center sm-center-view">
                                     <div class="hero-slide-content slider-animated-1">
-                                        <span class="category">Welcome To Phone Zone</span>
-                                        <h2 class="title-1">Your Home <br>
-                                            Smart Devices & <br>
-                                            Best Solution </h2>
-                                        <a href="shop-left-sidebar.html" class="btn btn-primary text-capitalize">Shop
+                                        <span id="pos" class="category">Welcome To Phone Zone</span>
+                                        <h2 id="pos" class="title-1">{{this.Position}} </h2>
+                                        <a href="/shops" class="btn btn-primary text-capitalize" id="pos">Shop
                                             All Devices</a>
                                     </div>
                                 </div>
@@ -518,15 +516,16 @@
                                     class="col-xl-6 col-lg-6 col-md-6 col-sm-6 d-flex justify-content-center position-relative align-items-end">
                                     <div class="show-case">
                                         <div class="hero-slide-image">
-                                            <img src="assets/images/hero/inner-img/hero-1-1.png" alt="" />
+                                            <img src="{{BannerImage.url}}" alt="" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                     <!-- Single slider item -->
-                    <div class="hero-slide-item slider-height swiper-slide bg-color1"
+                    {{!-- <div class="hero-slide-item slider-height swiper-slide bg-color1"
                         data-bg-image="assets/images/hero/bg/hero-bg-1.webp">
                         <div class="container h-100">
                             <div class="row h-100">
@@ -550,7 +549,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
+                    {{/each}}
+
                 </div>
                 <!-- Add Pagination -->
                 <div class="swiper-pagination swiper-pagination-white"></div>
@@ -568,12 +569,11 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="single-banner nth-child-1">
-                            <img src="assets/images/banner/3.webp" alt="">
+                            <img src="assets/images/product-image/tablet/ipad 11.png" alt="">
                             <div class="banner-content nth-child-1">
-                                <h3 class="title">Smart Watch For <br>
-                                    Your Hand</h3>
-                                <span class="category">From $29.00</span>
-                                <a href="shop-left-sidebar.html" class="shop-link"><i class="fa fa-arrow-right"
+                                <h3 class="title">Tablet </h3>
+                                {{!-- <span class="category">From $29.00</span> --}}
+                                <a href="/shop" class="shop-link"><i class="fa fa-arrow-right"
                                         aria-hidden="true"></i></a>
                             </div>
                         </div>
@@ -592,8 +592,8 @@
                             <img src="assets/images/banner/5.webp" alt="">
                             <div class="banner-content nth-child-3">
                                 <h3 class="title">Smartphone</h3>
-                                <span class="category">From $69.00</span>
-                                <a href="shop-left-sidebar.html" class="shop-link"><i class="fa fa-arrow-right"
+                                {{!-- <span class="category">From $69.00</span> --}}
+                                <a href="/shops" class="shop-link"><i class="fa fa-arrow-right"
                                         aria-hidden="true"></i></a>
                             </div>
                         </div>
@@ -758,27 +758,22 @@
                 <!-- Brand area start -->
                 <div class="brand-area pt-100px pb-100px">
                     <div class="container">
+
                         <div class="brand-slider swiper-container">
                             <div class="swiper-wrapper align-items-center">
+                                {{#each brand}}x
                                 <div class="swiper-slide brand-slider-item text-center">
-                                    <a href="#"><img class=" img-fluid" src="assets/images/partner/1.png" alt="" /></a>
+                                    <a href="/shops"><img class=" img-fluid" src="{{BrandImage.url}}" alt="" /></a>
                                 </div>
-                                <div class="swiper-slide brand-slider-item text-center">
-                                    <a href="#"><img class=" img-fluid" src="assets/images/partner/2.png" alt="" /></a>
-                                </div>
-                                <div class="swiper-slide brand-slider-item text-center">
-                                    <a href="#"><img class=" img-fluid" src="assets/images/partner/3.png" alt="" /></a>
-                                </div>
-                                <div class="swiper-slide brand-slider-item text-center">
-                                    <a href="#"><img class=" img-fluid" src="assets/images/partner/4.png" alt="" /></a>
-                                </div>
+
+                                {{/each}}
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Brand area end -->
                 <!-- Blog area start from here -->
-                <div class="main-blog-area pb-100px">
+                {{!-- <div class="main-blog-area pb-100px">
                     <div class="container">
                         <!-- section title start -->
                         <div class="row">
@@ -843,7 +838,7 @@
                             <!-- End single blog -->
                         </div>
                     </div>
-                </div>
+                </div> --}}
                 <!-- Blog area end here -->
                 <!-- Footer Area Start -->
                 <div class="footer-area">
@@ -858,8 +853,7 @@
                                                 <a href="index.html"><img src="assets/images/logo/footer-logo.png"
                                                         alt=""></a>
                                             </div>
-                                            <p class="about-text">Lorem ipsum dolor sit amet consl adipisi elit, sed do
-                                                eiusmod templ incididunt ut labore
+                                            <p class="about-text">Your tech sanctuary
                                             </p>
                                             <ul class="link-follow">
                                                 <li>
@@ -916,15 +910,15 @@
                                             <div class="footer-links">
                                                 <div class="footer-row">
                                                     <ul class="align-items-center">
-                                                        <li class="li"><a class="single-link" href="my-account.html">My
+                                                        <li class="li"><a class="single-link" href="/account">My
                                                                 Account</a></li>
                                                         <li class="li"><a class="single-link"
-                                                                href="contact.html">Contact</a></li>
-                                                        <li class="li"><a class="single-link" href="cart.html">Shopping
+                                                                href="/contact">Contact</a></li>
+                                                        <li class="li"><a class="single-link" href="/cart">Shopping
                                                                 cart</a></li>
                                                         <li class="li"><a class="single-link"
                                                                 href="shop-left-sidebar.html">Shop</a></li>
-                                                        <li class="li"><a class="single-link" href="login.html">Services
+                                                        <li class="li"><a class="single-link" href="/account">Services
                                                                 Login</a></li>
                                                     </ul>
                                                 </div>
@@ -938,7 +932,7 @@
                                             <h4 class="footer-herading">Contact Info</h4>
                                             <div class="footer-links">
                                                 <!-- News letter area -->
-                                                <p class="address">Address: Your Address Goes Here.</p>
+                                                {{!-- <p class="address">Address: Your Address Goes Here.</p> --}}
                                                 <p class="phone">Phone/Fax:<a href="tel:0123456789"> 0123456789</a></p>
                                                 <p class="mail">Email:<a href="mailto:demo@example.com">
                                                         demo@example.com</a></p>
@@ -961,13 +955,13 @@
                                                         src="assets/images/icons/payment.png" alt="payment-image"></a>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 text-center text-md-start">
+                                        {{!-- <div class="col-md-6 text-center text-md-start">
                                             <p class="copy-text"> © 2022 <strong>Phone Zone</strong> Made With <i
                                                     class="fa fa-heart" aria-hidden="true"></i> By <a
                                                     class="company-name"
                                                     href="https://themeforest.net/user/codecarnival/portfolio">
                                                     <strong> Codecarnival </strong></a>.</p>
-                                        </div>
+                                        </div> --}}
                                     </div>
                                 </div>
                             </div>
@@ -1258,7 +1252,27 @@
                             // Handle error or update UI as needed
                         });
                 }
+            </script>
 
+            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <script>
+                document.querySelector('a[href="/logoutt"]').addEventListener('click', function (event) {
+                    event.preventDefault(); // Prevent default link behavior
+
+                    Swal.fire({
+                        title: 'Are you sure you want to logout?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, logout',
+                        cancelButtonText: 'Cancel',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Redirect to logout page or perform logout action
+                            window.location.href = "/logoutt"; // Change to your logout URL
+                        }
+                    });
+                });
             </script>
 
 </body>

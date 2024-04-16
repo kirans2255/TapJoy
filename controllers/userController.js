@@ -5,6 +5,7 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const Product = require('../models/Product');
 const Brand = require('../models/Brand');
+const Admin = require('../models/Admin');
 require('dotenv').config();
 const mongoose = require("mongoose");
 const { log } = require('handlebars');
@@ -115,6 +116,11 @@ const renderDashboard = async (req, res) => {
   const user = await Users.findOne({ email });
   const uniqueProductName = await Product.distinct("productName", { productCategory: 'Tablet' });
   const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Phone' });
+  const brand = await Brand.find()
+  const admin = await Admin.findOne();
+  const banner = admin.Banner;
+  console.log(banner);
+
 
   const uniqueProducts = await Promise.all(
     uniqueProductNames.map(async (productName) => {
@@ -131,7 +137,7 @@ const renderDashboard = async (req, res) => {
   uniqueProducts.length = 4
   uniqueProduct.length = 4
   // res.render('user/brand', { product: uniqueProducts });
-  res.render('user/dashboard', { user, products: uniqueProduct, product: uniqueProducts });
+  res.render('user/dashboard', { user, products: uniqueProduct, product: uniqueProducts, brand, banner });
 };
 
 
@@ -750,7 +756,9 @@ const handleContact = (req, res) => {
 
 const renderAbout = async (req, res) => {
   try {
-    res.render('user/about');
+    const brand = await Brand.findOne();
+    // const banner = admin.Banner;
+    res.render('user/about',{brand});
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -770,7 +778,7 @@ const renderCart = async (req, res) => {
     }
     const cart = user.cart;
     console.log(cart);
-    res.render('user/cart',{user,cart});
+    res.render('user/cart', { user, cart });
   } catch (error) {
     // console.error(error);
     res.status(500).send('Internal Server Error');
@@ -841,7 +849,6 @@ module.exports = {
   renderwishlist,
   addToWishlist,
   renderbrand,
-  // renderbrandcategory,
   renderbrands,
   removeFromWishlist,
   sort,
@@ -851,8 +858,6 @@ module.exports = {
   renderAbout,
   renderCart,
   addToCart,
-  // handlesingleProduct,
-  // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,

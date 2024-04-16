@@ -219,7 +219,6 @@ const handleCategory = async (req, res) => {
   }
 };
 
-
 const editCategory = async (req, res) => {
   const CategoryId = req.body.CategoryId;
   console.log(req.body);
