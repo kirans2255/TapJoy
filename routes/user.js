@@ -67,6 +67,22 @@ router.get('/account',requireAuth, userController.renderAccount);
 
 router.post('/signup', userController.handleSignup);
 
+
+router.delete('/cart/:productId',requireAuth,userController.removeFromCart)
+
+//checkout
+
+
+router.get('/checkout',requireAuth, userController.rendercheckout);
+
+router.post('/address',requireAuth ,userController.Address);
+
+///////COD
+router.post('/placeOrder',requireAuth ,userController.Cod);
+
+
+//////////
+
 router.get('/auth/google', passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/plus.login', 'email'] }));
 router.get(
     "/auth/google/callback",

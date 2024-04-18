@@ -500,34 +500,28 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {{#each wishlist.products}}
+                                        {{#each wishlist}}
                                         <tr>
                                             <td class="product-thumbnail">
-                                                {{!-- <input type="hidden" id="">{{this._id}}</input> --}}
                                                 <a href="#"><img class="img-responsive ml-15px"
-                                                        src="{{productImage.[0]}}" alt="" /></a>
+                                                        src="{{this.productImage}}" alt="" /></a>
                                             </td>
-                                            <td class="product-name"><a href="#">{{productName}} | {{productRom}}</a>
-                                            </td>
-                                            <td class="product-price-cart"><span class="amount">{{productPrice}}</span>
-                                            </td>
-                                            {{!-- <td class="product-quantity">
-                                                <div class="cart-plus-minus">
-                                                    <input class="cart-plus-minus-box" type="text" name="qtybutton"
-                                                        value="1" />
-                                                </div>
-                                            </td> --}}
-                                            {{!-- <td class="product-subtotal">{{productPrice}}</td> --}}
+                                            <td class="product-name"><a href="#">{{this.productName}} |
+                                                    {{this.productRom}}</a></td>
+                                            <td class="product-price-cart"><span
+                                                    class="amount">{{this.productPrice}}</span></td>
                                             <td class="product-wishlist-cart">
-                                                <a href=""
-                                                    onclick="addToCart('{{productId}}','{{productPrice}}','{{productRom}}')"
+                                                <a href="#"
+                                                    onclick="addToCart('{{this._id}}','{{this.productRam}}','{{this.productRom}}')"
                                                     data-bs-toggle="modal">Add to Cart</a>
                                             </td>
                                             <td class="product-wishlist-cart">
-                                                <a href="#" onclick="removeFromWishlist('{{productName}}')">Remove</a>
+                                                <a href="#"
+                                                    onclick="removeFromWishlist('{{this.productName}}')">Remove</a>
                                             </td>
                                         </tr>
                                         {{/each}}
+
                                     </tbody>
                                 </table>
                             </div>
@@ -707,14 +701,14 @@
                 });
         }
 
-        function addToCart(productId, price, rom) {
+        function addToCart(productId, ram, rom) {
             try {
                 fetch(`/cart/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ productId, price, rom })
+                    body: JSON.stringify({ productId, ram, rom })
                 })
                     .then(response => {
                         if (!response.ok) {

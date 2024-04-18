@@ -562,13 +562,13 @@
                                                             </span>
                                                         </div>
                                                         <div class="actions">
-                                                            <button title="Add To Cart" class="action cart"
+                                                            {{!-- <button title="Add To Cart" class="action cart"
                                                                 data-bs-toggle="modal"
                                                                 onclick="addToCart( '{{this._id}}','{{this.variants.[0].productPrice}}')"
                                                                 data-bs-target="#exampleModal-Cart"><i
-                                                                    class="pe-7s-shopbag"></i></button>
+                                                                    class="pe-7s-shopbag"></i></button> --}}
                                                             <button class="action wishlist" title="Wishlist"
-                                                                onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productPrice}}')"
+                                                                onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productRam}}','{{this.variants.[0].productRom}}')"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Wishlist"><i
                                                                     class="pe-7s-like"></i></button>
@@ -626,11 +626,11 @@
                                                                     {{/if}}
                                                                 </span>
                                                                 <div class="actions">
-                                                                    <button title="Add To Cart"
+                                                                    {{!-- <button title="Add To Cart"
                                                                         class="action add-to-cart"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal-Cart"><i
-                                                                            class="pe-7s-shopbag"></i></button>
+                                                                            class="pe-7s-shopbag"></i></button> --}}
                                                                     <button class="action wishlist" title="Wishlist"
                                                                         onclick="addToWishlist('{{this._id}}')"
                                                                         data-bs-toggle="modal"
@@ -1023,10 +1023,10 @@
                                         <div class="cart-plus-minus">
                                             <input class="cart-plus-minus-box" type="text" name="qtybutton" value="1" />
                                         </div>
-                                        <div class="pro-details-cart">
+                                        {{!-- <div class="pro-details-cart">
                                             <button class="add-cart"> Add To
                                                 Cart</button>
-                                        </div>
+                                        </div> --}}
                                         <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                             <a href="wishlist.html"><i class="pe-7s-like"></i></a>
                                         </div>
@@ -1137,13 +1137,13 @@
         <script src="/assets/js/main.js"></script>
 
         <script>
-            function addToWishlist(productId, price) {
+            function addToWishlist(productId, ram, rom) {
                 fetch(`/wishlist/${productId}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ userId, productId, price })
+                    body: JSON.stringify({ userId, productId, ram, rom })
                 })
                     .then(response => {
                         if (!response.ok) {

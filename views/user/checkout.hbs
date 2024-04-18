@@ -2,13 +2,13 @@
 <html lang="zxx" dir="ltr">
 
 
-<!-- Mirrored from htmldemo.net/hmart/hmart/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
+<!-- Mirrored from htmldemo.net/hmart/hmart/checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
 
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hmart - Cart page</title>
+    <title>Hmart - Checkout page</title>
     <meta name="robots" content="index, follow" />
     <meta name="description" content="Hmart-Smart Product eCommerce html Template">
     <!-- Favicon -->
@@ -24,10 +24,85 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
+
     <style>
-        .cart-plus-minus-box {
+        .product-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .product-image {
             width: 50px;
-            /* Adjust the width as needed */
+            height: 50px;
+            /* Adjust margin as needed */
+        }
+
+        .order-middle-left {
+            flex: 1;
+            /* Take remaining space */
+        }
+
+        /* Styling for the button */
+        .submit-button {
+            background-color: #4CAF50;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 5px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Change the background color of the button on hover */
+        .submit-button:hover {
+            background-color: #45a049;
+            /* Darker green */
+        }
+
+        #addressDetails {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            /* Adjust spacing between addresses */
+        }
+
+        .address-container {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            /* Set a maximum width */
+            width: 100%;
+            /* Add a subtle shadow */
+        }
+
+
+        .address-info {
+            margin-left: 30px;
+            font-family: Arial, sans-serif;
+            /* Change font family */
+            color: #333;
+            /* Change text color */
+        }
+
+        .address-radio {
+            position: absolute;
+            /* Adjust vertical position of the radio button */
+            left: -175px;
+            /* Adjust horizontal position of the radio button */
+            transform: scale(0.3);
+            /* Adjust the scale factor to make the radio button smaller */
         }
     </style>
     <!-- Minify Version -->
@@ -53,7 +128,7 @@
                                     <li><a href="tel:0123456789"><i class="fa fa-phone"></i> +012 3456 789</a></li>
                                     <li><a href="mailto:demo@example.com"><i class="fa fa-envelope-o"></i>
                                             demo@example.com</a></li>
-                                    <li><a href="/account"><i class="fa fa-user"></i> Account</a></li>
+                                    <li><a href="my-account.html"><i class="fa fa-user"></i> Account</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -87,6 +162,9 @@
                                 <!-- Single Wedge End -->
                                 <a href="/cart" class="header-action-btn">
                                     <i class="pe-7s-shopbag"></i>
+                                </a>
+                                {{!-- <span class="header-action-num">01</span> --}}
+                                <!-- <span class="cart-amount">€30.00</span> -->
                                 </a>
                                 <a href="#offcanvas-mobile-menu"
                                     class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
@@ -151,7 +229,6 @@
                                     </ul>
                                 </li> --}}
                                 <li><a href="/">Home </a></li>
-
                                 <li><a href="/about">About</a></li>
 
                                 <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
@@ -294,7 +371,7 @@
                             <a href="single-product.html" class="image"><img src="assets/images/product-image/1.webp"
                                     alt="Cart product Image"></a>
                             <div class="content">
-                                <a href="single-product.html" class="title">Modern Sart Phone</a>
+                                <a href="single-product.html" class="title">Modern Smart Phone</a>
                                 <span class="quantity-price">1 x <span class="amount">$18.86</span></span>
                                 <a href="#" class="remove">×</a>
                             </div>
@@ -472,11 +549,11 @@
             <div class="container">
                 <div class="row align-items-center justify-content-center">
                     <div class="col-12 text-center">
-                        <h2 class="breadcrumb-title">Cart</h2>
+                        <h2 class="breadcrumb-title">Checkout</h2>
                         <!-- breadcrumb-list start -->
                         <ul class="breadcrumb-list">
                             <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                            <li class="breadcrumb-item active">Cart</li>
+                            <li class="breadcrumb-item active">Checkout</li>
                         </ul>
                         <!-- breadcrumb-list end -->
                     </div>
@@ -484,154 +561,299 @@
             </div>
         </div> --}}
         <!-- breadcrumb-area end -->
-        <!-- Cart Area Start -->
-        <div class="cart-main-area pt-100px pb-100px">
+        <!-- checkout area start -->
+        <div class="checkout-area pt-100px pb-100px">
             <div class="container">
-                <h3 class="cart-page-title">Your cart items</h3>
                 <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12 col-12">
-                        <form action="#">
-                            <div class="table-content table-responsive cart-table-content">
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Image</th>
-                                            <th>Product Name</th>
-                                            <th>Price</th>
-                                            <th>Qty</th>
-                                            <th>Subtotal</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {{#each cart}}
-                                        <tr>
-                                            <td class="product-thumbnail">
-                                                <a href=""><img class="img-responsive ml-15px"
-                                                        src="{{this.productImage}}" alt="" /></a>
-                                            </td>
-                                            <td class="product-name"><a href="">{{this.productName}} |
-                                                    {{this.productRom}}</a>
-                                            </td>
-                                            <td class="product-price-cart"><span
-                                                    class="amount">₹{{this.productPrice}}</span>
-                                            </td>
-                                            <td class="product-quantity">
-                                                <button class="decrement-btn"
-                                                    onclick="decrementQuantity('{{this._id}}')">-</button>
-                                                <input class="cart-plus-minus-box" id="quantityInput-{{this._id}}"
-                                                    value="{{this.quantity}}"
-                                                    onchange="updateQuantity(this.value,'{{this._id}}')" readonly />
-                                                <button class="increment-btn"
-                                                    onclick="incrementQuantity('{{this._id}}')">+</button>
-                                            </td>
-                                            <td class="product-subtotal" id="">
-                                                ₹{{this.subtotal}}
-                                            </td>
-                                            <td class="product-remove">
-                                                <a href="#" onclick="removeFromCart('{{this._id}}')"><i
-                                                        class="fa fa-times"></i></a>
-                                            </td>
-                                        </tr>
-                                        {{/each}}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="cart-shiping-update-wrapper">
-                                        <div class="cart-shiping-update">
-                                            <a href="/">Continue Shopping</a>
-                                        </div>
-                                        {{!-- <div class="cart-clear">
-                                            <button>Update Shopping Cart</button>
-                                            <a href="#">Clear Shopping Cart</a>
-                                        </div> --}}
+                    <div class="col-lg-7">
+                        <div class="billing-info-wrap">
+                            <h3>Billing Details</h3>
+                            {{!-- <div class="row">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-4">
+                                        <label>First Name</label>
+                                        <input type="text" />
                                     </div>
                                 </div>
-                            </div>
-                        </form>
-                        <div class="row">
-                            <div class="col-lg-4 col-md-6 mb-lm-30px">
-                                {{!-- <div class="cart-tax">
-                                    <div class="title-wrap">
-                                        <h4 class="cart-bottom-title section-bg-gray">Estimate Shipping And Tax</h4>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-4">
+                                        <label>Last Name</label>
+                                        <input type="text" />
                                     </div>
-                                    <div class="tax-wrapper">
-                                        <p>Enter your destination to get a shipping estimate.</p>
-                                        <div class="tax-select-wrapper">
-                                            <div class="tax-select">
-                                                <label>
-                                                    * Country
-                                                </label>
-                                                <select class="email s-email s-wid">
-                                                    <option>Bangladesh</option>
-                                                    <option>Albania</option>
-                                                    <option>Åland Islands</option>
-                                                    <option>Afghanistan</option>
-                                                    <option>Belgium</option>
-                                                </select>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-info mb-4">
+                                        <label>Company Name</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-select mb-4">
+                                        <label>Country</label>
+                                        <select>
+                                            <option>Select a country</option>
+                                            <option>Azerbaijan</option>
+                                            <option>Bahamas</option>
+                                            <option>Bahrain</option>
+                                            <option>Bangladesh</option>
+                                            <option>Barbados</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-info mb-4">
+                                        <label>Street Address</label>
+                                        <input class="billing-address" placeholder="House number and street name"
+                                            type="text" />
+                                        <input placeholder="Apartment, suite, unit etc." type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="billing-info mb-4">
+                                        <label>Town / City</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-4">
+                                        <label>State / County</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-4">
+                                        <label>Postcode / ZIP</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-4">
+                                        <label>Phone</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="billing-info mb-4">
+                                        <label>Email Address</label>
+                                        <input type="text" />
+                                    </div>
+                                </div>
+                            </div> --}}
+                            {{!-- <div class="checkout-account mb-30px">
+                                <input class="checkout-toggle2 w-auto h-auto" type="checkbox" />
+                                <label>Create an account?</label>
+                            </div>
+                            <div class="checkout-account-toggle open-toggle2 mb-30">
+                                <input placeholder="Email address" type="email" />
+                                <input placeholder="Password" type="password" />
+                                <button class="btn-hover checkout-btn" type="submit">register</button>
+                            </div> --}}
+                            {{!-- <div class="additional-info-wrap">
+                                <h4>Additional information</h4>
+                                <div class="additional-info">
+                                    <label>Order notes</label>
+                                    <textarea placeholder="Notes about your order, e.g. special notes for delivery. "
+                                        name="message"></textarea>
+                                </div>
+                            </div> --}}
+
+
+                            <div id="addressDetails">
+                                {{#each address}}
+                                <div class="address-container">
+                                    <input type="radio" name="selectedAddress" class="address-radio"
+                                        data-address-id="{{_id}}">
+                                    <div class="address-info">
+                                        <span>{{name}}</span>,<br>
+                                        <span>{{house_name}},</span>
+                                        <span>{{street}},</span><br>
+                                        <span>{{city}},</span>
+                                        <span>{{state}} - </span>
+                                        <span>{{pin}}<br></span>
+                                        <span>{{address_type}},</span>
+                                        <span>{{phone}}</span>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+
+                            <div class="checkout-account mt-25">
+                                <input class="checkout-toggle w-auto h-auto" type="checkbox" />
+                                <label>Add Address</label>
+                            </div>
+                            <form id="address" action="/address" method="post">
+                                <div class="different-address open-toggle mt-30px">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="billing-info mb-4">
+                                                <label> Name</label>
+                                                <input name="name" type="text" />
                                             </div>
-                                            <div class="tax-select">
-                                                <label>
-                                                    * Region / State
-                                                </label>
-                                                <select class="email s-email s-wid">
-                                                    <option>Bangladesh</option>
-                                                    <option>Albania</option>
-                                                    <option>Åland Islands</option>
-                                                    <option>Afghanistan</option>
-                                                    <option>Belgium</option>
-                                                </select>
-                                            </div>
-                                            <div class="tax-select mb-25px">
-                                                <label>
-                                                    * Zip/Postal Code
-                                                </label>
+                                        </div>
+                                        {{!-- <div class="col-lg-6 col-md-6">
+                                            <div class="billing-info mb-4">
+                                                <label>Last Name</label>
                                                 <input type="text" />
                                             </div>
-                                            <button class="cart-btn-2" type="submit">Get A Quote</button>
+                                        </div> --}}
+                                        <div class="col-lg-12">
+                                            <div class="billing-info mb-4">
+                                                <label>House Name</label>
+                                                <input name="house_name" type="text" />
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="billing-info mb-4">
+                                                <label>Street Address</label>
+                                                <input name="street" class="billing-address"
+                                                    placeholder="House number and street name" type="text" />
+                                                {{!-- <input placeholder="Apartment, suite, unit etc." type="text" />
+                                                --}}
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-12">
+                                            <div class="billing-info mb-4">
+                                                <label>Town / City</label>
+                                                <input name="city" type="text" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="billing-info mb-4">
+                                                <label>State</label>
+                                                <input name="state" type="text" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="billing-info mb-4">
+                                                <label>Postcode / ZIP</label>
+                                                <input name="pin" type="number" />
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="billing-select mb-4">
+                                                <label>Address Type</label>
+                                                <select name="address_type">
+                                                    <option>Work</option>
+                                                    <option>Home</option>
+                                                    <option>Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6 col-md-6">
+                                            <div class="billing-info mb-4">
+                                                <label>Phone Number</label>
+                                                <input name="phone" type="number" />
+                                            </div>
+                                        </div>
+                                        {{!-- <div class="col-lg-6 col-md-6">
+                                            <div class="billing-info mb-4">
+                                                <label>Email Address</label>
+                                                <input type="text" />
+                                            </div>
+                                        </div> --}}
+                                    </div>
+                                    <button class="submit-button" type="submit">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="col-lg-5 mt-md-30px mt-lm-30px ">
+                        <div class="your-order-area">
+                            <h3>Your order</h3>
+                            <div class="your-order-wrap gray-bg-4">
+                                <div class="your-order-product-info">
+                                    <div class="your-order-top">
+                                        <ul>
+                                            <li>Product Summary</li>
+                                            <li>Total</li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-middle">
+                                        {{#each cart}}
+                                        <ul>
+                                            <li class="product-info">
+                                                <img src="{{productImage}}" alt="{{productName}}" class="product-image">
+                                                <span class="order-middle-left">{{productName}} | {{productRom}} X
+                                                    {{this.quantity}}</span>
+                                                <span class="order-price">₹{{this.subtotal}}</span>
+                                            </li>
+                                        </ul>
+                                        {{/each}}
+                                    </div>
+                                    <div class="your-order-bottom">
+                                        <ul>
+                                            <li class="your-order-shipping">Shipping</li>
+                                            <li>Free shipping</li>
+                                        </ul>
+                                    </div>
+                                    <div class="your-order-total">
+                                        <ul>
+                                            <li class="order-total">Total</li>
+                                            <li>{{cartTotal}}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="payment-method">
+                                    <div class="payment-accordion element-mrg">
+                                        <div id="faq" class="panel-group">
+                                            {{!-- <div class="panel panel-default single-my-account m-0">
+                                                <div class="panel-heading my-account-title">
+                                                    <h4 class="panel-title"><a data-bs-toggle="collapse"
+                                                            href="#my-account-1" class="collapsed"
+                                                            aria-expanded="true">Direct bank transfer</a>
+                                                    </h4>
+                                                </div>
+                                                <div id="my-account-1" class="panel-collapse collapse show"
+                                                    data-bs-parent="#faq">
+                                                    <div class="panel-body">
+                                                        <p>Please send a check to Store Name, Store Street, Store Town,
+                                                            Store State / County, Store Postcode.</p>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+                                            <div class="select-payment-prompt">Please select a payment method:</div>
+
+                                            <div class="panel panel-default single-my-account m-0">
+                                                <div class="panel-heading my-account-title"
+                                                    style="display: flex; align-items: center;">
+                                                    <div style="flex: 0 0 auto;">
+                                                        <input type="radio" id="razorpay-radio" name="paymentMethod"
+                                                            style="transform: scale(1.3);">
+                                                    </div>
+                                                    <div style="flex: 1;">
+                                                        <label for="razorpay-radio"
+                                                            style="margin-left: 5px;">Razorpay</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="panel panel-default single-my-account m-0">
+                                                <div class="panel-heading my-account-title"
+                                                    style="display: flex; align-items: center;">
+                                                    <div style="flex: 0 0 auto;">
+                                                        <input type="radio" id="cash-on-delivery-radio"
+                                                            name="paymentMethod" style="transform: scale(1.3);">
+                                                    </div>
+                                                    <div style="flex: 1;">
+                                                        <label for="cash-on-delivery-radio"
+                                                            style="margin-left: 5px;">Cash on Delivery</label>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div> --}}
-                            </div>
-                            <div class="col-lg-4 col-md-6 mb-lm-30px">
-                                <div class="discount-code-wrapper">
-                                    <div class="title-wrap">
-                                        <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
-                                    </div>
-                                    <div class="discount-code">
-                                        <p>Enter your coupon code if you have one.</p>
-                                        <form>
-                                            <input type="text" required="" name="name" />
-                                            <button class="cart-btn-2" type="submit">Apply Coupon</button>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-12 mt-md-30px">
-                                <div class="grand-totall">
-                                    <div class="title-wrap">
-                                        <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
-                                    </div>
-                                    <h5>Total products <span>{{cartTotal}}</span></h5>
-                                    {{!-- <div class="total-shipping">
-                                        <h5>Total shipping</h5>
-                                        <ul>
-                                            <li><input type="checkbox" /> Standard <span>$20.00</span></li>
-                                            <li><input type="checkbox" /> Express <span>$30.00</span></li>
-                                        </ul>
-                                    </div> --}}
-                                    {{!-- <h4 class="grand-totall-title">Grand Total <span>$260.00</span></h4> --}}
-                                    <a href="/checkout">Proceed to Checkout</a>
-                                </div>
+                            <div class="Place-order mt-25">
+                                <a class="btn-hover" id="placeOrderBtn" href="#">Place Order</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Cart Area End -->
+        <!-- checkout area end -->
         <!-- Footer Area Start -->
         <div class="footer-area">
             <div class="footer-container">
@@ -644,7 +866,8 @@
                                     <div class="footer-logo">
                                         <a href="index.html"><img src="assets/images/logo/footer-logo.png" alt=""></a>
                                     </div>
-                                    <p class="about-text">Lorem ipsum dolor sit amet consl adipisi elit, sed do eiusmod
+                                    <p class="about-text">Lorem ipsum dolor sit amet consl adipisi elit, sed do
+                                        eiusmod
                                         templ incididunt ut labore
                                     </p>
                                     <ul class="link-follow">
@@ -682,7 +905,8 @@
                                                         Account</a></li>
                                                 <li class="li"><a class="single-link" href="contact.html">Contact</a>
                                                 </li>
-                                                <li class="li"><a class="single-link" href="cart.html">Shopping cart</a>
+                                                <li class="li"><a class="single-link" href="cart.html">Shopping
+                                                        cart</a>
                                                 </li>
                                                 <li class="li"><a class="single-link"
                                                         href="shop-left-sidebar.html">Shop</a></li>
@@ -705,7 +929,8 @@
                                                         Account</a></li>
                                                 <li class="li"><a class="single-link" href="contact.html">Contact</a>
                                                 </li>
-                                                <li class="li"><a class="single-link" href="cart.html">Shopping cart</a>
+                                                <li class="li"><a class="single-link" href="cart.html">Shopping
+                                                        cart</a>
                                                 </li>
                                                 <li class="li"><a class="single-link"
                                                         href="shop-left-sidebar.html">Shop</a></li>
@@ -725,9 +950,11 @@
                                         <!-- News letter area -->
                                         <p class="address">Address: Your Address Goes Here.</p>
                                         <p class="phone">Phone/Fax:<a href="tel:0123456789"> 0123456789</a></p>
-                                        <p class="mail">Email:<a href="mailto:demo@example.com"> demo@example.com</a>
+                                        <p class="mail">Email:<a href="mailto:demo@example.com">
+                                                demo@example.com</a>
                                         </p>
-                                        <p class="mail"><a href="https://demo@example.com/"> demo@example.com</a></p>
+                                        <p class="mail"><a href="https://demo@example.com/"> demo@example.com</a>
+                                        </p>
                                         <!-- News letter area  End -->
                                     </div>
                                 </div>
@@ -772,7 +999,11 @@
     <script src="assets/js/plugins/jquery-ui.min.js"></script>
     <script src="assets/js/plugins/mailchimp-ajax.js"></script>
 
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+
 
     <!-- Minify Version -->
     <!-- <script src="assets/js/vendor.min.js"></script>
@@ -781,84 +1012,68 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
-
     <script>
-        function incrementQuantity(productId) {
-            const inputElement = document.getElementById('quantityInput-' + productId);
-            let currentQuantity = parseInt(inputElement.value);
-            currentQuantity++;
-            inputElement.value = currentQuantity;
-            updateQuantity(currentQuantity, productId);
-        }
+        const radioButtons = document.querySelectorAll('.address-radio');
 
-        function decrementQuantity(productId) {
-            const inputElement = document.getElementById('quantityInput-' + productId);
-            let currentQuantity = parseInt(inputElement.value);
-            if (currentQuantity > 1) {
-                currentQuantity--;
-                inputElement.value = currentQuantity;
-                updateQuantity(currentQuantity, productId);
-            }
-        }
-
-        function updateQuantity(newQuantity, productId) {
-            console.log("New Quantity:", newQuantity, productId); // Check if the newQuantity is received correctly
-            axios.put('/updateQuantity', {
-                quantity: newQuantity,
-                id: productId
-            })
-                .then(function (response) {
-                  
-                  window.location.reload()
-                })
-                .catch(function (error) {
-                    // Handle error
-                    console.error(error);
-                });
-        }
-
-        function removeFromCart(productId) {
-            fetch(`/cart/${productId}`, {
-                method: 'DELETE'
-            })
-                .then(response => {
-                    if (response.ok) {
-                        // Refresh the page or update the wishlist view
-                        window.location.reload(); // Example: Refresh the page
-                    } else {
-                        console.error('Failed to remove product from wishlist');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error removing product from wishlist:', error);
-                });
-        }
-
-    </script>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        document.querySelector('a[href="/logoutt"]').addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default link behavior
-
-            Swal.fire({
-                title: 'Are you sure you want to logout?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, logout',
-                cancelButtonText: 'Cancel',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = "/logoutt";
+        // Add event listener to each radio button
+        radioButtons.forEach(radioButton => {
+            radioButton.addEventListener('change', function () {
+                if (this.checked) {
+                    const AddressId = this.getAttribute('data-address-id');
+                    // Do something with the selected address ID
                 }
             });
         });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+
+            placeOrderBtn.addEventListener('click', function () {
+                const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
+                const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+
+                if (!selectedAddress) {
+                    // If no address is selected, show a notification
+                    Toastify({
+                        text: "Please select an address before placing the order.",
+                        duration: 3000,
+                        gravity: "top",
+                        backgroundColor: "green"
+                    }).showToast();
+                } else if (!selectedPaymentMethod) {
+                    // If no payment method is selected, show a notification
+                    Toastify({
+                        text: "Please select a payment method before placing the order.",
+                        duration: 3000,
+                        gravity: "top",
+                        backgroundColor: "black"
+                    }).showToast();
+                } else {
+                    // Both address and payment method are selected, proceed with placing the order
+                    const addressId = selectedAddress.getAttribute('data-address-id');
+                    const paymentMethodId = selectedPaymentMethod.id;
+
+                    // Example Axios code to post the data
+                    axios.post('/placeOrder', {
+                        addressId: addressId,
+                        paymentMethodId: paymentMethodId
+                    })
+                        .then(response => {
+                            // Handle successful response
+                            console.log('Order placed successfully:', response.data);
+                        })
+                        .catch(error => {
+                            // Handle error
+                            console.error('Error placing order:', error);
+                        });
+                }
+            });
+        });
+
     </script>
 </body>
 
 
-<!-- Mirrored from htmldemo.net/hmart/hmart/cart.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
+<!-- Mirrored from htmldemo.net/hmart/hmart/checkout.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 29 Feb 2024 07:24:06 GMT -->
 
 </html>

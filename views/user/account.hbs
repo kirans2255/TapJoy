@@ -146,7 +146,7 @@
                                 </li> --}}
                                 <li><a href="/">Home </a></li>
                                 <li><a href="/about">About</a></li>
-                               
+
                                 <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li><a href="/shop">Tablet</a></li>
@@ -552,19 +552,42 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="address">
-                                <p>The following addresses will be used on the checkout page by default.</p>
-                                <h5 class="billing-address">Billing address</h5>
-                                <a href="#" class="view">Edit</a>
-                                <p class="mb-2"><strong>Michael M Hoskins</strong></p>
-                                <address>
-                                    <span class="mb-1 d-inline-block"><strong>City:</strong> Seattle</span>,
-                                    <br>
-                                    <span class="mb-1 d-inline-block"><strong>State:</strong> Washington(WA)</span>,
-                                    <br>
-                                    <span class="mb-1 d-inline-block"><strong>ZIP:</strong> 98101</span>,
-                                    <br>
-                                    <span><strong>Country:</strong> USA</span>
-                                </address>
+                                {{#each address}}
+                                <div id="addressDetails">
+                                    <div>
+                                        <label>Name:</label>
+                                        <span>{{this.name}}</span>
+                                    </div>
+                                    <div>
+                                        <label>House Name:</label>
+                                        <span>{{ house_name }}</span>
+                                    </div>
+                                    <div>
+                                        <label>Street Address:</label>
+                                        <span>{{ street }}</span>
+                                    </div>
+                                    <div>
+                                        <label>City:</label>
+                                        <span>{{ city }}</span>
+                                    </div>
+                                    <div>
+                                        <label>State:</label>
+                                        <span>{{ state }}</span>
+                                    </div>
+                                    <div>
+                                        <label>Pin/ZIP:</label>
+                                        <span>{{ pin }}</span>
+                                    </div>
+                                    <div>
+                                        <label>Address Type:</label>
+                                        <span>{{ address_type }}</span>
+                                    </div>
+                                    <div>
+                                        <label>Phone Number:</label>
+                                        <span>{{ phone }}</span>
+                                    </div>
+                                </div>
+                                {{/each}}
                             </div>
                             <div class="tab-pane fade" id="account-details">
                                 <h3>Account details </h3>

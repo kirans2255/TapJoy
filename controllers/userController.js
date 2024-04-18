@@ -9,6 +9,7 @@ const Admin = require('../models/Admin');
 require('dotenv').config();
 const mongoose = require("mongoose");
 const { log } = require('handlebars');
+const Handlebars = require('handlebars');
 
 
 // Render the home view
@@ -119,7 +120,7 @@ const renderDashboard = async (req, res) => {
   const brand = await Brand.find()
   const admin = await Admin.findOne();
   const banner = admin.Banner;
-  console.log(banner);
+  // console.log(banner);
 
 
   const uniqueProducts = await Promise.all(
@@ -174,32 +175,6 @@ const rendersingleProduct = async (req, res) => {
 };
 
 
-// const rendersingleProduct = async (req, res) => {
-//   const { id } = req.params; // Extract the product ID from request parameters
-
-//   try {
-//     // Fetch the product based on the provided ID
-//     const product = await Product.findById(id);
-
-//     if (!product) {
-//       // If product is not found, render an error page or handle accordingly
-//       return res.status(404).render('error', { message: 'Product not found' });
-//     }
-//     // console.log(product);
-//     // Render the single product page with the fetched product data
-//     res.render('user/single-1', { product });
-
-//   } catch (error) {
-//     // Handle any errors that occur during the process
-//     console.error('Error rendering single product:', error);
-//     res.status(500).render('error', { message: 'Internal Server Error' });
-//   }
-// };
-
-
-// const renderwishlist = (req, res) => {
-//   res.render('user/wishlist', { error: req.query.error || '' });
-// };
 
 const renderwishlist = async (req, res) => {
   try {
@@ -208,11 +183,40 @@ const renderwishlist = async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
-    const wishlist = user.wishlist;
-    // console.log(wishlist);
-    res.render('user/wishlist', { wishlist, user });
+
+    // Get product IDs, RAM, and ROM from the wishlist
+    const wishlistItems = user.wishlist.products;
+
+    // Fetch product details for each item in the wishlist
+    const wishlistProducts = [];
+    for (const item of wishlistItems) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+      // console.log(wishlistItems);
+
+      if (product) {
+        // Extract the variant matching the RAM and ROM
+        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+        // console.log(variant);
+        // Push the product details to the wishlistProducts array
+        wishlistProducts.push({
+          _id: product._id,
+          productName: product.productName,
+          productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
+          productPrice: variant.productPrice,
+          productRam: variant.productRam,
+          productRom: variant.productRom
+        });
+        // console.log(wishlistProducts);
+      }
+    }
+
+    res.render('user/wishlist', { wishlist: wishlistProducts, user });
   } catch (error) {
-    // console.error(error);
+    console.error(error);
     res.status(500).send('Internal Server Error');
   }
 };
@@ -220,11 +224,10 @@ const renderwishlist = async (req, res) => {
 
 
 
-const addToWishlist = async (req, res) => {
 
-  const { ram, rom } = req.body
+const addToWishlist = async (req, res) => {
+  const { ram, rom } = req.body;
   const { productId } = req.params;
-  const { price } = req.body;
   const userId = req.user.id;
 
   try {
@@ -242,12 +245,19 @@ const addToWishlist = async (req, res) => {
       user.wishlist = { products: [] };
     }
 
-    // Check if the product variant is already in the wishlist
-    const isProductInWishlistIndex = user.wishlist.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom);
+    const productInWishlist = user.wishlist.products.find(
+      item =>
+        item.productId.toString() === productId &&
+        item.productRam === ram &&
+        item.productRom === rom
+    );
 
-    if (isProductInWishlistIndex !== -1) {
+    if (productInWishlist) {
       // If product variant is found in the wishlist, remove it
-      user.wishlist.products.splice(isProductInWishlistIndex, 1);
+      user.wishlist.products = user.wishlist.products.filter(
+        item =>
+          !(item.productId.toString() === productId && item.productRam === ram && item.productRom === rom)
+      );
       await user.save();
       return res.status(201).json({ errorMessage: 'Removed from Wishlist successfully' });
     }
@@ -255,20 +265,18 @@ const addToWishlist = async (req, res) => {
     // If product variant not found in wishlist, add it
     user.wishlist.products.push({
       productId: productId,
-      productName: product.productName,
-      productPrice: price,
-      productImage: product.productImage,
-      productRam: ram,
-      productRom: rom
+      productRom: rom,
+      productRam: ram
     });
 
     await user.save();
-    res.status(200).json({ successMessage: 'Added to Wishlist successfully' });
+    res.status(200).json({ successMessage: 'Added to Wishlist successfully', productDetails: product });
   } catch (err) {
     console.error(err);
     res.status(500).json({ errorMessage: 'Internal server error' });
   }
 };
+
 
 
 
@@ -606,6 +614,8 @@ const sort = async (req, res) => {
     const category = req.params.category.toLowerCase(); // Extract the category parameter and convert to lowercase
 
     let filteredProducts;
+    const brand = await Brand.find();
+
 
     if (category === 'allproducts' || category === 'sortbypopularity') {
       filteredProducts = await Product.find({ productCategory: 'Tablet' }).exec();
@@ -621,7 +631,7 @@ const sort = async (req, res) => {
       filteredProducts = await Product.find({ productCategory: 'Tablet' }).exec();
     }
 
-    res.render('user/shop-3', { category: category, product: filteredProducts });
+    res.render('user/shop-3', { category: category, product: filteredProducts, brand });
   } catch (err) {
     // Handle errors
     console.error('Error fetching products:', err);
@@ -635,6 +645,8 @@ const Getsort = async (req, res) => {
     const category = req.params.category.toLowerCase(); // Extract the category parameter and convert to lowercase
 
     let filteredProducts;
+    const brand = await Brand.find();
+
 
     if (category === 'allproducts' || category === 'sortbypopularity') {
       filteredProducts = await Product.find({ productCategory: 'Phone' }).exec();
@@ -655,7 +667,7 @@ const Getsort = async (req, res) => {
       return unique.some(i => i.productName === item.productName) ? unique : [...unique, item];
     }, []);
 
-    res.render('user/shop-4', { category: category, product: filteredProducts });
+    res.render('user/shop-4', { category: category, product: filteredProducts, brand });
   } catch (err) {
     // Handle errors
     console.error('Error fetching products:', err);
@@ -758,7 +770,7 @@ const renderAbout = async (req, res) => {
   try {
     const brand = await Brand.findOne();
     // const banner = admin.Banner;
-    res.render('user/about',{brand});
+    res.render('user/about', { brand });
   } catch (error) {
     console.error(error);
     res.status(500).send('Internal Server Error');
@@ -776,20 +788,52 @@ const renderCart = async (req, res) => {
     if (!user) {
       return res.status(404).send('User not found');
     }
-    const cart = user.cart;
-    console.log(cart);
-    res.render('user/cart', { user, cart });
+
+    const cartItems = user.cart.products;
+
+    // Fetch product details for each item in the cart
+    const cartProducts = [];
+    for (const item of cartItems) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+
+      if (product) {
+        // Extract the variant matching the RAM and ROM
+        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+
+        // Push the product details to the cartProducts array along with quantity
+        cartProducts.push({
+          _id: product._id,
+          productName: product.productName,
+          productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
+          productPrice: variant.productPrice,
+          productRam: variant.productRam,
+          productRom: variant.productRom,
+          quantity: item.quantity,
+          subtotal: item.quantity * variant.productPrice
+        });
+      }
+    }
+
+    const cartTotal = cartProducts.reduce((sum, item) => sum + item.subtotal, 0);
+
+
+
+    res.render('user/cart', { user, cart: cartProducts, cartTotal });
   } catch (error) {
     // console.error(error);
     res.status(500).send('Internal Server Error');
   }
 }
 
-const addToCart = async (req, res) => {
 
-  const { ram, rom } = req.body
+
+const addToCart = async (req, res) => {
+  const { ram, rom } = req.body;
   const { productId } = req.params;
-  const { price } = req.body;
   const userId = req.user.id;
 
   try {
@@ -808,24 +852,20 @@ const addToCart = async (req, res) => {
     }
 
     // Check if the product variant is already in the cart
-    const isProductInCartIndex = user.cart.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom);
+    const existingProductIndex = user.cart.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom);
 
-    if (isProductInCartIndex !== -1) {
-      // If product variant is found in the cart, remove it
-      user.cart.products.splice(isProductInCartIndex, 1);
-      await user.save();
-      return res.status(201).json({ errorMessage: 'Removed from Cart successfully' });
+    if (existingProductIndex !== -1) {
+      // If product variant is found in the cart, increase quantity
+      user.cart.products[existingProductIndex].quantity += 1;
+    } else {
+      // If product variant not found in cart, add it
+      user.cart.products.push({
+        productId: productId,
+        productRam: ram,
+        productRom: rom,
+        quantity: 1 // Initialize quantity to 1
+      });
     }
-
-    // If product variant not found in cart, add it
-    user.cart.products.push({
-      productId: productId,
-      productName: product.productName,
-      productPrice: price,
-      productImage: product.productImage,
-      productRam: ram,
-      productRom: rom
-    });
 
     await user.save();
     res.status(200).json({ successMessage: 'Added to Cart successfully' });
@@ -834,6 +874,215 @@ const addToCart = async (req, res) => {
     res.status(500).json({ errorMessage: 'Internal server error' });
   }
 };
+
+
+
+
+const updateQuantity = async (req, res) => {
+  const { quantity } = req.body;
+  const productId = req.body.id;
+  const userId = req.user.id;
+
+  try {
+    const user = await Users.findOne({ _id: userId });
+    if (!user) {
+      return res.status(404).json({ errorMessage: 'User not found' });
+    }
+
+    if (!user.cart || !user.cart.products || user.cart.products.length === 0) {
+      return res.status(404).json({ errorMessage: 'Cart is empty' });
+    }
+
+    const index = user.cart.products.findIndex(item => item.productId.toString() === productId);
+
+    if (index === -1) {
+      return res.status(404).json({ errorMessage: 'Product not found in cart' });
+    }
+
+    const cartItems = user.cart.products;
+    for (const item of cartItems) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+
+      if (product) {
+        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+        const productPrice = variant.productPrice;
+
+        // Update quantity and subtotal
+        user.cart.products[index].quantity = parseInt(quantity);
+        const updatedQuantity = parseInt(quantity);
+        const subtotal = productPrice * updatedQuantity;
+        user.cart.products[index].subtotal = subtotal;
+
+        // console.log(subtotal);
+
+        await user.save();
+
+        return res.status(200).json({ successMessage: 'Quantity updated successfully', subtotal });
+      }
+    }
+
+    return res.status(404).json({ errorMessage: 'Product not found' });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ errorMessage: 'Internal server error' });
+  }
+};
+
+
+
+// Route handler to remove product from cart by productId
+const removeFromCart = async (req, res) => {
+  const productId = req.body.id; // Correct if the product ID is sent as 'id' in the request body
+  const userId = req.user.id;
+
+  try {
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find index of product in wishlist by productId
+    const index = user.cart.products.findIndex(item => item.productId.toString() === productId);
+    if (index === -1) {
+      return res.status(404).json({ error: 'Product not found in wishlist' });
+    }
+
+    // Remove product from wishlist
+    user.cart.products.splice(index, 1);
+    await user.save();
+
+    res.status(200).json({ errorMessage: 'Removed from Wishlist successfully' });
+  } catch (error) {
+    console.error('Error removing product from wishlist:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+
+//checkout
+
+const rendercheckout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+    const cartItems = user.cart.products;
+    const address = user.addresses;
+
+    // Fetch product details for each item in the cart
+    const cartProducts = [];
+    for (const item of cartItems) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+
+      if (product) {
+        // Extract the variant matching the RAM and ROM
+        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+
+        // Push the product details to the cartProducts array along with quantity
+        cartProducts.push({
+          _id: product._id,
+          productName: product.productName,
+          productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
+          productPrice: variant.productPrice,
+          productRam: variant.productRam,
+          productRom: variant.productRom,
+          quantity: item.quantity, // Include quantity in the cart product
+          subtotal: item.quantity * variant.productPrice
+        });
+      }
+    }
+
+    const cartTotal = cartProducts.reduce((sum, item) => sum + item.subtotal, 0);
+    res.render('user/checkout', { user, cart: cartProducts, cartTotal, address });
+  } catch (error) {
+    // console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+const Cod = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const users = await Users.findById(userId);
+    const { addressId, paymentMethodId } = req.body;
+    console.log(req.body);
+    if (!users) {
+      return res.status(404).send('User not found');
+    }
+    let user = await Users.findById(userId);
+
+    const orders = ({
+      // _id: product._id,
+      totalprice: totalprice,
+      shippingAddress: shippingAddress,
+      // status: status,
+      payment_Method: paymentMethodId,
+      pin: pin,
+      cancelReason: cancelReason,
+      created_at: created_at,
+    });
+
+    // Remove selected product from the cart
+    user.cart = user.cart.filter((cartItem) => cartItem !== item);
+
+    user.order.push(orders)
+    await user.save();
+    res.redirect('/checkout');
+    console.log(orders);
+  } catch(error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({ error: 'Error adding the product' });
+  }
+}
+
+const Address = async (req, res) => {
+  const userId = req.user.id;
+  try {
+    const {
+      name,
+      house_name,
+      street,
+      city,
+      state,
+      pin,
+      address_type,
+      phone,
+    } = req.body;
+    console.log(req.body);
+
+    let user = await Users.findById(userId);
+
+    const newAddress = ({
+      name: name,
+      house_name: house_name,
+      street: street,
+      city: city,
+      state: state,
+      pin: pin,
+      address_type: address_type,
+      phone: phone,
+    });
+
+    user.addresses.push(newAddress)
+    await user.save();
+    res.redirect('/checkout');
+
+  } catch (error) {
+    console.error('Error adding product:', error);
+    res.status(500).json({ error: 'Error adding the product' });
+  }
+}
+
 
 module.exports = {
   renderDashboard,
@@ -849,6 +1098,7 @@ module.exports = {
   renderwishlist,
   addToWishlist,
   renderbrand,
+  // renderbrandcategory,
   renderbrands,
   removeFromWishlist,
   sort,
@@ -858,10 +1108,17 @@ module.exports = {
   renderAbout,
   renderCart,
   addToCart,
+  updateQuantity,
+  removeFromCart,
+  // handlesingleProduct,
+  // handleGoogleCallback,
   forgotGetPage,
   forgotEmailPostPage,
   resetPassword,
   successGoogleLogin,
   failureGooglelogin,
   handleLogout,
+  Cod,
+  rendercheckout,
+  Address,
 };

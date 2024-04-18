@@ -3,32 +3,51 @@ const mongoose = require('mongoose');
 
 const wishlist = new mongoose.Schema({
   products: [{
-    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    productId: {type: mongoose.Schema.Types.ObjectId},
-    productName: { type: String },
-    productPrice: { type: Number },
-    productImage: { type: Array },
+    productId: { type: mongoose.Schema.Types.ObjectId },
     productRam: { type: String },
     productRom: { type: String },
-
-    // stockQuantity: {type: Number}
   }]
 })
 
 const cart = new mongoose.Schema({
   products: [{
-    _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
-    productId: {type: mongoose.Schema.Types.ObjectId},
-    productName: { type: String },
-    productPrice: { type: Number },
-    productImage: { type: Array },
+    // _id: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+    productId: { type: mongoose.Schema.Types.ObjectId },
     productRam: { type: String },
     productRom: { type: String },
-    totalPrice: { type: Number },
-    quantity : {type:Number},
+    quantity: { type: Number, default: 1 },
   }]
 })
 
+const Address = new mongoose.Schema({
+  name: { type: String },
+  house_name: { type: String },
+  street: { type: String },
+  city: { type: String },
+  state: { type: String },
+  pin: { type: String },
+  address_type: { type: String },
+  phone: { type: String },
+})
+
+const orders = new mongoose.Schema(
+  {
+    orderId: { type: String, required: true, unique: true },
+    products: [
+      {
+        productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+        productRam: { type: String, required: true },
+        productRom: { type: String, required: true },
+        quantity: { type: Number, required: true },
+        totalprice: { type: Number, required: true },
+        shippingAddress: { type: Address },
+        cancelReason: { type: String }, // New field for cancellation reason
+        payment_Method: {type:String},
+        status: {type:String},
+        created_at: {type:Date},
+      },
+    ]
+  })  
 
 const userDataSchema = new mongoose.Schema({
   name: String,
@@ -44,6 +63,10 @@ const userDataSchema = new mongoose.Schema({
     type: cart,
     default: { products: [] }
   },
+  addresses: [
+    Address,
+  ],
+  order: [orders],
 });
 
 

@@ -571,7 +571,7 @@
                         <div class="single-banner nth-child-1">
                             <img src="assets/images/product-image/tablet/ipad 11.png" alt="">
                             <div class="banner-content nth-child-1">
-                                <h3 class="title">Tablet </h3>
+                                <h3 class="title" style="color: rgb(255, 255, 255);">Tablet </h3>
                                 {{!-- <span class="category">From $29.00</span> --}}
                                 <a href="/shop" class="shop-link"><i class="fa fa-arrow-right"
                                         aria-hidden="true"></i></a>
@@ -579,7 +579,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="single-banner nth-child-2 mb-30px mb-lm-30px mt-lm-30px ">
+                        {{!-- <div class="single-banner nth-child-2 mb-30px mb-lm-30px mt-lm-30px ">
                             <img src="assets/images/banner/4.webp" alt="">
                             <div class="banner-content nth-child-2">
                                 <h3 class="title">Headphones</h3>
@@ -587,11 +587,11 @@
                                 <a href="shop-left-sidebar.html" class="shop-link"><i class="fa fa-arrow-right"
                                         aria-hidden="true"></i></a>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="single-banner nth-child-2">
-                            <img src="assets/images/banner/5.webp" alt="">
-                            <div class="banner-content nth-child-3">
-                                <h3 class="title">Smartphone</h3>
+                            <img src="assets/images/product-image/i13.webp" alt="">
+                            <div class="banner-content nth-child-1">
+                                <h3 class="title" style="color: black">Smartphone</h3>
                                 {{!-- <span class="category">From $69.00</span> --}}
                                 <a href="/shops" class="shop-link"><i class="fa fa-arrow-right"
                                         aria-hidden="true"></i></a>
@@ -761,11 +761,11 @@
 
                         <div class="brand-slider swiper-container">
                             <div class="swiper-wrapper align-items-center">
-                                {{#each brand}}x
+                                {{#each brand}}
                                 <div class="swiper-slide brand-slider-item text-center">
-                                    <a href="/shops"><img class=" img-fluid" src="{{BrandImage.url}}" alt="" /></a>
+                                    <a href="/shops"><img class="img-fluid" style="max-width: 150px; max-height: 100px;"
+                                            src="{{BrandImage.url}}" alt="" /></a>
                                 </div>
-
                                 {{/each}}
                             </div>
                         </div>
