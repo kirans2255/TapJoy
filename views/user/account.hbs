@@ -24,6 +24,35 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        #addressDetails {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            /* Adjust spacing between addresses */
+        }
+
+        .address-container {
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            padding: 15px;
+            position: relative;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            /* Set a maximum width */
+            width: 100%;
+            /* Add a subtle shadow */
+        }
+
+
+        .address-info {
+            font-family: Arial, sans-serif;
+            /* Change font family */
+            color: #333;
+            /* Change text color */
+        }
+    </style>
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="assets/css/plugins.min.css">
     <link rel="stylesheet" href="assets/css/style.min.css"> -->
@@ -497,27 +526,33 @@
                                         <thead>
                                             <tr>
                                                 <th>Order</th>
+                                                <th>Product</th>
+                                                <th>Quantity</th>
+                                                <th>Price</th>
                                                 <th>Date</th>
                                                 <th>Status</th>
-                                                <th>Total</th>
-                                                <th>Actions</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {{#each order}}
                                             <tr>
-                                                <td>1</td>
-                                                <td>May 10, 2018</td>
-                                                <td><span class="success">Completed</span></td>
-                                                <td>$25.00 for 1 item </td>
-                                                <td><a href="cart.html" class="view">view</a></td>
+                                                <td>{{this.orderId}}</td>
+                                                <td>{{this.productImage}}{{this.productName}}</td>
+                                                <td>{{this.quantity}}</td>
+                                                <td>{{this.totalprice}} </td>
+                                                <td>{{this.created_at}} </td>
+                                                <td>{{this.status}} </td>
                                             </tr>
-                                            <tr>
+                                            {{/each}}
+
+                                            {{!-- <tr>
                                                 <td>2</td>
                                                 <td>May 10, 2018</td>
                                                 <td>Processing</td>
                                                 <td>$17.00 for 1 item </td>
                                                 <td><a href="cart.html" class="view">view</a></td>
-                                            </tr>
+                                            </tr> --}}
                                         </tbody>
                                     </table>
                                 </div>
@@ -552,42 +587,23 @@
                                 </div>
                             </div>
                             <div class="tab-pane" id="address">
-                                {{#each address}}
                                 <div id="addressDetails">
-                                    <div>
-                                        <label>Name:</label>
-                                        <span>{{this.name}}</span>
+                                    {{#each address}}
+                                    <div class="address-container">
+
+                                        <div class="address-info">
+                                            <span>{{name}}</span>,<br>
+                                            <span>{{house_name}},</span>
+                                            <span>{{street}},</span><br>
+                                            <span>{{city}},</span>
+                                            <span>{{state}} - </span>
+                                            <span>{{pin}}<br></span>
+                                            <span>{{address_type}},</span>
+                                            <span>{{phone}}</span>
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label>House Name:</label>
-                                        <span>{{ house_name }}</span>
-                                    </div>
-                                    <div>
-                                        <label>Street Address:</label>
-                                        <span>{{ street }}</span>
-                                    </div>
-                                    <div>
-                                        <label>City:</label>
-                                        <span>{{ city }}</span>
-                                    </div>
-                                    <div>
-                                        <label>State:</label>
-                                        <span>{{ state }}</span>
-                                    </div>
-                                    <div>
-                                        <label>Pin/ZIP:</label>
-                                        <span>{{ pin }}</span>
-                                    </div>
-                                    <div>
-                                        <label>Address Type:</label>
-                                        <span>{{ address_type }}</span>
-                                    </div>
-                                    <div>
-                                        <label>Phone Number:</label>
-                                        <span>{{ phone }}</span>
-                                    </div>
+                                    {{/each}}
                                 </div>
-                                {{/each}}
                             </div>
                             <div class="tab-pane fade" id="account-details">
                                 <h3>Account details </h3>

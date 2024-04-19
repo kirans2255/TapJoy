@@ -17,9 +17,21 @@ const razorpay = require("../config/razorpay");
 
 
 const renderAccount = async (req, res) => {
-  const user = await Users.find();
-  res.render('user/account', user);
+  try {
+    const user = await Users.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    const address = user.addresses;
+    const order = user.orders;
+    res.render('user/account', { user, address,order });
+    // console.log(address);
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+    res.status(500).render('error', { errorMessage: "Error fetching user data" });
+  }
 };
+
 
 const rendershop = async (req, res) => {
   const uniqueProductNames = await Product.distinct("productName", { productCategory: 'Tablet' });
