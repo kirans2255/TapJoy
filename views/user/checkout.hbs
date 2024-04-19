@@ -790,7 +790,7 @@
                                     <div class="your-order-total">
                                         <ul>
                                             <li class="order-total">Total</li>
-                                            <li>{{cartTotal}}</li>
+                                            <li id="razor-price">{{cartTotal}}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1012,6 +1012,7 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
         const radioButtons = document.querySelectorAll('.address-radio');
 
@@ -1042,30 +1043,96 @@
                     const addressId = selectedAddress.getAttribute('data-address-id');
                     const paymentMethodId = selectedPaymentMethod.id;
 
+                    // Fetch subtotal from the HTML
+                    const subtotals = document.getElementById('razor-price').textContent
+                    let subtotal = parseFloat(subtotals)
+                    console.log("jdj", subtotal)
+                    //const subtotal = subtotalElement.innerText;
+
                     // Example Axios code to post the data
-                    axios.post('/placeOrder', {
-                        addressId: addressId,
-                        paymentMethodId: paymentMethodId
-                    })
-                        .then(response => {
-                        // Handle successful response
-                        console.log('Order placed successfully:', response.data);
-                        // Display success alert
-                        swal("Success!", "Order placed successfully!", "success")
-                            .then(() => {
-                                // Redirect to another page
-                                window.location.href = '/';
+                    if (paymentMethodId === 'Razorpay') {
+                        // Handle Razorpay payment method
+                        axios.post('/razorpay/placeOrder', {
+                            addressId: addressId,
+                            amount: subtotal
+                        })
+                            .then(response => {
+                                console.log("fff", response)
+                                // Handle successful response
+                                const razorpay = new Razorpay({
+                                    key: response.data.apiKey,
+                                    amount: response.data.amount,
+                                    currency: "INR",
+                                    order_id: response.data.id,
+                                    name: "Phone Zone",
+                                    description: "Complete the payment for order placement",
+                                    handler: function (response) {
+                                        console.log("pppp", response)
+                                        // This function is triggered after the payment is successfully completed
+                                        const selectedAddressId = document.querySelector('input[name="selectedAddress"]:checked').getAttribute('data-address-id');
+                                        const totalPrice = parseFloat(document.getElementById('razor-price').innerText);
+
+                                        axios
+                                            .post("/razorpay/placeOrderdb", {
+                                                addressId: selectedAddressId,
+                                                totalPrice: totalPrice,
+                                                paymentMethodId: paymentMethodId,
+                                                razorpay_order_id: response.razorpay_order_id,
+                                                razorpay_payment_id: response.razorpay_payment_id
+
+                                            })
+                                            .then(response => {
+                                                // Handle successful response
+                                                console.log('Order placed successfully with Cash on Delivery:', response.data);
+                                                // Display success alert
+                                                swal("Success!", "Order placed successfully!", "success")
+                                                    .then(() => {
+                                                        // Redirect to another page
+                                                        window.location.href = '/';
+                                                    });
+                                            })
+                                            .catch((error) => {
+                                                console.error("Error placing order:", error);
+                                            });
+                                    },
+                                });
+
+                                razorpay.open();
+                            })
+                            .catch(error => {
+                                // Handle error
+                                console.error('Error placing order with Razorpay:', error);
+                                // Display error alert
+                                swal("Error!", "Error placing order with Razorpay. Please try again later.", "error");
                             });
-                    })
-                    .catch(error => {
-                        // Handle error
-                        console.error('Error placing order:', error);
-                        // Display error alert
-                        swal("Error!", "Error placing order. Please try again later.", "error");
-                    });
+                    } else if (paymentMethodId === 'COD') {
+                        // Handle Cash on Delivery payment method
+                        axios.post('/placeOrder', {
+                            addressId: addressId,
+                            paymentMethodId: paymentMethodId,
+                            //amount: subtotal 
+                        })
+                            .then(response => {
+                                // Handle successful response
+                                console.log('Order placed successfully with Cash on Delivery:', response.data);
+                                // Display success alert
+                                swal("Success!", "Order placed successfully!", "success")
+                                    .then(() => {
+                                        // Redirect to another page
+                                        window.location.href = '/';
+                                    });
+                            })
+                            .catch(error => {
+                                // Handle error
+                                console.error('Error placing order with Cash on Delivery:', error);
+                                // Display error alert
+                                swal("Error!", "Error placing order with Cash on Delivery. Please try again later.", "error");
+                            });
+                    }
                 }
             });
         });
+
 
     </script>
 </body>

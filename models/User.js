@@ -40,6 +40,8 @@ const order = new mongoose.Schema(
     address: { type: Address },
     cancelReason: { type: String }, // New field for cancellation reason
     payment_Method: { type: String },
+    razorpay_order_id:{type:String},
+    razorpay_payment_id:{type:String},
     status: { type: String },
     created_at: { type: Date },
     

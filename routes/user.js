@@ -82,6 +82,9 @@ router.post('/placeOrder',requireAuth ,userController.Cod);
 
 router.post('/razorpay/placeOrder',requireAuth ,userController.razorpaypayment);
 
+router.post('/razorpay/placeOrderdb',requireAuth ,userController.placeorder);
+
+
 
 
 //////////

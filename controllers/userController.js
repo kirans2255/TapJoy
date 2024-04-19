@@ -1087,20 +1087,20 @@ const Cod = async (req, res) => {
         'variants.productRam': item.productRam,
         'variants.productRom': item.productRom
       });
-    
+
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
       }
-    
+
       // Find the variant matching the RAM and ROM
       const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
-    
+
       if (!variant) {
         return res.status(404).json({ message: "Variant not found" });
       }
-    
+
       const newOrder = {
-        orderId: new mongoose.Types.ObjectId(), 
+        orderId: new mongoose.Types.ObjectId(),
         productId: item.productId,
         quantity: item.quantity,
         price: variant.productPrice,
@@ -1110,7 +1110,7 @@ const Cod = async (req, res) => {
         status: "Pending",
         created_at: new Date(),
       };
-    
+
       // Push the new order to the user's orders array
       user.orders.push(newOrder);
     }
@@ -1134,7 +1134,7 @@ const Cod = async (req, res) => {
 const razorpaypayment = async (req, res) => {
   try {
     const { amount } = req.body;
-    console.log(req.body);
+    console.log(amount);
 
     const response = await razorpay.orders.create({
       amount: amount * 100,
@@ -1147,9 +1147,9 @@ const razorpaypayment = async (req, res) => {
       amount: amount,
       id: response.id,
     });
-    
+
     // Redirect to /shop after sending JSON response
-    res.redirect("/shop");
+    // res.redirect("/shop");
   } catch (error) {
     console.error("Error creating the order: ", error);
     res.status(500).render("error", {
@@ -1158,6 +1158,90 @@ const razorpaypayment = async (req, res) => {
     });
   }
 };
+
+const placeorder = async (req, res) => {
+
+  try {
+    const userId = req.user.id;
+    const { razorpay_order_id, razorpay_payment_id, addressId, paymentMethodId } = req.body
+
+    // Find the user by ID
+    const user = await Users.findById(userId).populate("cart.products");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the selected address in the user's addresses array
+    const selectedAddress = user.addresses.find(
+      (address) => address._id == addressId
+    );
+
+    if (!selectedAddress) {
+      return res.status(404).json({ message: "Selected address not found" });
+    }
+
+    // Get all products in the cart
+    const allProducts = user.cart.products;
+    // console.log(allProducts)
+
+    if (allProducts.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No products in the cart" });
+    }
+
+    // Iterate through each product in the cart and create a new order object
+    for (const item of allProducts) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      // Find the variant matching the RAM and ROM
+      const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+
+      if (!variant) {
+        return res.status(404).json({ message: "Variant not found" });
+      }
+
+      const postorder = {
+        orderId: new mongoose.Types.ObjectId(),
+        productId: item.productId,
+        quantity: item.quantity,
+        price: variant.productPrice,
+        totalprice: item.quantity * variant.productPrice,
+        address: selectedAddress,
+        payment_Method: paymentMethodId,
+        razorpay_order_id: razorpay_order_id,
+        razorpay_payment_id: razorpay_payment_id,
+        status: "Pending",
+        created_at: new Date(),
+      };
+
+      // Push the new order to the user's orders array
+      user.orders.push(postorder);
+    }
+
+    // Clear the cart after creating orders
+    user.cart.products = [];
+
+    // Save the updated user document
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Orders placed successfully", orders: user.orders });
+  } catch (error) {
+    console.error("Error placing the order: ", error);
+    res.status(500).json({ error: "Error placing the order" });
+  }
+}
 
 
 module.exports = {
@@ -1198,4 +1282,5 @@ module.exports = {
   rendercheckout,
   Address,
   razorpaypayment,
+  placeorder,
 };
