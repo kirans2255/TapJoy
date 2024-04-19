@@ -68,6 +68,7 @@
     "nodemailer": "^6.9.10",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
-    "passport-local": "^1.0.0"
+    "passport-local": "^1.0.0",
+    "razorpay": "^2.9.3"
   }
 }

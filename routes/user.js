@@ -80,6 +80,9 @@ router.post('/address',requireAuth ,userController.Address);
 ///////COD
 router.post('/placeOrder',requireAuth ,userController.Cod);
 
+router.post('/razorpay/placeOrder',requireAuth ,userController.razorpaypayment);
+
+
 
 //////////
 

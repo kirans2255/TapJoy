@@ -1,5 +1,4 @@
 const Users = require('../models/User');
-const authMiddleware = require('../middleware/authMiddleware');
 const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
@@ -9,8 +8,7 @@ const Admin = require('../models/Admin');
 require('dotenv').config();
 const mongoose = require("mongoose");
 const { log } = require('handlebars');
-const Handlebars = require('handlebars');
-
+const razorpay = require("../config/razorpay");
 
 // Render the home view
 // const renderHome = (req, res) => {
@@ -1074,7 +1072,7 @@ const Cod = async (req, res) => {
 
     // Get all products in the cart
     const allProducts = user.cart.products;
-    console.log(allProducts)
+    // console.log(allProducts)
 
     if (allProducts.length === 0) {
       return res
@@ -1107,7 +1105,7 @@ const Cod = async (req, res) => {
         quantity: item.quantity,
         price: variant.productPrice,
         totalprice: item.quantity * variant.productPrice,
-        addresses: selectedAddress,
+        address: selectedAddress,
         payment_Method: paymentMethodId,
         status: "Pending",
         created_at: new Date(),
@@ -1129,6 +1127,35 @@ const Cod = async (req, res) => {
   } catch (error) {
     console.error("Error placing the order: ", error);
     res.status(500).json({ error: "Error placing the order" });
+  }
+};
+
+
+const razorpaypayment = async (req, res) => {
+  try {
+    const { amount } = req.body;
+    console.log(req.body);
+
+    const response = await razorpay.orders.create({
+      amount: amount * 100,
+      currency: "INR",
+      payment_capture: 1,
+    });
+
+    res.status(200).json({
+      apiKey: process.env.RAZORPAY_KEY_ID,
+      amount: amount,
+      id: response.id,
+    });
+    
+    // Redirect to /shop after sending JSON response
+    res.redirect("/shop");
+  } catch (error) {
+    console.error("Error creating the order: ", error);
+    res.status(500).render("error", {
+      layout: false,
+      errorMessage: "Error creating the order",
+    });
   }
 };
 
@@ -1170,4 +1197,5 @@ module.exports = {
   Cod,
   rendercheckout,
   Address,
+  razorpaypayment,
 };

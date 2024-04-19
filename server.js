@@ -36,6 +36,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
