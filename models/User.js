@@ -30,24 +30,20 @@ const Address = new mongoose.Schema({
   phone: { type: String },
 })
 
-const orders = new mongoose.Schema(
+const order = new mongoose.Schema(
   {
     orderId: { type: String, required: true, unique: true },
-    products: [
-      {
-        productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
-        productRam: { type: String, required: true },
-        productRom: { type: String, required: true },
-        quantity: { type: Number, required: true },
-        totalprice: { type: Number, required: true },
-        shippingAddress: { type: Address },
-        cancelReason: { type: String }, // New field for cancellation reason
-        payment_Method: {type:String},
-        status: {type:String},
-        created_at: {type:Date},
-      },
-    ]
-  })  
+    productId: {type:String, required:true},
+    quantity: {type:String},
+    price:{type:String},
+    totalprice:{type:String},
+    address: { type: Address },
+    cancelReason: { type: String }, // New field for cancellation reason
+    payment_Method: { type: String },
+    status: { type: String },
+    created_at: { type: Date },
+    
+  })
 
 const userDataSchema = new mongoose.Schema({
   name: String,
@@ -66,7 +62,7 @@ const userDataSchema = new mongoose.Schema({
   addresses: [
     Address,
   ],
-  order: [orders],
+  orders: [order],
 });
 
 

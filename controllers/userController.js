@@ -1010,40 +1010,7 @@ const rendercheckout = async (req, res) => {
   }
 }
 
-const Cod = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const users = await Users.findById(userId);
-    const { addressId, paymentMethodId } = req.body;
-    console.log(req.body);
-    if (!users) {
-      return res.status(404).send('User not found');
-    }
-    let user = await Users.findById(userId);
 
-    const orders = ({
-      // _id: product._id,
-      totalprice: totalprice,
-      shippingAddress: shippingAddress,
-      // status: status,
-      payment_Method: paymentMethodId,
-      pin: pin,
-      cancelReason: cancelReason,
-      created_at: created_at,
-    });
-
-    // Remove selected product from the cart
-    user.cart = user.cart.filter((cartItem) => cartItem !== item);
-
-    user.order.push(orders)
-    await user.save();
-    res.redirect('/checkout');
-    console.log(orders);
-  } catch(error) {
-    console.error('Error adding product:', error);
-    res.status(500).json({ error: 'Error adding the product' });
-  }
-}
 
 const Address = async (req, res) => {
   const userId = req.user.id;
@@ -1082,6 +1049,88 @@ const Address = async (req, res) => {
     res.status(500).json({ error: 'Error adding the product' });
   }
 }
+
+
+const Cod = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { addressId, paymentMethodId } = req.body;
+
+    // Find the user by ID
+    const user = await Users.findById(userId).populate("cart.products");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Find the selected address in the user's addresses array
+    const selectedAddress = user.addresses.find(
+      (address) => address._id == addressId
+    );
+
+    if (!selectedAddress) {
+      return res.status(404).json({ message: "Selected address not found" });
+    }
+
+    // Get all products in the cart
+    const allProducts = user.cart.products;
+    console.log(allProducts)
+
+    if (allProducts.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No products in the cart" });
+    }
+
+    // Iterate through each product in the cart and create a new order object
+    for (const item of allProducts) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+    
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+    
+      // Find the variant matching the RAM and ROM
+      const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+    
+      if (!variant) {
+        return res.status(404).json({ message: "Variant not found" });
+      }
+    
+      const newOrder = {
+        orderId: new mongoose.Types.ObjectId(), 
+        productId: item.productId,
+        quantity: item.quantity,
+        price: variant.productPrice,
+        totalprice: item.quantity * variant.productPrice,
+        addresses: selectedAddress,
+        payment_Method: paymentMethodId,
+        status: "Pending",
+        created_at: new Date(),
+      };
+    
+      // Push the new order to the user's orders array
+      user.orders.push(newOrder);
+    }
+
+    // Clear the cart after creating orders
+    user.cart.products = [];
+
+    // Save the updated user document
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Orders placed successfully", orders: user.orders });
+  } catch (error) {
+    console.error("Error placing the order: ", error);
+    res.status(500).json({ error: "Error placing the order" });
+  }
+};
 
 
 module.exports = {

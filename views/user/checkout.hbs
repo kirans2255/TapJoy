@@ -662,7 +662,7 @@
                                 {{#each address}}
                                 <div class="address-container">
                                     <input type="radio" name="selectedAddress" class="address-radio"
-                                        data-address-id="{{_id}}">
+                                        data-address-id="{{_id}}" checked>
                                     <div class="address-info">
                                         <span>{{name}}</span>,<br>
                                         <span>{{house_name}},</span>
@@ -818,8 +818,8 @@
                                                 <div class="panel-heading my-account-title"
                                                     style="display: flex; align-items: center;">
                                                     <div style="flex: 0 0 auto;">
-                                                        <input type="radio" id="razorpay-radio" name="paymentMethod"
-                                                            style="transform: scale(1.3);">
+                                                        <input type="radio" id="Razorpay" name="paymentMethod"
+                                                            style="transform: scale(1.3);" checked>
                                                     </div>
                                                     <div style="flex: 1;">
                                                         <label for="razorpay-radio"
@@ -832,12 +832,12 @@
                                                 <div class="panel-heading my-account-title"
                                                     style="display: flex; align-items: center;">
                                                     <div style="flex: 0 0 auto;">
-                                                        <input type="radio" id="cash-on-delivery-radio"
-                                                            name="paymentMethod" style="transform: scale(1.3);">
+                                                        <input type="radio" id="COD" name="paymentMethod"
+                                                            style="transform: scale(1.3);">
                                                     </div>
                                                     <div style="flex: 1;">
-                                                        <label for="cash-on-delivery-radio"
-                                                            style="margin-left: 5px;">Cash on Delivery</label>
+                                                        <label for="COD" style="margin-left: 5px;">Cash on
+                                                            Delivery</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -846,7 +846,7 @@
                                 </div>
                             </div>
                             <div class="Place-order mt-25">
-                                <a class="btn-hover" id="placeOrderBtn" href="#">Place Order</a>
+                                <a class="btn-hover" id="placeOrderBtn" href="">Place Order</a>
                             </div>
                         </div>
                     </div>
@@ -1028,26 +1028,15 @@
         document.addEventListener("DOMContentLoaded", function () {
             const placeOrderBtn = document.getElementById('placeOrderBtn');
 
-            placeOrderBtn.addEventListener('click', function () {
+            placeOrderBtn.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent default link behavior
+
                 const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
                 const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
 
-                if (!selectedAddress) {
-                    // If no address is selected, show a notification
-                    Toastify({
-                        text: "Please select an address before placing the order.",
-                        duration: 3000,
-                        gravity: "top",
-                        backgroundColor: "green"
-                    }).showToast();
-                } else if (!selectedPaymentMethod) {
-                    // If no payment method is selected, show a notification
-                    Toastify({
-                        text: "Please select a payment method before placing the order.",
-                        duration: 3000,
-                        gravity: "top",
-                        backgroundColor: "black"
-                    }).showToast();
+                if (!selectedAddress || !selectedPaymentMethod) {
+                    // Check if both address and payment method are selected
+                    console.error('Please select both address and payment method.');
                 } else {
                     // Both address and payment method are selected, proceed with placing the order
                     const addressId = selectedAddress.getAttribute('data-address-id');
@@ -1059,13 +1048,21 @@
                         paymentMethodId: paymentMethodId
                     })
                         .then(response => {
-                            // Handle successful response
-                            console.log('Order placed successfully:', response.data);
-                        })
-                        .catch(error => {
-                            // Handle error
-                            console.error('Error placing order:', error);
-                        });
+                        // Handle successful response
+                        console.log('Order placed successfully:', response.data);
+                        // Display success alert
+                        swal("Success!", "Order placed successfully!", "success")
+                            .then(() => {
+                                // Redirect to another page
+                                window.location.href = '/';
+                            });
+                    })
+                    .catch(error => {
+                        // Handle error
+                        console.error('Error placing order:', error);
+                        // Display error alert
+                        swal("Error!", "Error placing order. Please try again later.", "error");
+                    });
                 }
             });
         });
