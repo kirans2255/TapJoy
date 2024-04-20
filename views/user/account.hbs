@@ -535,10 +535,10 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{#each order}}
+                                            {{#each orders}}
                                             <tr>
                                                 <td>{{this.orderId}}</td>
-                                                <td>{{this.productImage}}{{this.productName}}</td>
+                                                <td><img src="{{this.productImage}}" style="width: 100px;">{{this.productName}}</td>
                                                 <td>{{this.quantity}}</td>
                                                 <td>{{this.totalprice}} </td>
                                                 <td>{{this.created_at}} </td>

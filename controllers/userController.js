@@ -22,15 +22,31 @@ const renderAccount = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
+    
     const address = user.addresses;
-    const order = user.orders;
-    res.render('user/account', { user, address,order });
-    // console.log(address);
+    const orders = user.orders;
+
+    // Fetch product image names by iterating through orders
+    for (const order of orders) {
+      const productId = order.productId;
+
+      // Example query to fetch product details based on productId
+      const product = await Product.findById(productId);
+      if (product) {
+        const { productName, productImage } = product;
+        order.productName = productName;
+        order.productImage = productImage[0];
+      }
+    }
+
+    res.render('user/account', { user, address, orders });
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).render('error', { errorMessage: "Error fetching user data" });
   }
 };
+
+
 
 
 const rendershop = async (req, res) => {
@@ -1151,7 +1167,7 @@ const razorpaypayment = async (req, res) => {
     const response = await razorpay.orders.create({
       amount: amount * 100,
       currency: "INR",
-      payment_capture: 1,
+      payment_capture: 1,  
     });
 
     res.status(200).json({

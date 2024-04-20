@@ -1671,13 +1671,21 @@
                     body: JSON.stringify({ userId, productId, price, variantInfo, rom, ram })
                 })
                     .then(response => {
+                        console.log('ffff',response)
+                        if (response.status === 404) {
+                            console.log("Response status is 404. Redirecting to '/' page");
+                            window.location.href = "/"; // Redirect to the home page
+                        }
                         if (!response.ok) {
-                            console.log("a");
+
+                            console.log("Failed to add product to Cart. Response status:", response.status);
                             throw new Error('Failed to add product to Cart');
+
                         }
 
                         return response.json();
                     })
+
                     .then(response => {
                         console.log("pop", response);
                         if (response.errorMessage === 'Removed from Cart successfully') {

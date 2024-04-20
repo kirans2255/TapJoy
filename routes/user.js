@@ -65,8 +65,8 @@ router.post('/cart/:productId',requireAuth ,userController.addToCart);
 
 router.get('/account',requireAuth, userController.renderAccount);
 
-router.post('/signup', userController.handleSignup);
 
+router.put('/updateQuantity',requireAuth,userController.updateQuantity)
 
 router.delete('/cart/:productId',requireAuth,userController.removeFromCart)
 
@@ -86,6 +86,7 @@ router.post('/razorpay/placeOrderdb',requireAuth ,userController.placeorder);
 
 
 
+router.post('/signup', userController.handleSignup);
 
 //////////
 
