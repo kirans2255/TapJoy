@@ -56,7 +56,13 @@ router.post('/addBanner',upload.array('BannerImage'), product.handleBanner);
 
 router.delete('/deleteb/:id', product.deleteBanner);
 
+///order
+router.get('/admin/order',adminController.renderOrder);
+
+
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);
+
+router.post('/updatestatus', adminController.updatestatus);
 
 module.exports = router;

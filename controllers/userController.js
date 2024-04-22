@@ -390,6 +390,7 @@ const handleSignup = async (req, res) => {
     res.status(500).send('Internal Server Error');
   }
 };
+
 //signin
 const renderHome = async (req, res) => {
   try {
@@ -1128,7 +1129,7 @@ const Cod = async (req, res) => {
       }
 
       const newOrder = {
-        orderId: new mongoose.Types.ObjectId(),
+        // orderId: new mongoose.Types.ObjectId(),
         productId: item.productId,
         quantity: item.quantity,
         price: variant.productPrice,
@@ -1239,7 +1240,7 @@ const placeorder = async (req, res) => {
       }
 
       const postorder = {
-        orderId: new mongoose.Types.ObjectId(),
+        // orderId: new mongoose.Types.ObjectId(),
         productId: item.productId,
         quantity: item.quantity,
         price: variant.productPrice,

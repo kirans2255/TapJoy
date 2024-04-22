@@ -5,6 +5,9 @@ const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');// Update the import based on your cloudinary setup
 const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
+const Users = require('../models/User');
+const Product = require('../models/Product');
+
 // const multer = require('multer');
 // const Category = require('../models/Category');
 // const upload = multer({ dest: 'uploads/' });
@@ -189,7 +192,7 @@ let resetPassword = async (req, res) => {
 const handleCategory = async (req, res) => {
   try {
     const { CategoryName } = req.body;
-    
+
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: "No file uploaded" });
     }
@@ -286,7 +289,7 @@ const updateCategory = async (req, res) => {
         crop: 'scale',
       });
 
-      
+
       if (Category.CategoryImage && Category.CategoryImage.public_id) {
         // Destroy the previous image on Cloudinary
         await cloudinary.uploader.destroy(Category.CategoryImage.public_id);
@@ -332,6 +335,98 @@ const handleLogout = async (req, res) => {
   }
 };
 
+
+//order
+
+// const renderOrder = async (req, res) => {
+//   try {
+//     // Fetch all orders from the database
+//     const usersWithOrders = await Users.find().populate({
+//       path: 'orders',
+//       populate: {
+//         path: 'productId',
+//         model: 'Product' // Assuming 'Product' is the name of your product model
+//       }
+//     });
+
+//     // Extract orders from each user
+//     const orders = usersWithOrders.reduce((acc, user) => {
+//       acc.push(...user.orders);
+//       return acc;
+//     }, []);
+
+//     res.render('admin/order', { orders });
+//   } catch (error) {
+//     console.error("Error fetching orders:", error);
+//     res.status(500).render('error', { errorMessage: "Error fetching orders" });
+//   }
+// };
+
+
+const renderOrder = async (req, res) => {
+  try {
+    // Fetch all orders from the database
+    const usersWithOrders = await Users.find().populate({
+      path: 'orders',
+      populate: {
+        path: 'productId',
+        model: 'Product'
+      }
+    });
+
+    // Extract orders from each user
+    const orders = usersWithOrders.reduce((acc, user) => {
+      acc.push(...user.orders.map(order => ({
+        orderId:order._id,
+        userName: user.name,
+        productName: order.productId.productName,
+        productImage: order.productId.productImage[0],
+        payment_Method: order.payment_Method,
+        totalprice: order.totalprice,
+      })));
+      return acc;
+    }, []);
+
+    res.render('admin/order', { orders });
+  } catch (error) {
+    console.error("Error fetching orders:", error);
+    res.status(500).render('error', { errorMessage: "Error fetching orders" });
+  }
+};
+
+
+const updatestatus = async (req, res) => {
+  try {
+    const { orderId, newStatus } = req.body;
+
+    // Find the user who owns the order
+    const user = await Users.findOne();
+    // console.log(user)
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Find the order within the user's orders and update its status
+    const orderIndex = user.orders.findIndex(order => order._id.toString() === orderId);
+    if (orderIndex === -1) {
+      return res.status(404).json({ error: 'Order not found' });
+    }
+
+    user.orders[orderIndex].status = newStatus;
+    await user.save();
+    // console.log(newStatus);
+
+    res.json({ updatedOrder: user.orders[orderIndex] });
+
+  } catch (error) {
+    console.error('Error updating order status:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+}
+
+
+
 module.exports = {
   renderDashboard,
   renderHome,
@@ -345,4 +440,6 @@ module.exports = {
   forgotEmailPostPage,
   resetPassword,
   handleLogout,
+  renderOrder,
+  updatestatus,
 };

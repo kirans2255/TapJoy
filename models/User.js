@@ -32,7 +32,7 @@ const Address = new mongoose.Schema({
 
 const order = new mongoose.Schema(
   {
-    orderId: { type: String, required: true, unique: true },
+    // orderId: { type: String, required: true, unique: true },
     productId: {type:String, required:true},
     quantity: {type:String},
     price:{type:String},
