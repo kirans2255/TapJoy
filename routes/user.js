@@ -38,7 +38,7 @@ router.get('/wishlist',requireAuth,userController.renderwishlist);
 
 router.post('/wishlist/:productId',requireAuth ,userController.addToWishlist);
 
-router.delete('/wishlist/:productName',requireAuth,userController.removeFromWishlist)
+router.delete('/wishlist/:productId',requireAuth,userController.removeFromWishlist)
 // Render the profile view (requires authentication)
 // Route for handling the signin form submission
 router.post('/login', userController.handleSignin);

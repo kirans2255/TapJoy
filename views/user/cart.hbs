@@ -821,21 +821,26 @@
         }
 
         function removeFromCart(productId) {
-            fetch(`/cart/${productId}`, {
-                method: 'DELETE'
-            })
+            console.log("ddfs", productId)
+            axios.delete('/cart/:productId', { data: { id: productId } })
                 .then(response => {
-                    if (response.ok) {
-                        // Refresh the page or update the wishlist view
-                        window.location.reload(); // Example: Refresh the page
+                    if (response.status === 200) {
+                        // Handle success
+                        console.log(response.data);
+                        // Reload the page
+                        window.location.reload();
                     } else {
-                        console.error('Failed to remove product from wishlist');
+                        // Handle error
+                        console.error('Failed to remove product from cart');
                     }
                 })
                 .catch(error => {
-                    console.error('Error removing product from wishlist:', error);
+                    console.error('Error removing product from cart:', error);
                 });
         }
+
+
+
 
     </script>
 
@@ -866,7 +871,7 @@
                 const response = await fetch("/coupon", {
                     method: "POST",
                     headers: {
-                        "Content-Type": "application/json"     
+                        "Content-Type": "application/json"
                     },
                     body: JSON.stringify({ couponCode })
                 });

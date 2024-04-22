@@ -395,11 +395,20 @@ const renderOrder = async (req, res) => {
 };
 
 
-const updatestatus = async (req, res) => {
-  try {
-    const { orderId, newStatus } = req.body;
+const transporters = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 465,
+  auth: {
+    user: process.env.APP_EMAIL,
+    pass: process.env.APP_PASSWORD,
+  },
+});
 
-    // Find the user who owns the order
+const updatestatus = async (req, res) => {  
+  try {
+    const { orderId, newStatus, productName } = req.body;
+
     const user = await Users.findOne();
     // console.log(user)
 
@@ -407,15 +416,74 @@ const updatestatus = async (req, res) => {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    // Find the order within the user's orders and update its status
+    // Finding the order within the user's orders and update its status
     const orderIndex = user.orders.findIndex(order => order._id.toString() === orderId);
     if (orderIndex === -1) {
       return res.status(404).json({ error: 'Order not found' });
     }
 
+    // Updating order status
     user.orders[orderIndex].status = newStatus;
     await user.save();
-    // console.log(newStatus);
+
+    // Sending email to user with HTML content
+    await transporters.sendMail({
+      from: 'your@email.com',
+      to: user.email,
+      subject: 'Order Status Updated',
+      html: `
+        <html>
+          <head>
+            <style>
+              /* Add your CSS styles here */
+              body {
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                padding: 20px;
+              }
+              .container {
+                max-width: 600px;
+                margin: 0 auto;
+                background-color: #ffffff;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+              }
+              h1 {
+                color: #333333;
+                text-align: center;
+              }
+              .message {
+                background-color: #f2f2f2;
+                border-radius: 10px;
+                padding: 20px;
+                margin-top: 20px;
+              }
+              .decoration {
+                background-image: url('https://example.com/decoration.png');
+                background-repeat: no-repeat;
+                background-size: cover;
+                height: 100px;
+                margin-top: 20px;
+                margin-bottom: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h1>Order Status </h1>
+              <div class="message">
+                <p>Dear ${user.name},</p>
+                <p>Your order "${productName}" with ID ${orderId} has been to ${newStatus}.</p>
+                <p>Thank you.</p>
+              </div>
+              <div class="decoration"></div>
+              <p style="text-align:center;">If you have any questions, feel free to <a href="mailto:medamu345@gmail.com">contact us</a>.</p>
+            </div>
+          </body>
+        </html>
+      `,
+    });
 
     res.json({ updatedOrder: user.orders[orderIndex] });
 
@@ -423,7 +491,8 @@ const updatestatus = async (req, res) => {
     console.error('Error updating order status:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
-}
+};
+
 
 /////coupon
 const renderCoupon = async (req, res) => {
@@ -433,8 +502,8 @@ const renderCoupon = async (req, res) => {
       Coupon_Name: c.Coupon_Name,
       Coupon_Value: c.Coupon_Value,
       Coupon_Type: c.Coupon_Type,
-      StartDate: c.StartDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric'  }),
-      EndDate: c.EndDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric'  }),
+      StartDate: c.StartDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }),
+      EndDate: c.EndDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' }),
       Coupon_Status: c.Coupon_Status
     }));
     res.render('admin/coupon', { coupon });
@@ -447,14 +516,13 @@ const renderCoupon = async (req, res) => {
 
 
 const handleCoupon = async (req, res) => {
-
   const { Coupon_Status,
     Coupon_Name,
     Coupon_Type,
     StartDate,
     EndDate,
     Coupon_Value,
-   } = req.body
+  } = req.body
   //  console.log(req.body)
   try {
 

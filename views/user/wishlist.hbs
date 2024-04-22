@@ -517,7 +517,7 @@
                                             </td>
                                             <td class="product-wishlist-cart">
                                                 <a href="#"
-                                                    onclick="removeFromWishlist('{{this.productName}}')">Remove</a>
+                                                    onclick="removeFromWishlist('{{this._id}}')">Remove</a>
                                             </td>
                                         </tr>
                                         {{/each}}
@@ -684,8 +684,9 @@
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
     <script>
-        function removeFromWishlist(productName) {
-            fetch(`/wishlist/${productName}`, {
+        function removeFromWishlist(productId) {
+            console.log("dsf",productId)
+            fetch(`/wishlist/${productId}`, {
                 method: 'DELETE'
             })
                 .then(response => {

@@ -22,20 +22,26 @@ const renderAccount = async (req, res) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-    
-    const address = user.addresses;
-    const orders = user.orders;
 
-    // Fetch product image names by iterating through orders
-    for (const order of orders) {
+    const address = user.addresses;
+    const orders = [];
+
+    // Fetch product details for each order
+    for (const order of user.orders) {
       const productId = order.productId;
 
-      // Example query to fetch product details based on productId
       const product = await Product.findById(productId);
       if (product) {
         const { productName, productImage } = product;
-        order.productName = productName;
-        order.productImage = productImage[0];
+        orders.push({
+          _id: order._id,
+          productName,
+          productImage: productImage[0], 
+          quantity: order.quantity,
+          totalprice: order.totalprice,
+          created_at: new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+          status: order.status
+        });
       }
     }
 
@@ -45,6 +51,7 @@ const renderAccount = async (req, res) => {
     res.status(500).render('error', { errorMessage: "Error fetching user data" });
   }
 };
+
 
 
 
@@ -963,8 +970,10 @@ const updateQuantity = async (req, res) => {
 
 // Route handler to remove product from cart by productId
 const removeFromCart = async (req, res) => {
-  const productId = req.body.id; // Correct if the product ID is sent as 'id' in the request body
+  const productId = req.body.id; 
   const userId = req.user.id;
+  
+  // console.log(productId,userId)
 
   try {
     const user = await Users.findById(userId);
@@ -1168,7 +1177,7 @@ const razorpaypayment = async (req, res) => {
     const response = await razorpay.orders.create({
       amount: amount * 100,
       currency: "INR",
-      payment_capture: 1,  
+      payment_capture: 1,
     });
 
     res.status(200).json({
@@ -1275,19 +1284,19 @@ const placeorder = async (req, res) => {
 const validateCoupon = async (req, res) => {
   const { couponCode } = req.body;
   try {
-      // Find the admin document containing the coupons
-      const admin = await Admin.findOne();
+    // Find the admin document containing the coupons
+    const admin = await Admin.findOne();
 
-      // Check if the coupon code exists in the admin's coupons array
-      const couponExists = admin.Coupon.find(coupon => coupon.Coupon_Name === couponCode);
-      if (couponExists) {
-          res.status(200).json({ message: "Coupon applied successfully!", couponValue: couponExists.Coupon_Value });
-      } else {
-          res.status(404).json({ message: "Coupon not found. Please enter a valid coupon code." });
-      }
+    // Check if the coupon code exists in the admin's coupons array
+    const couponExists = admin.Coupon.find(coupon => coupon.Coupon_Name === couponCode);
+    if (couponExists) {
+      res.status(200).json({ message: "Coupon applied successfully!", couponValue: couponExists.Coupon_Value });
+    } else {
+      res.status(404).json({ message: "Coupon not found. Please enter a valid coupon code." });
+    }
   } catch (error) {
-      console.error("Error validating coupon:", error);
-      res.status(500).json({ message: "Error validating coupon. Please try again later." });
+    console.error("Error validating coupon:", error);
+    res.status(500).json({ message: "Error validating coupon. Please try again later." });
   }
 }
 
