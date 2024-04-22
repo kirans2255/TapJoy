@@ -19,6 +19,22 @@ const userDataSchema = new mongoose.Schema({
     },
     Position: { type: String },
     Text: { type: String },
+  }],
+  Coupon: [{
+    Coupon_Status: {type: String,
+      enum: ['Active', 'InActive'],
+      default: 'Active'
+  },
+    Coupon_Name : { type: String },
+    Coupon_Value: { type: Number },
+    Coupon_Type: {
+      type: String,
+      enum: ['percentage', 'fixedPrice'],
+      default: 'percentage'
+    },
+    StartDate: {type: Date,required: true,default : Date.now},
+    EndDate: {type: Date,required: true,default : Date.now},
+
   }]
 });
 

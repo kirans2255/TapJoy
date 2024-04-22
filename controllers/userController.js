@@ -1272,6 +1272,28 @@ const placeorder = async (req, res) => {
   }
 }
 
+const validateCoupon = async (req, res) => {
+  const { couponCode } = req.body;
+  try {
+      // Find the admin document containing the coupons
+      const admin = await Admin.findOne();
+
+      // Check if the coupon code exists in the admin's coupons array
+      const couponExists = admin.Coupon.find(coupon => coupon.Coupon_Name === couponCode);
+      if (couponExists) {
+          res.status(200).json({ message: "Coupon applied successfully!", couponValue: couponExists.Coupon_Value });
+      } else {
+          res.status(404).json({ message: "Coupon not found. Please enter a valid coupon code." });
+      }
+  } catch (error) {
+      console.error("Error validating coupon:", error);
+      res.status(500).json({ message: "Error validating coupon. Please try again later." });
+  }
+}
+
+
+
+
 
 module.exports = {
   renderDashboard,
@@ -1312,4 +1334,5 @@ module.exports = {
   Address,
   razorpaypayment,
   placeorder,
+  validateCoupon,
 };

@@ -59,6 +59,11 @@ router.delete('/deleteb/:id', product.deleteBanner);
 ///order
 router.get('/admin/order',adminController.renderOrder);
 
+//coupon
+router.get('/admin/coupon',adminController.renderCoupon);
+
+router.post('/addCoupon',adminController.handleCoupon);
+
 
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);

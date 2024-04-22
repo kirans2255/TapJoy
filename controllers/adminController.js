@@ -377,7 +377,7 @@ const renderOrder = async (req, res) => {
     // Extract orders from each user
     const orders = usersWithOrders.reduce((acc, user) => {
       acc.push(...user.orders.map(order => ({
-        orderId:order._id,
+        orderId: order._id,
         userName: user.name,
         productName: order.productId.productName,
         productImage: order.productId.productImage[0],
@@ -425,6 +425,58 @@ const updatestatus = async (req, res) => {
   }
 }
 
+/////coupon
+const renderCoupon = async (req, res) => {
+  try {
+    const admin = await User.findOne();
+    const coupon = admin.Coupon.map(c => ({
+      Coupon_Name: c.Coupon_Name,
+      Coupon_Value: c.Coupon_Value,
+      Coupon_Type: c.Coupon_Type,
+      StartDate: c.StartDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric'  }),
+      EndDate: c.EndDate.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric'  }),
+      Coupon_Status: c.Coupon_Status
+    }));
+    res.render('admin/coupon', { coupon });
+  } catch (error) {
+    console.error('Error fetching coupon:', error);
+    res.status(500).json({ error: 'Error fetching coupon' });
+  }
+}
+
+
+
+const handleCoupon = async (req, res) => {
+
+  const { Coupon_Status,
+    Coupon_Name,
+    Coupon_Type,
+    StartDate,
+    EndDate,
+    Coupon_Value,
+   } = req.body
+  //  console.log(req.body)
+  try {
+
+    const admin = await User.findOne()
+
+    const newCoupon = {
+      Coupon_Status: Coupon_Status,
+      Coupon_Name: Coupon_Name,
+      Coupon_Value: Coupon_Value,
+      Coupon_Type: Coupon_Type,
+      StartDate: StartDate,
+      EndDate: EndDate,
+    }
+
+    admin.Coupon.push(newCoupon)
+    await admin.save();
+    res.redirect('/admin/Coupon');
+  } catch (error) {
+    console.error('Error adding Coupon:', error);
+    res.status(500).json({ error: 'Error adding the Coupon' });
+  }
+}
 
 
 module.exports = {
@@ -442,4 +494,6 @@ module.exports = {
   handleLogout,
   renderOrder,
   updatestatus,
+  renderCoupon,
+  handleCoupon,
 };

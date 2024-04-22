@@ -87,6 +87,9 @@ router.post('/razorpay/placeOrderdb',requireAuth ,userController.placeorder);
 
 
 router.post('/signup', userController.handleSignup);
+//coupon
+router.post('/coupon', userController.validateCoupon);
+
 
 //////////
 

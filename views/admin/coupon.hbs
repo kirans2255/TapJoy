@@ -121,11 +121,11 @@
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">receipt_long</i>
                         </div>
-                        <span class="nav-link-text ms-1">Brand</span>
+                        <span class="nav-link-text ms-1">Brand </span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active bg-gradient-primary" href="/admin/category">
+                    <a class="nav-link text-white" href="/admin/category">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">view_in_ar</i>
                         </div>
@@ -149,7 +149,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="/admin/coupon">
+                    <a class="nav-link text-white active bg-gradient-primary" href="/admin/coupon">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">table_view</i>
                         </div>
@@ -210,9 +210,9 @@
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
                         </li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Category</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Coupon</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Category</h6>
+                    <h6 class="font-weight-bolder mb-0">Coupon</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -343,38 +343,35 @@
         <div class="col-lg-12 mt-4 mb-3">
             <div class="card z-index-2 ">
                 <div class="container mt-5">
-                    <h1 class="mb-4">Category Table</h1>
+                    <h1 class="mb-4">Coupon Table</h1>
 
                     <!-- Add Product Button -->
-                    <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add
-                        Category</button>
+                    <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#addCouponModal">Add
+                        Coupon</button>
 
                     <div class="table-responsive">
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Image</th>
-                                    <th>Name</th>
-
-                                    <th>Action</th>
+                                    <th>Coupon Name</th>
+                                    <th>Coupon Value</th>
+                                    <th>Coupon Type</th>
+                                    <th>Start Date</th>
+                                    <th>End Date</th>
+                                    <th>Coupon Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Example Product Row -->
-                                {{#each category}}
+                                {{#each coupon}}
                                 <tr>
-                                    <td class="indexing">{{@index}}</td>
-                                    <td><img src="{{CategoryImage.url}}" alt="{{this.CategoryName}}"
-                                            class="img-thumbnail" style="width: 80px;"></td>
-                                    <td>{{this.CategoryName}}</td>
-                                    <td>
-                                        <button class="btn btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editCategoryModal"
-                                            onclick="editCategory('{{this.id}}', '{{this.CategoryName}}','{{CategoryImage.url}}')">Edit</button>
-                                        <button class="btn btn-danger"
-                                            onclick="deleteCategory('{{this.id}}')">Delete</button>
-                                    </td>
+                                    <td class="indexing"></td>
+                                    <td>{{this.Coupon_Name}}</td>
+                                    <td>{{this.Coupon_Value}}</td>
+                                    <td>{{this.Coupon_Type}}</td>
+                                    <td>{{this.StartDate}}</td>
+                                    <td>{{this.EndDate}}</td>
+                                    <td>{{this.Coupon_Status}}</td>
                                 </tr>
                                 {{/each}}
                             </tbody>
@@ -384,81 +381,137 @@
             </div>
         </div>
 
-        <!-- Add Category Modal -->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
+        <!-- Add Coupon Modal -->
+        <div class="modal fade" id="addCouponModal" tabindex="-1" aria-labelledby="addCouponModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                        <h5 class="modal-title" id="addCouponModalLabel">Add Coupon</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
 
-
-                        <!-- Form to add a new Category -->
-                        <form id="addCategoryForm" action="/addCategory" method="post" enctype="multipart/form-data">
-                            {{!-- <div class="mb-3">
-                                <label for="CategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
-                                    value="{{CategoryImage.url.[0]}}" required>
-                            </div> --}}
-                            <div class="mb-3">
-                                <label for="CategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
-                                    value="{{CategoryImage.url}}" required>
+                        <form id="addCouponForm" action="/addCoupon" method="post">
+                            <div class="accordion" id="couponAccordion">
+                                <!-- Coupon Details Section -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="couponDetailsHeader">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#couponDetails" aria-expanded="true"
+                                            aria-controls="couponDetails">
+                                            Coupon Details
+                                        </button>
+                                    </h2>
+                                    <div id="couponDetails" class="accordion-collapse collapse show"
+                                        aria-labelledby="couponDetailsHeader" data-bs-parent="#couponAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Coupon Status -->
+                                            <div class="mb-3">
+                                                <label for="Coupon_Status" class="form-label">Coupon Status</label><br>
+                                                <select name="Coupon_Status" id="Coupon_Status" class="form-select"
+                                                    required>
+                                                    <option value="Active">Active</option>
+                                                    <option value="InActive">Inactive</option>
+                                                </select>
+                                            </div>
+                                            <!-- Coupon ID -->
+                                            <div class="mb-3">
+                                                <label for="Coupon_Name" class="form-label">Coupon Name</label>
+                                                <input name="Coupon_Name" type="text" class="form-control"
+                                                    id="Coupon_Name" required>
+                                            </div>
+                                            <!-- Coupon Type -->
+                                            <div class="mb-3">
+                                                <label for="Coupon_Type" id="Coupon_Type" class="form-label">Coupon
+                                                    Type</label><br>
+                                                <input type="radio" id="fixedPrice" name="Coupon_Type:" value="fixed"
+                                                    required>
+                                                <label for="fixed">Fixed</label><br>
+                                                <input type="radio" id="percentage" name="Coupon_Type:" value="percent"
+                                                    required>
+                                                <label for="percent">Percentage</label><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Date and Status Section -->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="dateStatusHeader">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#dateStatus" aria-expanded="false"
+                                            aria-controls="dateStatus">
+                                            Date and Status
+                                        </button>
+                                    </h2>
+                                    <div id="dateStatus" class="accordion-collapse collapse"
+                                        aria-labelledby="dateStatusHeader" data-bs-parent="#couponAccordion">
+                                        <div class="accordion-body">
+                                            <!-- Start Date -->
+                                            <div class="mb-3">
+                                                <label for="StartDate" class="form-label">Start Date</label>
+                                                <input name="StartDate" type="date" class="form-control" id="StartDate"
+                                                    required>
+                                            </div>
+                                            <!-- End Date -->
+                                            <div class="mb-3">
+                                                <label for="EndDate" class="form-label">End Date</label>
+                                                <input name="EndDate" type="date" class="form-control" id="EndDate"
+                                                    required>
+                                            </div>
+                                            <!-- Coupon Value -->
+                                            <div class="mb-3">
+                                                <label for="Coupon_Value" class="form-label">Coupon Value</label>
+                                                <input name="Coupon_Value" type="text" class="form-control"
+                                                    id="Coupon_Value" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="mb-3">
-                                <label name="CategoryName" for="CategoryName" class="form-label">Category
-                                    Name</label>
-                                <input name="CategoryName" type="text" class="form-control" id="CategoryName" required>
-                            </div>
-
-                            <!-- Add more input fields as needed -->
-
-                            <button type="submit" class="btn btn-primary" onclick="addCategory()">Add
-                                Category</button>
+                            <button type="submit" class="btn btn-primary">Add Coupon</button>
                         </form>
+
                     </div>
                 </div>
             </div>
         </div>
 
 
-        <!-- Edit Category Modal -->
-        <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
+        <!-- Edit Coupon Modal -->
+        <div class="modal fade" id="editCouponModal" tabindex="-1" aria-labelledby="editCouponModalLabel"
             aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
+                        <h5 class="modal-title" id="editCouponModalLabel">Edit Coupon</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <!-- Form to edit an existing Category -->
+                        <!-- Form to edit an existing Coupon -->
                         {{!-- {{#each category}} --}}
 
-                        <form id="editCategory" action="/updateCategory" method="post" enctype="multipart/form-data">
-                            <input type="hidden" id="editCategoryId" name="CategoryId" value="{{this.id}}">
+                        <form id="editCoupon" action="/updateCoupon" method="post" enctype="multipart/form-data">
+                            <input type="hidden" id="editCouponId" name="CouponId" value="{{this.id}}">
 
                             <div class="mb-3">
 
-                                <label for="editCategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="editCategoryImage"
-                                    value="{{CategoryImage.url}}">
-                                <img id="editCategoryImagePreview" src="{{CategoryImage.url}}" alt="no image"
+                                <label for="editCouponImage" class="form-label">Coupon Image</label>
+                                <input name="CouponImage" type="file" class="form-control" id="editCouponImage"
+                                    value="{{CouponImage.url}}">
+                                <img id="editCouponImagePreview" src="{{CouponImage.url}}" alt="no image"
                                     style="max-width: 100px;"><br>
                             </div>
 
                             <div class="mb-3">
-                                <label for="editCategoryName" class="form-label">Category Name</label>
-                                <input name="CategoryName" type="text" class="form-control" id="editCategoryName"
-                                    value="{{this.CategoryName}}" required>
+                                <label for="editCouponName" class="form-label">Coupon Name</label>
+                                <input name="CouponName" type="text" class="form-control" id="editCouponName"
+                                    value="{{this.CouponName}}" required>
                             </div>
 
                             <!-- Add more input fields as needed -->
 
-                            <button type="submit" class="btn btn-primary">Update Category</button>
+                            <button type="submit" class="btn btn-primary">Update Coupon</button>
 
                         </form>
                         {{!-- {{/each}} --}}
@@ -824,7 +877,8 @@
         }
     </script>
     <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    {{!--
+    <script async defer src="https://buttons.github.io/buttons.js"></script> --}}
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.1.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
@@ -834,37 +888,37 @@
 
     <script>
 
-        function editCategory(id, CategoryName, CategoryImage) {
+        function editCoupon(id, CouponName, CouponImage) {
             // Set the existing category data in the modal
-            $('#editCategoryName').val(CategoryName);
+            $('#editCouponName').val(CouponName);
             // Display the existing image
-            $('#editCategoryImagePreview').attr('src', CategoryImage).show();
+            $('#editCouponImagePreview').attr('src', CouponImage).show();
 
-            var editCategoryModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-            editCategoryModal.show();
+            var editCouponModal = new bootstrap.Modal(document.getElementById('editCouponModal'));
+            editCouponModal.show();
 
-            $('#editCategory').on('submit', function (e) {
+            $('#editCoupon').on('submit', function (e) {
                 e.preventDefault();
 
                 const updatedData = {
-                    CategoryName: $('#editCategoryName').val(),
-                    CategoryImage: $('#editCategoryImage')[0].files[0],
+                    CouponName: $('#editCouponName').val(),
+                    CouponImage: $('#editCouponImage')[0].files[0],
                 };
 
-                const CategoryId = id;
+                const CouponId = id;
 
-                updateCategory(CategoryId, updatedData);
+                updateCoupon(CouponId, updatedData);
             });
         }
 
-        function updateCategory(CategoryId, updatedData) {
-            const baseUrl = '/admin/category/';
+        function updateCoupon(CouponId, updatedData) {
+            const baseUrl = '/admin/Coupon/';
 
             const formData = new FormData();
-            formData.append('CategoryName', updatedData.CategoryName);
-            formData.append('CategoryImage', updatedData.CategoryImage);
+            formData.append('CouponName', updatedData.CouponName);
+            formData.append('CouponImage', updatedData.CouponImage);
 
-            fetch(`${baseUrl}${CategoryId}`, {
+            fetch(`${baseUrl}${CouponId}`, {
                 method: 'PUT',
                 body: formData,
             })
@@ -884,22 +938,22 @@
         }
 
         // Function to delete a product
-        function deleteCategory(CategoryId) {
+        function deleteCoupon(CouponId) {
             // You can add additional confirmation logic here if needed
-            var confirmation = confirm("Are you sure you want to delete this Category?");
+            var confirmation = confirm("Are you sure you want to delete this Coupon?");
 
             if (confirmation) {
                 // Use fetch to send a DELETE request to your server endpoint
-                fetch(`/deletecat/${CategoryId}`, {
+                fetch(`/deleteca/${CouponId}`, {
                     method: 'DELETE',
                 })
                     .then(response => {
                         if (response.ok) {
                             // Assuming the product is deleted successfully, you can reload the page or update the UI
-                            console.log('Category deleted successfully');
+                            console.log('Coupon deleted successfully');
                             location.reload();  // Reload the page
                         } else {
-                            console.error('Failed to delete Category');
+                            console.error('Failed to delete Coupon');
                             // Handle error accordingly
                         }
                     })

@@ -602,19 +602,22 @@
                                     </div>
                                     <div class="discount-code">
                                         <p>Enter your coupon code if you have one.</p>
-                                        <form>
-                                            <input type="text" required="" name="name" />
+                                        <form id="applyCouponForm">
+                                            <input type="text" required="" name="couponCode" id="couponCode" />
                                             <button class="cart-btn-2" type="submit">Apply Coupon</button>
                                         </form>
+                                        <p id="couponMessage"></p> <!-- Display validation message here -->
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-lg-4 col-md-12 mt-md-30px">
                                 <div class="grand-totall">
                                     <div class="title-wrap">
                                         <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                                     </div>
-                                    <h5>Total products <span>{{cartTotal}}</span></h5>
+                                    <h5>Total products <span id="totalProducts">{{cartTotal}}</span></h5>
+                                    {{!-- <h5>Discount <span></span></h5> --}}
                                     {{!-- <div class="total-shipping">
                                         <h5>Total shipping</h5>
                                         <ul>
@@ -808,8 +811,8 @@
                 id: productId
             })
                 .then(function (response) {
-                  
-                  window.location.reload()
+
+                    window.location.reload()
                 })
                 .catch(function (error) {
                     // Handle error
@@ -855,6 +858,34 @@
                 }
             });
         });
+
+        document.getElementById("applyCouponForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const couponCode = document.getElementById("couponCode").value;
+            try {
+                const response = await fetch("/coupon", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"     
+                    },
+                    body: JSON.stringify({ couponCode })
+                });
+                const data = await response.json();
+                document.getElementById("couponMessage").textContent = data.message;
+                if (response.status === 200) {
+                    // If the coupon is applied successfully, update the displayed total
+                    const totalProductsElement = document.getElementById("totalProducts");
+                    const cartTotal = parseFloat(totalProductsElement.textContent);
+                    const newCartTotal = cartTotal - data.couponValue; // Assuming the coupon value is returned from the server
+                    totalProductsElement.textContent = newCartTotal.toFixed(2); // Adjust the displayed total
+                }
+            } catch (error) {
+                console.error("Error applying coupon:", error);
+                document.getElementById("couponMessage").textContent = "Error applying coupon. Please try again later.";
+            }
+        });
+
+
     </script>
 </body>
 
