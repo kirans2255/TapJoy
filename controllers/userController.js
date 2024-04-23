@@ -33,14 +33,27 @@ const renderAccount = async (req, res) => {
       const product = await Product.findById(productId);
       if (product) {
         const { productName, productImage } = product;
+        let cancellable = true; 
+        let statusText = order.status;
+        
+        if (order.status === 'canceled') {
+          cancellable = false;
+          statusText = 'Order canceled';
+        } else if (order.status === 'Delivered') {
+          cancellable = false; 
+          statusText = 'Order delivered';
+        }
+
         orders.push({
           _id: order._id,
+          userId: user._id, 
           productName,
           productImage: productImage[0], 
           quantity: order.quantity,
           totalprice: order.totalprice,
           created_at: new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-          status: order.status
+          status: statusText, 
+          cancellable: cancellable 
         });
       }
     }
@@ -54,6 +67,30 @@ const renderAccount = async (req, res) => {
 
 
 
+const cancelOrder = async (req, res) => {
+  try {
+      const { orderId, userId } = req.body;
+
+      const user = await Users.findById(userId);
+      if (!user) {
+          return res.status(404).json({ message: "User not found" });
+      }
+
+      const orderIndex = user.orders.findIndex(order => order._id.toString() === orderId);
+      if (orderIndex === -1) {
+          return res.status(404).json({ message: "Order not found" });
+      }
+
+      user.orders[orderIndex].status = 'canceled';
+      await user.save();
+
+      // Redirect back to the account page
+      res.redirect('/account');
+  } catch (error) {
+      console.error("Error canceling order:", error);
+      res.status(500).json({ error: "Error canceling order" });
+  }
+};
 
 
 const rendershop = async (req, res) => {
@@ -131,6 +168,9 @@ const renderbrands = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+
+
 
 // const renderbrandcategory = async (req, res) => {
 //   const category = req.params.category;
@@ -819,9 +859,11 @@ const renderCart = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await Users.findById(userId);
+    
     if (!user) {
       return res.status(404).send('User not found');
     }
+
 
     const cartItems = user.cart.products;
 
@@ -841,6 +883,7 @@ const renderCart = async (req, res) => {
         // Push the product details to the cartProducts array along with quantity
         cartProducts.push({
           _id: product._id,
+          variantId: variant._id,
           productName: product.productName,
           productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
           productPrice: variant.productPrice,
@@ -1283,6 +1326,7 @@ const placeorder = async (req, res) => {
 
 const validateCoupon = async (req, res) => {
   const { couponCode } = req.body;
+  // console.log(req.body);
   try {
     // Find the admin document containing the coupons
     const admin = await Admin.findOne();
@@ -1344,4 +1388,5 @@ module.exports = {
   razorpaypayment,
   placeorder,
   validateCoupon,
+  cancelOrder,
 };

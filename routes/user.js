@@ -90,6 +90,9 @@ router.post('/signup', userController.handleSignup);
 //coupon
 router.post('/coupon', userController.validateCoupon);
 
+///////
+
+router.post('/admin/cancel', userController.cancelOrder);
 
 //////////
 
