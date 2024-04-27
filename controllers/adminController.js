@@ -575,13 +575,9 @@ const renderCoupon = async (req, res) => {
 
 
 const handleCoupon = async (req, res) => {
-  const { Coupon_Status,
-    Coupon_Name,
-    Coupon_Type,
-    StartDate,
-    EndDate,
-    Coupon_Value,
-  } = req.body
+  
+  const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
+  
   //  console.log(req.body)
   try {
 

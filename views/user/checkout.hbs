@@ -1133,7 +1133,7 @@
                             });
                     } else if (paymentMethodId === 'COD') {
                         // Handle Cash on Delivery payment method
-                        console.log("dd",grandTotal)
+                        console.log("dd", grandTotal)
                         axios.post('/placeOrder', {
                             addressId: addressId,
                             paymentMethodId: paymentMethodId,
@@ -1166,6 +1166,7 @@
 
 
     <script>
+        
         document.getElementById("applyCouponForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const couponCode = document.getElementById("couponCode").value;
@@ -1184,7 +1185,11 @@
                 const data = await response.json();
                 document.getElementById("couponMessage").textContent = data.message;
                 if (response.status === 200) {
-                    const discount = data.couponValue;
+                    let discount = data.couponValue;
+                    if (data.couponType === 'percentage') {
+                        // If the coupon type is percentage, calculate discount as a percentage of cart total
+                        discount = (cartTotal * discount) / 100;
+                    }
                     const discountedTotal = cartTotal - discount;
                     document.getElementById("discount").textContent = discount.toFixed(2);
                     grandTotalElement.textContent = discountedTotal.toFixed(2);
@@ -1194,7 +1199,9 @@
                 document.getElementById("couponMessage").textContent = "Error applying coupon. Please try again later.";
             }
         });
+
     </script>
+
 
 
 </body>

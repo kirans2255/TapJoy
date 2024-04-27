@@ -1331,15 +1331,18 @@ const placeorder = async (req, res) => {
 
 const validateCoupon = async (req, res) => {
   const { couponCode } = req.body;
-  // console.log(req.body);
   try {
     // Find the admin document containing the coupons
     const admin = await Admin.findOne();
 
     // Check if the coupon code exists in the admin's coupons array
-    const couponExists = admin.Coupon.find(coupon => coupon.Coupon_Name === couponCode);
-    if (couponExists) {
-      res.status(200).json({ message: "Coupon applied successfully!", couponValue: couponExists.Coupon_Value });
+    const coupon = admin.Coupon.find(coupon => coupon.Coupon_Name === couponCode);
+    if (coupon) {
+      // Extract coupon details
+      const { Coupon_Value, Coupon_Type } = coupon;
+
+      // Return coupon details in the response
+      res.status(200).json({ message: "Coupon applied successfully!", couponValue: Coupon_Value, couponType: Coupon_Type });
     } else {
       res.status(404).json({ message: "Coupon not found. Please enter a valid coupon code." });
     }
