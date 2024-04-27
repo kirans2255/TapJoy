@@ -38,7 +38,72 @@
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
     <style>
+        /* CSS */
+        .modal-content {
+            background: linear-gradient(135deg, #87ceeb, #ffffff);
+            color: #333;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 800px;
+            width: calc(100% - 40px);
+            /* Adjusted width to fit the content */
+            display: flex;
+            flex-direction: row;
+            /* Arrange sections side by side */
+            justify-content: center;
+            /* Center the content horizontally */
+        }
+
+        .order-section,
+        .address-section {
+            flex: 1;
+            /* Make sections occupy equal space */
+            padding: 20px;
+            /* Add spacing inside sections */
+        }
+
+        .order-section {
+            border-right: 1px solid #ccc;
+            /* Add border between sections */
+        }
+
+        .address-section {
+            text-align: left;
+            /* Align text to the left */
+            margin-left: auto;
+            /* Push content towards the center */
+            margin-right: auto;
+            /* Push content towards the center */
+        }
+
+        .close {
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #87ceeb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+        /* Rest of your CSS... */
+
+
+
         /* Style for input fields */
         input[type="text"],
         input[type="file"] {
@@ -80,8 +145,8 @@
             border-color: #00b39b;
             /* Button border color on hover */
         }
-    </style>
-    <style>
+
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
@@ -115,6 +180,30 @@
             border: 1px solid #ccc;
             border-radius: 4px;
             cursor: pointer;
+        }
+
+
+
+        /* Style for the button */
+        .view-button {
+            background-color: #4CAF50;
+            /* Green background */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Change the button's background color when hovered */
+        .view-button:hover {
+            background-color: #45a049;
         }
     </style>
 
@@ -381,27 +470,25 @@
                 <div class="container mt-5">
                     <h1 class="mb-4">Order</h1>
 
-                    <!-- Add Product Button -->
-
-
                     <div class="table-responsive">
                         <table>
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    {{!-- <th>Product Image</th> --}}
+                                    <!-- <th>Product Image</th> -->
                                     <th>Product Details</th>
                                     <th>Customer Name</th>
                                     <th>Payment Status</th>
                                     <th>Price</th>
                                     <th>Order Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#each orders}}
                                 <tr>
                                     <td class="indexing">{{@index}}</td>
-                                    {{!-- <td>{{this.productImage}}</td> --}}
+                                    <!-- <td>{{this.productImage}}</td> -->
                                     <td><img src="{{this.productImage}}" style="width: 50px;">{{this.productName}}</td>
                                     <td>{{this.userName}}</td>
                                     <td>{{this.payment_Method}}</td>
@@ -409,15 +496,30 @@
                                     <td>
                                         <select class="status-select"
                                             onchange="updateOrderStatus('{{this.orderId}}','{{this.productName}}', this.value)">
-                                            <option value="pending">Pending</option>
+                                            <option value="Pending">Pending</option>
                                             <option value="Delivered">Delivered</option>
-                                            <option value="shipped">Shipped</option>
-                                            <option value="canceled">Canceled</option>
+                                            <option value="Shipped">Shipped</option>
+                                            <option value="Canceled">Canceled</option>
                                         </select>
                                     </td>
+                                    <td><button class="view-button"
+                                            onclick="viewOrderDetails('{{this.orderId}}')">View</button></td>
                                 </tr>
                                 {{/each}}
                             </tbody>
+                            <div id="orderModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeModal()">&times;</span>
+                                    <div class="order-section">
+                                        <h2 class="section-title">Order Details</h2>
+                                        <div id="orderDetails"></div>
+                                    </div>
+                                    <div class="address-section">
+                                        <h2 class="section-title">User Details</h2>
+                                        <div id="addressDetails"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </table>
                     </div>
                 </div>
@@ -844,6 +946,57 @@
                 });
             }
         });
+
+        // JavaScript
+        function viewOrderDetails(orderId) {
+            fetch(`/order/${orderId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate modal with order details
+                    const orderDetails = document.getElementById('orderDetails');
+                    orderDetails.innerHTML = `
+                {{!-- <h3>Product Details</h3> --}}
+                <p>Order ID: ${data._id}</p>
+                <p>Product Name: ${data.productName}</p>
+                <p>Quantity: ${data.quantity}</p>
+                <p>Ram & Rom: ${data.ram} - ${data.rom}</p>
+                <p>Color: ${data.color}</p>
+                <p>Payment Method: ${data.payment_Method}</p>
+                <p>Price: ${data.price}</p>
+                <p>Total Price: ${data.totalprice}</p>
+                <p>Order Status: ${data.status}</p>
+                <p>Discount Amount: ${data.amount}</p>
+            `;
+
+                    const addressDetails = document.getElementById('addressDetails');
+                    addressDetails.innerHTML = `
+    <p>Customer Name: ${data.name}</p>
+    <h5>Address:</h5>
+    <p>${data.address.name},</p>
+    <p>${data.address.house_name}, ${data.address.street},</p>
+    <p>${data.address.city} - ${data.address.pin}</p>
+    <p>${data.address.state}</p>
+    <p>Phone Number: ${data.address.phone}</p>
+`;
+
+                    // Show modal
+                    const modal = document.getElementById('orderModal');
+                    modal.style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching order details:', error));
+        }
+
+
+        function closeModal() {
+            const modal = document.getElementById('orderModal');
+            modal.style.display = 'none';
+        }
+
 
     </script>
 </body>

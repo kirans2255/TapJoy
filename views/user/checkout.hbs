@@ -756,6 +756,21 @@
                                     <button class="submit-button" type="submit">Submit</button>
                                 </div>
                             </form>
+                            <div class="col-lg-7">
+                                <div class="discount-code-wrapper">
+                                    <div class="title-wrap">
+                                        <h4 class="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
+                                    </div>
+                                    <div class="discount-code">
+                                        <p>Enter your coupon code if you have one.</p>
+                                        <form id="applyCouponForm">
+                                            <input type="text" required="" name="couponCode" id="couponCode" />
+                                            <button class="cart-btn-2" type="submit">Apply Coupon</button>
+                                        </form>
+                                        <p id="couponMessage"></p> <!-- Display validation message here -->
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="col-lg-5 mt-md-30px mt-lm-30px ">
@@ -791,6 +806,14 @@
                                         <ul>
                                             <li class="order-total">Total</li>
                                             <li id="razor-price">{{cartTotal}}</li>
+                                        </ul>
+                                        <ul>
+                                            <li class="order-total">Discount</li>
+                                            <li id="discount">{{discount}}</li>
+                                        </ul>
+                                        <ul>
+                                            <li class="order-total">Grand-Total</li>
+                                            <li id="grandtotal">{{grandtotal}}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -1034,6 +1057,8 @@
 
                 const selectedAddress = document.querySelector('input[name="selectedAddress"]:checked');
                 const selectedPaymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
+                const grandTotalElement = document.getElementById("grandtotal");
+                const grandTotal = parseFloat(grandTotalElement.textContent);
 
                 if (!selectedAddress || !selectedPaymentMethod) {
                     // Check if both address and payment method are selected
@@ -1077,6 +1102,7 @@
                                                 addressId: selectedAddressId,
                                                 totalPrice: totalPrice,
                                                 paymentMethodId: paymentMethodId,
+                                                grandTotal: grandTotal,
                                                 razorpay_order_id: response.razorpay_order_id,
                                                 razorpay_payment_id: response.razorpay_payment_id
 
@@ -1107,9 +1133,12 @@
                             });
                     } else if (paymentMethodId === 'COD') {
                         // Handle Cash on Delivery payment method
+                        console.log("dd",grandTotal)
                         axios.post('/placeOrder', {
                             addressId: addressId,
                             paymentMethodId: paymentMethodId,
+                            discount: discount, // Include discount
+                            grandTotal: grandTotal
                             //amount: subtotal 
                         })
                             .then(response => {
@@ -1132,8 +1161,42 @@
                 }
             });
         });
-        
+
     </script>
+
+
+    <script>
+        document.getElementById("applyCouponForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const couponCode = document.getElementById("couponCode").value;
+            const totalProductsElement = document.getElementById("razor-price");
+            const cartTotal = parseFloat(totalProductsElement.textContent);
+            const grandTotalElement = document.getElementById("grandtotal");
+            const grandTotal = parseFloat(grandTotalElement.textContent);
+            try {
+                const response = await fetch("/coupon", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ couponCode, cartTotal, grandTotal })
+                });
+                const data = await response.json();
+                document.getElementById("couponMessage").textContent = data.message;
+                if (response.status === 200) {
+                    const discount = data.couponValue;
+                    const discountedTotal = cartTotal - discount;
+                    document.getElementById("discount").textContent = discount.toFixed(2);
+                    grandTotalElement.textContent = discountedTotal.toFixed(2);
+                }
+            } catch (error) {
+                console.error("Error applying coupon:", error);
+                document.getElementById("couponMessage").textContent = "Error applying coupon. Please try again later.";
+            }
+        });
+    </script>
+
+
 </body>
 
 

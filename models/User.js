@@ -34,9 +34,13 @@ const order = new mongoose.Schema(
   {
     // orderId: { type: String, required: true, unique: true },
     productId: {type:String, required:true},
+    productRam: {type:String},
+    productRom: {type:String},
     quantity: {type:String},
     price:{type:String},
     totalprice:{type:String},
+    discount:{type:String},
+    grandTotal:{type:String},
     address: { type: Address },
     cancelReason: { type: String }, // New field for cancellation reason
     payment_Method: { type: String },

@@ -898,7 +898,6 @@ const renderCart = async (req, res) => {
     const cartTotal = cartProducts.reduce((sum, item) => sum + item.subtotal, 0);
 
 
-
     res.render('user/cart', { user, cart: cartProducts, cartTotal });
   } catch (error) {
     // console.error(error);
@@ -1133,7 +1132,7 @@ const Address = async (req, res) => {
 const Cod = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { addressId, paymentMethodId } = req.body;
+    const { addressId, paymentMethodId, discount, grandTotal  } = req.body;
 
     // Find the user by ID
     const user = await Users.findById(userId).populate("cart.products");
@@ -1183,8 +1182,11 @@ const Cod = async (req, res) => {
       const newOrder = {
         // orderId: new mongoose.Types.ObjectId(),
         productId: item.productId,
+        productRam:item.productRam,
+        productRom:item.productRom,
         quantity: item.quantity,
         price: variant.productPrice,
+        grandTotal:grandTotal,
         totalprice: item.quantity * variant.productPrice,
         address: selectedAddress,
         payment_Method: paymentMethodId,
@@ -1210,6 +1212,7 @@ const Cod = async (req, res) => {
     res.status(500).json({ error: "Error placing the order" });
   }
 };
+
 
 
 const razorpaypayment = async (req, res) => {
@@ -1244,7 +1247,7 @@ const placeorder = async (req, res) => {
 
   try {
     const userId = req.user.id;
-    const { razorpay_order_id, razorpay_payment_id, addressId, paymentMethodId } = req.body
+    const { razorpay_order_id, razorpay_payment_id, addressId, paymentMethodId,  grandTotal } = req.body
 
     // Find the user by ID
     const user = await Users.findById(userId).populate("cart.products");
@@ -1297,6 +1300,7 @@ const placeorder = async (req, res) => {
         quantity: item.quantity,
         price: variant.productPrice,
         totalprice: item.quantity * variant.productPrice,
+        grandTotal:grandTotal,
         address: selectedAddress,
         payment_Method: paymentMethodId,
         razorpay_order_id: razorpay_order_id,
@@ -1324,6 +1328,7 @@ const placeorder = async (req, res) => {
   }
 }
 
+
 const validateCoupon = async (req, res) => {
   const { couponCode } = req.body;
   // console.log(req.body);
@@ -1343,8 +1348,6 @@ const validateCoupon = async (req, res) => {
     res.status(500).json({ message: "Error validating coupon. Please try again later." });
   }
 }
-
-
 
 
 
