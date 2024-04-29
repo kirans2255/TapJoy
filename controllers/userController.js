@@ -1412,6 +1412,39 @@ const validateCoupon = async (req, res) => {
 }
 
 
+//search
+const search = async (req, res) => {
+  const searchQuery = req.body.query;
+
+  // console.log("Search Query:", searchQuery);
+
+  try {
+      // Find a product based on the search criteria
+      const product = await Product.find({
+          $or: [
+              { productBrand: { $regex: new RegExp(searchQuery, 'i') } }, 
+              { productName: { $regex: new RegExp(searchQuery, 'i') } },
+              { productCategory: { $regex: new RegExp(searchQuery, 'i') } },
+              { productPrice: { $regex: new RegExp(searchQuery, 'i') } },
+              { productDescription: { $regex: new RegExp(searchQuery, 'i') } },
+              { productColor: { $regex: new RegExp(searchQuery, 'i') } }
+          ]
+      });
+
+      if (!product) {
+          return res.status(404).json({ message: "Product not found" });
+      }
+      // console.log("fsdf",product)
+
+      // Process the product or send it back in the response
+      return res.status(200).json({ product });
+  } catch (error) {
+      console.error("Error:", error);
+      return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+
 
 module.exports = {
   renderDashboard,
@@ -1455,4 +1488,5 @@ module.exports = {
   validateCoupon,
   cancelOrder,
   fetchOrder,
+  search,
 };

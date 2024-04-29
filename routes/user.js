@@ -97,6 +97,10 @@ router.post('/admin/cancel', userController.cancelOrder);
 
 router.get('/order/:id',userController.fetchOrder);
 
+///search
+
+router.post('/search', userController.search);
+
 
 //////////
 

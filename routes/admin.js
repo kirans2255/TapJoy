@@ -68,6 +68,9 @@ router.post('/addCoupon',adminController.handleCoupon);
 
 router.delete('/deleteCoupon/:id',adminController.deleteCoupon)
 
+router.put('/admin/coupon/:id',adminController.updateCoupon)
+
+
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);
 

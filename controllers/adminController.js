@@ -627,6 +627,68 @@ const checkExpiredCoupons = async () => {
 cron.schedule('0 0 * * *', checkExpiredCoupons);
 
 
+
+const editCoupon = async (req, res) => {
+  const couponId = req.body.id; 
+
+  try {
+    const admin = await User.findOne(); 
+    // Find the coupon by ID within the admin's coupons
+    const existingCoupon = admin.Coupon.find(coupon => coupon._id.toString() === couponId);
+
+    if (!existingCoupon) {
+      return res.status(404).json({ error: 'Coupon not found' });
+    }
+    // Update the coupon data based on the form fields
+    existingCoupon.Coupon_Name = req.body.Coupon_Name;
+
+    await admin.save();
+
+    res.status(200).json({ message: 'Coupon updated successfully', updatedCoupon: existingCoupon });
+  } catch (error) {
+    console.error('Error updating Coupon:', error);
+    res.status(500).json({ error: 'Error updating Coupon' });
+  }
+};
+
+
+
+const updateCoupon = async (req, res) => {
+  const couponId = req.params.id;
+  const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value  } = req.body;
+  console.log(req.body);
+
+
+  try {
+    // Find the admin
+    const admin = await User.findOne();
+    // Find the coupon by ID
+    const existingCoupon = admin.Coupon.id(couponId);
+
+    if (!existingCoupon) {
+      return res.status(404).json({ error: 'Coupon not found' });
+    }
+
+    // Update the coupon data based on the form fields
+    existingCoupon.Coupon_Status = Coupon_Status;
+    existingCoupon.Coupon_Name = Coupon_Name;
+    existingCoupon.Coupon_Value = Coupon_Value;
+    existingCoupon.Coupon_Type = Coupon_Type;
+    existingCoupon.StartDate = StartDate;
+    existingCoupon.EndDate = EndDate;
+
+
+    // Save the updated admin
+    await admin.save();
+
+    res.status(200).json({ message: 'Coupon updated successfully', updatedCoupon: existingCoupon });
+  } catch (error) {
+    console.error('Error updating Coupon:', error);
+    res.status(500).json({ error: 'Error updating Coupon' });
+  }
+};
+
+
 const deleteCoupon = async (req, res) => {
   const couponId = req.params.id;
 
@@ -671,5 +733,7 @@ module.exports = {
   renderCoupon,
   handleCoupon,
   checkExpiredCoupons,
-  deleteCoupon
+  deleteCoupon,
+  editCoupon,
+  updateCoupon,
 };

@@ -65,11 +65,12 @@
                                 <a href="index.html"><img src="/assets/images/logo/logo.png" alt="Site Logo" /></a>
                             </div>
                         </div>
+                        <!-- HTML -->
                         <div class="col-lg-6 d-none d-lg-block">
                             <div class="search-element">
-                                <form action="#">
-                                    <input type="text" placeholder="Search" />
-                                    <button><i class="pe-7s-search"></i></button>
+                                <form id="searchForm">
+                                    <input type="text" id="searchInput" placeholder="Search" />
+                                    <button type="submit"><i class="pe-7s-search"></i></button>
                                 </form>
                             </div>
                         </div>
@@ -1237,6 +1238,8 @@
         </script>
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
         <script>
             document.querySelector('a[href="/logoutt"]').addEventListener('click', function (event) {
@@ -1255,6 +1258,31 @@
                     }
                 });
             });
+
+            document.getElementById('searchForm').addEventListener('submit', function (event) {
+                event.preventDefault();
+
+                var searchQuery = document.getElementById('searchInput').value;
+
+                // Send Axios request to the server
+                axios.post('/search', {
+                    query: searchQuery
+                })
+                    .then(function (response) {
+                        // Handle successful response from the server
+                        var searchResults = response.data.product;
+
+                        window.location.href
+                        // Display search results to the user
+                        console.log("Search Results:", searchResults);
+                    })
+                    .catch(function (error) {
+                        // Log the error
+                        console.error('Error fetching search results:', error);
+                    });
+            });
+
+
         </script>
 
 </body>

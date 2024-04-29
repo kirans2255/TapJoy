@@ -374,9 +374,8 @@
                                     <td>{{this.EndDate}}</td>
                                     <td>{{this.Coupon_Status}}</td>
                                     <td>
-                                        <form action="/editCoupon/{{this._id}}" method="get">
-                                            <button type="submit" class="btn btn-primary">Edit</button>
-                                        </form>
+                                        <button class="btn btn-primary"
+                                            onclick="editCoupon('{{this._id}}','{{this.Coupon_Status}}','{{this.Coupon_Name}}','{{this.Coupon_Type}}','{{this.StartDate}}','{{this.EndDate}}','{{this.Coupon_Value}}')">Edit</button>
                                     </td>
                                     <td>
                                         <button class="btn btn-danger"
@@ -500,29 +499,49 @@
                         <!-- Form to edit an existing Coupon -->
                         {{!-- {{#each category}} --}}
 
-                        <form id="editCoupon" action="/updateCoupon" method="post" enctype="multipart/form-data">
-                            <input type="hidden" id="editCouponId" name="CouponId" value="{{this.id}}">
-
+                        <form id="editCouponForm" action="/updateCoupon" method="post">
+                            <!-- Coupon ID (hidden) -->
+                            <input type="hidden" id="editCouponId" name="Coupon_Id" value="{{this.id}}">
+                            <!-- Coupon Status -->
                             <div class="mb-3">
-
-                                <label for="editCouponImage" class="form-label">Coupon Image</label>
-                                <input name="CouponImage" type="file" class="form-control" id="editCouponImage"
-                                    value="{{CouponImage.url}}">
-                                <img id="editCouponImagePreview" src="{{CouponImage.url}}" alt="no image"
-                                    style="max-width: 100px;"><br>
+                                <label for="editCouponStatus" class="form-label">Coupon Status</label><br>
+                                <select name="Coupon_Status" id="editCouponStatus" class="form-select" value="{{this.Coupon_Status}}" required>
+                                    <option value="Active">Active</option>
+                                    <option value="Inactive">Inactive</option>
+                                </select>
                             </div>
-
+                            <!-- Coupon Details Section -->
                             <div class="mb-3">
                                 <label for="editCouponName" class="form-label">Coupon Name</label>
-                                <input name="CouponName" type="text" class="form-control" id="editCouponName"
-                                    value="{{this.CouponName}}" required>
+                                <input name="Coupon_Name" type="text" class="form-control" id="editCouponName" value="{{this.Coupon_Name}}" required>
                             </div>
-
-                            <!-- Add more input fields as needed -->
-
+                            <!-- Coupon Type -->
+                            <div class="mb-3">
+                                <label for="editCouponType" class="form-label">Coupon Type</label><br>
+                                <input type="radio" id="editFixedPrice" name="Coupon_Type" value="fixedPrice" value="{{this.Coupon_Type}}" required>
+                                <label for="editFixedPrice">Fixed</label><br>
+                                <input type="radio" id="editPercentage" name="Coupon_Type" value="percentage" value="{{this.Coupon_Type}}" required>
+                                <label for="editPercentage">Percentage</label>
+                            </div>
+                            <!-- Start Date -->
+                            <div class="mb-3">
+                                <label for="editStartDate" class="form-label">Start Date</label>
+                                <input name="StartDate" type="date" class="form-control" id="editStartDate" value="{{this.StartDate}}" required>
+                            </div>
+                            <!-- End Date -->
+                            <div class="mb-3">
+                                <label for="editEndDate" class="form-label">End Date</label>
+                                <input name="EndDate" type="date" class="form-control" id="editEndDate" value="{{this.EndDate}}" required>
+                            </div>
+                            <!-- Coupon Value -->
+                            <div class="mb-3">
+                                <label for="editCouponValue" class="form-label">Coupon Value</label>
+                                <input name="Coupon_Value" type="text" class="form-control" id="editCouponValue" value="{{this.Coupon_Value}}"
+                                    required>
+                            </div>
                             <button type="submit" class="btn btn-primary">Update Coupon</button>
-
                         </form>
+
                         {{!-- {{/each}} --}}
 
                     </div>
@@ -896,22 +915,35 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
+        function editCoupon(id, Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value) {
+            // Set the existing coupon data in the form
+            $('#editCouponStatus').val(Coupon_Status);
+            $('#editCouponName').val(Coupon_Name);
+            $('#editStartDate').val(StartDate);
+            $('#editEndDate').val(EndDate);
+            $('#editCouponValue').val(Coupon_Value);
 
-        function editCoupon(id, CouponName, CouponImage) {
-            // Set the existing category data in the modal
-            $('#editCouponName').val(CouponName);
-            // Display the existing image
-            $('#editCouponImagePreview').attr('src', CouponImage).show();
+            // Check the radio button based on the Coupon_Type
+            if (Coupon_Type === 'fixedPrice') {
+                $('#editFixedPrice').prop('checked', true);
+            } else if (Coupon_Type === 'percentage') {
+                $('#editPercentage').prop('checked', true);
+            }
+
 
             var editCouponModal = new bootstrap.Modal(document.getElementById('editCouponModal'));
             editCouponModal.show();
 
-            $('#editCoupon').on('submit', function (e) {
+            $('#editCouponForm').on('submit', function (e) {
                 e.preventDefault();
 
                 const updatedData = {
-                    CouponName: $('#editCouponName').val(),
-                    CouponImage: $('#editCouponImage')[0].files[0],
+                    Coupon_Status: $('#editCouponStatus').val(),
+                    Coupon_Name: $('#editCouponName').val(),
+                    Coupon_Value: $('#editCouponValue').val(),
+                    Coupon_Type: $('input[name="Coupon_Type"]:checked').val(),
+                    StartDate: $('#editStartDate').val(),
+                    EndDate: $('#editEndDate').val(),
                 };
 
                 const CouponId = id;
@@ -920,12 +952,20 @@
             });
         }
 
+
         function updateCoupon(CouponId, updatedData) {
-            const baseUrl = '/admin/Coupon/';
+            const baseUrl = '/admin/coupon/';
 
             const formData = new FormData();
-            formData.append('CouponName', updatedData.CouponName);
-            formData.append('CouponImage', updatedData.CouponImage);
+            formData.append('Coupon_Status', updatedData.Coupon_Status);
+            formData.append('Coupon_Name', updatedData.Coupon_Name);
+            formData.append('Coupon_Type', updatedData.Coupon_Type);
+            formData.append('StartDate', updatedData.StartDate);
+            formData.append('EndDate', updatedData.EndDate);
+            formData.append('Coupon_Value', updatedData.Coupon_Value);
+
+                console.log("ewrwr",updatedData)
+
 
             fetch(`${baseUrl}${CouponId}`, {
                 method: 'PUT',
