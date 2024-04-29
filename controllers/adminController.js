@@ -559,6 +559,7 @@ const renderCoupon = async (req, res) => {
   try {
     const admin = await User.findOne();
     const coupon = admin.Coupon.map(c => ({
+      _id:c._id,
       Coupon_Name: c.Coupon_Name,
       Coupon_Value: c.Coupon_Value,
       Coupon_Type: c.Coupon_Type,
@@ -627,15 +628,25 @@ cron.schedule('0 0 * * *', checkExpiredCoupons);
 
 
 const deleteCoupon = async (req, res) => {
-  const couponId = req.params.couponId;
+  const couponId = req.params.id;
 
+  console.log("Coupon ID:", couponId);
   try {
     const admin = await User.findOne();
-    admin.Coupon = admin.Coupon.filter(coupon => coupon._id !== couponId);
-    await admin.save();
-    res.redirect('/admin/Coupon');
+    // Find the index of the coupon to delete
+    const couponIndex = admin.Coupon.findIndex(coupon => coupon._id.toString() === couponId);
+    console.log("Coupon Index:", couponIndex);
+
+    // If the coupon is found, remove it from the array
+    if (couponIndex !== -1) {
+      admin.Coupon.splice(couponIndex, 1);
+      await admin.save();
+      res.status(200).json({ success:'coupon success'});
+    } else {
+      // If the coupon is not found, return an error response
+      res.status(404).json({ error: 'Coupon not found' });
+    }
   } catch (error) {
-    console.error('Error deleting Coupon:', error);
     res.status(500).json({ error: 'Error deleting the Coupon' });
   }
 };

@@ -42,8 +42,10 @@ const renderAccount = async (req, res) => {
         } else if (order.status === 'Delivered') {
           cancellable = false; 
           statusText = 'Order delivered';
+        } else if (order.status === 'Shipped') {
+          cancellable = false;
+          statusText = 'Order shipped';
         }
-
         orders.push({
           _id: order._id,
           userId: user._id, 
