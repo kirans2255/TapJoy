@@ -110,6 +110,63 @@ const rendershop = async (req, res) => {
 };
 
 
+
+const fetchOrder = async (req, res) => {
+  const orderId = req.params.id;
+  try {
+    // Find the order containing the orderId
+    const order = await Users.findOne({ "orders._id": orderId });  
+    if (!order) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+
+    // Find the specific order within the orders array
+    const foundOrder = order.orders.find(o => o._id.toString() === orderId);
+    if (!foundOrder) {
+      return res.status(404).json({ error: "Order not found" });
+    }
+    // Get the product ID from the found order
+    const productId = foundOrder.productId;
+
+    // Find the user details
+    const user = await Users.findById(order._id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Get the product details using the product ID
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
+    }
+
+    const ram = product.variants.productRam;
+    // console.log("kkk",ram);
+
+
+    res.json({
+      _id: foundOrder._id,
+      productName: product.productName,
+      name: user.name, 
+      quantity:foundOrder.quantity,
+      price:foundOrder.price,
+      address:foundOrder.address,
+      payment_Method: foundOrder.payment_Method, 
+      totalprice: foundOrder.totalprice,
+      status: foundOrder.status,
+      color: product.productColor,
+      ram: foundOrder.productRam,
+      rom:foundOrder.productRom,
+      amount:foundOrder.grandTotal,
+    });
+
+
+  } catch (error) {
+    console.error('Error fetching order details:', error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 const rendershops = async (req, res) => {
   try {
     // Get unique product names
@@ -1395,4 +1452,5 @@ module.exports = {
   placeorder,
   validateCoupon,
   cancelOrder,
+  fetchOrder,
 };

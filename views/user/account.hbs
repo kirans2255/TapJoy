@@ -27,6 +27,86 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <style>
+        /* CSS */
+        .modal-content {
+            background: linear-gradient(135deg, #87ceeb, #ffffff);
+            color: #333;
+            margin: auto;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 800px;
+            width: calc(100% - 40px);
+            /* Adjusted width to fit the content */
+            display: flex;
+            flex-direction: row;
+            /* Arrange sections side by side */
+            justify-content: center;
+            /* Center the content horizontally */
+        }
+
+        .order-section,
+        .address-section {
+            flex: 1;
+            /* Make sections occupy equal space */
+            padding: 20px;
+            /* Add spacing inside sections */
+        }
+
+        .order-section {
+            border-right: 1px solid #ccc;
+            /* Add border between sections */
+        }
+
+        .address-section {
+            text-align: left;
+            /* Align text to the left */
+            margin-left: auto;
+            /* Push content towards the center */
+            margin-right: auto;
+            /* Push content towards the center */
+        }
+
+        .close {
+            color: #333;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 30px;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #87ceeb;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .view-button {
+            background-color: #4CAF50;
+            /* Green background */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition-duration: 0.4s;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        /* Change the button's background color when hovered */
+        .view-button:hover {
+            background-color: #45a049;
+        }
+
         /* CSS for styling the cancel button */
         button.cancel-button {
             background-color: #2dced0;
@@ -551,25 +631,27 @@
                                     <table>
                                         <thead>
                                             <tr>
-                                                <th>Order</th>
+                                                {{!-- <th>Order</th> --}}
                                                 <th>Product</th>
-                                                <th>Quantity</th>
+                                                {{!-- <th>Quantity</th> --}}
                                                 <th>Price</th>
-                                                <th>Date</th>
-                                                <th>Status</th>
+                                                {{!-- <th>Date</th> --}}
+                                                {{!-- <th>Status</th> --}}
                                                 <th>Action</th>
+                                                <th>Order Details</th>
+
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{#each orders}}
                                             <tr>
-                                                <td>{{this._id}}</td>
+                                                {{!-- <td>{{this._id}}</td> --}}
                                                 <td><img src="{{this.productImage}}"
                                                         style="width: 100px;">{{this.productName}}</td>
-                                                <td>{{this.quantity}}</td>
+                                                {{!-- <td>{{this.quantity}}</td> --}}
                                                 <td>{{this.totalprice}} </td>
-                                                <td>{{this.created_at}} </td>
-                                                <td>{{this.status}} </td>
+                                                {{!-- <td>{{this.created_at}} </td> --}}
+                                                {{!-- <td>{{this.status}} </td> --}}
                                                 <td>
                                                     {{#if this.cancellable}}
                                                     <form action="/admin/cancel" method="POST"
@@ -578,10 +660,14 @@
                                                         <input type="hidden" name="userId" value="{{this.userId}}">
                                                         <button type="button" class="cancel-button"
                                                             onclick="confirmCancellation('{{this._id}}')">Cancel</button>
-                                                    </form>
-                                                    {{else}}
-                                                    {{this.status}}
-                                                    {{/if}}
+
+                                                        {{else}}
+                                                        {{this.status}}
+                                                        {{/if}}
+                                                <td> <button class="view-button"
+                                                        onclick="viewOrderDetails('{{this._id}}')">View</button></td>
+                                                </form>
+
                                                 </td>
                                             </tr>
                                             {{/each}}
@@ -594,6 +680,19 @@
                                                 <td><a href="cart.html" class="view">view</a></td>
                                             </tr> --}}
                                         </tbody>
+                                        <div id="orderModal" class="modal">
+                                            <div class="modal-content">
+                                                <span class="close" onclick="closeModal()">&times;</span>
+                                                <div class="order-section">
+                                                    <h2 class="section-title">Order Details</h2>
+                                                    <div id="orderDetails"></div>
+                                                </div>
+                                                <div class="address-section">
+                                                    <h2 class="section-title">User Details</h2>
+                                                    <div id="addressDetails"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </table>
                                 </div>
                             </div>
@@ -879,8 +978,7 @@
                 }
             })
         }
-    </script>
-    <script>
+
         if (orderCancelled) {
             Toastify({
                 text: "Order is canceled successfully!",
@@ -890,6 +988,56 @@
                 backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)",
                 stopOnFocus: true
             }).showToast();
+        }
+
+
+
+        function viewOrderDetails(orderId) {
+            fetch(`/order/${orderId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Populate modal with order details
+                    const orderDetails = document.getElementById('orderDetails');
+                    orderDetails.innerHTML = `
+                {{!-- <h3>Product Details</h3> --}}
+                <p>Order ID: ${data._id}</p>
+                <p>Product Name: ${data.productName}</p>
+                <p>Quantity: ${data.quantity}</p>
+                <p>Ram & Rom: ${data.ram} - ${data.rom}</p>
+                <p>Color: ${data.color}</p>
+                <p>Payment Method: ${data.payment_Method}</p>
+                <p>Price: ${data.price}</p>
+                <p>Total Price: ${data.totalprice}</p>
+                <p>Order Status: ${data.status}</p>
+                <p>Discount Amount: ${data.amount}</p>
+            `;
+                    const addressDetails = document.getElementById('addressDetails');
+                    addressDetails.innerHTML = `
+    <p>Customer Name: ${data.name}</p>
+    <h5>Address:</h5>
+    <p>${data.address.name},</p>
+    <p>${data.address.house_name}, ${data.address.street},</p>
+    <p>${data.address.city} - ${data.address.pin}</p>
+    <p>${data.address.state}</p>
+    <p>Phone Number: ${data.address.phone}</p>
+`;
+
+                    // Show modal
+                    const modal = document.getElementById('orderModal');
+                    modal.style.display = 'block';
+                })
+                .catch(error => console.error('Error fetching order details:', error));
+        }
+
+
+        function closeModal() {
+            const modal = document.getElementById('orderModal');
+            modal.style.display = 'none';
         }
     </script>
 

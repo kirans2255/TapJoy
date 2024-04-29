@@ -360,18 +360,29 @@
                                     <th>Start Date</th>
                                     <th>End Date</th>
                                     <th>Coupon Status</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {{#each coupon}}
                                 <tr>
                                     <td class="indexing"></td>
-                                    <td>{{this.Coupon_Name}}</td>
+                                    <td>{{this._id}}</td>
                                     <td>{{this.Coupon_Value}}</td>
                                     <td>{{this.Coupon_Type}}</td>
                                     <td>{{this.StartDate}}</td>
                                     <td>{{this.EndDate}}</td>
                                     <td>{{this.Coupon_Status}}</td>
+                                    <td>
+                                        <form action="/editCoupon/{{this._id}}" method="get">
+                                            <button type="submit" class="btn btn-primary">Edit</button>
+                                        </form>
+                                    </td>
+                                    <td>
+                                        <form action="/deleteCoupon/{{this._id}}" method="post">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 {{/each}}
                             </tbody>
@@ -471,7 +482,6 @@
                             </div>
                             <button type="submit" class="btn btn-primary">Add Coupon</button>
                         </form>
-
                     </div>
                 </div>
             </div>

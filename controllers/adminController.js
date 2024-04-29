@@ -7,6 +7,7 @@ const nodemailer = require('nodemailer');
 const jwt = require('jsonwebtoken');
 const Users = require('../models/User');
 const Product = require('../models/Product');
+const cron = require('node-cron');
 
 // const multer = require('multer');
 // const Category = require('../models/Category');
@@ -575,7 +576,7 @@ const renderCoupon = async (req, res) => {
 
 
 const handleCoupon = async (req, res) => {
-  
+
   const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
   
   //  console.log(req.body)
@@ -602,6 +603,44 @@ const handleCoupon = async (req, res) => {
 }
 
 
+const checkExpiredCoupons = async () => {
+  try {
+    const expiredCoupons = await User.find({ "Coupon.EndDate": { $lte: new Date() } });
+    
+    expiredCoupons.forEach(async (admin) => {
+      admin.Coupon.forEach(async (coupon) => {
+        if (coupon.Coupon_Status !== 'Inactive') {
+          coupon.Coupon_Status = 'Inactive'; // Set status to Inactive
+          await admin.save();
+        }
+      });
+    });
+    
+    console.log('Expired coupons checked and updated successfully.');
+  } catch (error) {
+    console.error('Error checking expired coupons:', error);
+  }
+};
+
+// Schedule the job to run once a day (adjust as needed)
+cron.schedule('0 0 * * *', checkExpiredCoupons);
+
+
+const deleteCoupon = async (req, res) => {
+  const couponId = req.params.couponId;
+
+  try {
+    const admin = await User.findOne();
+    admin.Coupon = admin.Coupon.filter(coupon => coupon._id !== couponId);
+    await admin.save();
+    res.redirect('/admin/Coupon');
+  } catch (error) {
+    console.error('Error deleting Coupon:', error);
+    res.status(500).json({ error: 'Error deleting the Coupon' });
+  }
+};
+
+
 module.exports = {
   renderDashboard,
   renderHome,
@@ -620,5 +659,6 @@ module.exports = {
   updatestatus,
   renderCoupon,
   handleCoupon,
-
+  checkExpiredCoupons,
+  deleteCoupon
 };

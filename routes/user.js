@@ -91,8 +91,12 @@ router.post('/signup', userController.handleSignup);
 router.post('/coupon', userController.validateCoupon);
 
 ///////
+//order
 
 router.post('/admin/cancel', userController.cancelOrder);
+
+router.get('/order/:id',userController.fetchOrder);
+
 
 //////////
 
