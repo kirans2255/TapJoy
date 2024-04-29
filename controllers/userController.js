@@ -33,14 +33,14 @@ const renderAccount = async (req, res) => {
       const product = await Product.findById(productId);
       if (product) {
         const { productName, productImage } = product;
-        let cancellable = true; 
+        let cancellable = true;
         let statusText = order.status;
-        
+
         if (order.status === 'canceled') {
           cancellable = false;
           statusText = 'Order canceled';
         } else if (order.status === 'Delivered') {
-          cancellable = false; 
+          cancellable = false;
           statusText = 'Order delivered';
         } else if (order.status === 'Shipped') {
           cancellable = false;
@@ -48,14 +48,14 @@ const renderAccount = async (req, res) => {
         }
         orders.push({
           _id: order._id,
-          userId: user._id, 
+          userId: user._id,
           productName,
-          productImage: productImage[0], 
+          productImage: productImage[0],
           quantity: order.quantity,
           totalprice: order.totalprice,
           created_at: new Date(order.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
-          status: statusText, 
-          cancellable: cancellable 
+          status: statusText,
+          cancellable: cancellable
         });
       }
     }
@@ -71,26 +71,26 @@ const renderAccount = async (req, res) => {
 
 const cancelOrder = async (req, res) => {
   try {
-      const { orderId, userId } = req.body;
+    const { orderId, userId } = req.body;
 
-      const user = await Users.findById(userId);
-      if (!user) {
-          return res.status(404).json({ message: "User not found" });
-      }
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
 
-      const orderIndex = user.orders.findIndex(order => order._id.toString() === orderId);
-      if (orderIndex === -1) {
-          return res.status(404).json({ message: "Order not found" });
-      }
+    const orderIndex = user.orders.findIndex(order => order._id.toString() === orderId);
+    if (orderIndex === -1) {
+      return res.status(404).json({ message: "Order not found" });
+    }
 
-      user.orders[orderIndex].status = 'canceled';
-      await user.save();
+    user.orders[orderIndex].status = 'canceled';
+    await user.save();
 
-      // Redirect back to the account page
-      res.redirect('/account');
+    // Redirect back to the account page
+    res.redirect('/account');
   } catch (error) {
-      console.error("Error canceling order:", error);
-      res.status(500).json({ error: "Error canceling order" });
+    console.error("Error canceling order:", error);
+    res.status(500).json({ error: "Error canceling order" });
   }
 };
 
@@ -117,7 +117,7 @@ const fetchOrder = async (req, res) => {
   const orderId = req.params.id;
   try {
     // Find the order containing the orderId
-    const order = await Users.findOne({ "orders._id": orderId });  
+    const order = await Users.findOne({ "orders._id": orderId });
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
@@ -149,17 +149,17 @@ const fetchOrder = async (req, res) => {
     res.json({
       _id: foundOrder._id,
       productName: product.productName,
-      name: user.name, 
-      quantity:foundOrder.quantity,
-      price:foundOrder.price,
-      address:foundOrder.address,
-      payment_Method: foundOrder.payment_Method, 
+      name: user.name,
+      quantity: foundOrder.quantity,
+      price: foundOrder.price,
+      address: foundOrder.address,
+      payment_Method: foundOrder.payment_Method,
       totalprice: foundOrder.totalprice,
       status: foundOrder.status,
       color: product.productColor,
       ram: foundOrder.productRam,
-      rom:foundOrder.productRom,
-      amount:foundOrder.grandTotal,
+      rom: foundOrder.productRom,
+      amount: foundOrder.grandTotal,
     });
 
 
@@ -918,7 +918,7 @@ const renderCart = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await Users.findById(userId);
-    
+
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -1071,9 +1071,9 @@ const updateQuantity = async (req, res) => {
 
 // Route handler to remove product from cart by productId
 const removeFromCart = async (req, res) => {
-  const productId = req.body.id; 
+  const productId = req.body.id;
   const userId = req.user.id;
-  
+
   // console.log(productId,userId)
 
   try {
@@ -1191,7 +1191,7 @@ const Address = async (req, res) => {
 const Cod = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { addressId, paymentMethodId, discount, grandTotal  } = req.body;
+    const { addressId, paymentMethodId, discount, grandTotal } = req.body;
 
     // Find the user by ID
     const user = await Users.findById(userId).populate("cart.products");
@@ -1241,11 +1241,11 @@ const Cod = async (req, res) => {
       const newOrder = {
         // orderId: new mongoose.Types.ObjectId(),
         productId: item.productId,
-        productRam:item.productRam,
-        productRom:item.productRom,
+        productRam: item.productRam,
+        productRom: item.productRom,
         quantity: item.quantity,
         price: variant.productPrice,
-        grandTotal:grandTotal,
+        grandTotal: grandTotal,
         totalprice: item.quantity * variant.productPrice,
         address: selectedAddress,
         payment_Method: paymentMethodId,
@@ -1306,7 +1306,7 @@ const placeorder = async (req, res) => {
 
   try {
     const userId = req.user.id;
-    const { razorpay_order_id, razorpay_payment_id, addressId, paymentMethodId,  grandTotal } = req.body
+    const { razorpay_order_id, razorpay_payment_id, addressId, paymentMethodId, grandTotal } = req.body
 
     // Find the user by ID
     const user = await Users.findById(userId).populate("cart.products");
@@ -1359,7 +1359,7 @@ const placeorder = async (req, res) => {
         quantity: item.quantity,
         price: variant.productPrice,
         totalprice: item.quantity * variant.productPrice,
-        grandTotal:grandTotal,
+        grandTotal: grandTotal,
         address: selectedAddress,
         payment_Method: paymentMethodId,
         razorpay_order_id: razorpay_order_id,
@@ -1419,28 +1419,28 @@ const search = async (req, res) => {
   // console.log("Search Query:", searchQuery);
 
   try {
-      // Find a product based on the search criteria
-      const product = await Product.find({
-          $or: [
-              { productBrand: { $regex: new RegExp(searchQuery, 'i') } }, 
-              { productName: { $regex: new RegExp(searchQuery, 'i') } },
-              { productCategory: { $regex: new RegExp(searchQuery, 'i') } },
-              { productPrice: { $regex: new RegExp(searchQuery, 'i') } },
-              { productDescription: { $regex: new RegExp(searchQuery, 'i') } },
-              { productColor: { $regex: new RegExp(searchQuery, 'i') } }
-          ]
-      });
+    // Find a product based on the search criteria
+    const product = await Product.find({
+      $or: [
+        { productBrand: { $regex: new RegExp(searchQuery, 'i') } },
+        { productName: { $regex: new RegExp(searchQuery, 'i') } },
+        { productCategory: { $regex: new RegExp(searchQuery, 'i') } },
+        { productPrice: { $regex: new RegExp(searchQuery, 'i') } },
+        { productDescription: { $regex: new RegExp(searchQuery, 'i') } },
+        { productColor: { $regex: new RegExp(searchQuery, 'i') } }
+      ]
+    });
 
-      if (!product) {
-          return res.status(404).json({ message: "Product not found" });
-      }
-      // console.log("fsdf",product)
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+    // console.log("fsdf",product)
 
-      // Process the product or send it back in the response
-      return res.status(200).json({ product });
+    // Process the product or send it back in the response
+    return res.status(200).json({ product });
   } catch (error) {
-      console.error("Error:", error);
-      return res.status(500).json({ message: "Internal server error" });
+    console.error("Error:", error);
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
 

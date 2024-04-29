@@ -611,10 +611,10 @@
                                                     <div class="col-md-7 col-lg-7 col-xl-8">
                                                         <div class="content-desc-wrap">
                                                             <div class="content">
-                                                                <span class="category"><a
-                                                                        href="#">Accessories</a></span>
-                                                                <h5 class="title"><a href="single-product.html">Modern
-                                                                        Smart Phone</a></h5>
+                                                                <span class="category"><a href="#"></a></span>
+                                                                <h5 class="title"><a
+                                                                        href="single-product.html">{{this.productName}}
+                                                                    </a></h5>
                                                                 <p>{{this.productDescription}} </p>
                                                             </div>
                                                             <div class="box-inner">
@@ -1272,15 +1272,75 @@
                         // Handle successful response from the server
                         var searchResults = response.data.product;
 
-                        window.location.href
-                        // Display search results to the user
-                        console.log("Search Results:", searchResults);
+                        // Clear existing products
+                        var shopGrid = document.getElementById('shop-grid').querySelector('.row');
+                        var shopList = document.getElementById('shop-list').querySelector('.row');
+                        shopGrid.innerHTML = '';
+                        shopList.innerHTML = '';
+
+                        // Display search results on the page
+                        displaySearchResults(searchResults, shopGrid, shopList);
                     })
                     .catch(function (error) {
                         // Log the error
                         console.error('Error fetching search results:', error);
                     });
             });
+
+            function displaySearchResults(products, gridContainer, listContainer) {
+                products.forEach(function (product) {
+                    // Create HTML elements to display each product in grid and list view
+                    var productElementGrid = createProductElement(product, 'grid');
+                    var productElementList = createProductElement(product, 'list');
+
+                    // Append product elements to the appropriate container
+                    gridContainer.appendChild(productElementGrid);
+                    listContainer.appendChild(productElementList);
+                });
+            }
+
+            function createProductElement(product, viewType) {
+                var productElement = document.createElement('div');
+                productElement.classList.add('col-xl-3', 'col-lg-4', 'col-md-6', 'col-sm-6', 'col-6', 'mb-30px');
+
+                // For list view, adjust the column classes
+                if (viewType === 'list') {
+                    productElement.classList.remove('col-xl-3', 'col-lg-4', 'col-md-6', 'col-sm-6', 'col-6', 'mb-30px');
+                    productElement.classList.add('col-md-5', 'col-lg-5', 'col-xl-4', 'mb-lm-30px');
+                }
+
+                // Add product HTML content based on viewType
+                // You can customize this part based on your HTML structure
+                productElement.innerHTML = `
+        <!-- Single Product -->
+        <div class="product">
+            <span class="badges">
+                <!-- <span class="new">New</span> -->
+            </span>
+            <div class="thumb">
+                <a href="/singleproduct/${product._id}" class="image">
+                    <img src="${product.productImage[0]}" alt="Product" />
+                    <img class="hover-image" src="${product.productImage[1]}" alt="Product" />
+                </a>
+            </div>
+
+            <div class="content">
+                <span class="category"><a href="#">${product.productCategory}</a></span>
+                <h5 class="title"><a href="/singleproduct/${product._id}">${product.productName}</a></h5>
+                <span class="price">
+                    ${product.variants ? `<span class="new" class="data-link"
+                        data-price="${product.variants[0].productPrice}">₹${product.variants[0].productPrice}</span>` :
+                        '<span class="new">Price not available</span>'}
+                </span>
+            </div>
+            <div class="actions">
+                <!-- Add to wishlist and compare buttons -->
+            </div>
+        </div>
+        `;
+
+                return productElement;
+            }
 
 
         </script>
