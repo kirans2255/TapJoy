@@ -69,6 +69,7 @@ const renderAccount = async (req, res) => {
 
 
 
+
 const cancelOrder = async (req, res) => {
   try {
     const { orderId, userId } = req.body;
@@ -1100,53 +1101,10 @@ const removeFromCart = async (req, res) => {
 };
 
 
-//checkout
 
-const rendercheckout = async (req, res) => {
-  try {
-    const userId = req.user.id;
-    const user = await Users.findById(userId);
-    if (!user) {
-      return res.status(404).send('User not found');
-    }
-    const cartItems = user.cart.products;
-    const address = user.addresses;
 
-    // Fetch product details for each item in the cart
-    const cartProducts = [];
-    for (const item of cartItems) {
-      const product = await Product.findOne({
-        _id: item.productId,
-        'variants.productRam': item.productRam,
-        'variants.productRom': item.productRom
-      });
-
-      if (product) {
-        // Extract the variant matching the RAM and ROM
-        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
-
-        // Push the product details to the cartProducts array along with quantity
-        cartProducts.push({
-          _id: product._id,
-          productName: product.productName,
-          productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
-          productPrice: variant.productPrice,
-          productRam: variant.productRam,
-          productRom: variant.productRom,
-          quantity: item.quantity, // Include quantity in the cart product
-          subtotal: item.quantity * variant.productPrice
-        });
-      }
-    }
-
-    const cartTotal = cartProducts.reduce((sum, item) => sum + item.subtotal, 0);
-    res.render('user/checkout', { user, cart: cartProducts, cartTotal, address });
-  } catch (error) {
-    // console.error(error);
-    res.status(500).send('Internal Server Error');
-  }
-}
-
+///address
+///////////////////////////////////////////////////
 
 
 const Address = async (req, res) => {
@@ -1188,6 +1146,93 @@ const Address = async (req, res) => {
 }
 
 
+const deleteAddress = async (req, res) => {
+  const addressId = req.params.id;
+
+  // console.log("Address ID:", addressId);
+  try {
+    const user = await Users.findOne();
+    // Find the index of the address to delete
+    const addressIndex = user.addresses.findIndex(address => address._id.toString() === addressId);
+    console.log("Address Index:", addressIndex);
+
+    // If the address is found, remove it from the array
+    if (addressIndex !== -1) {
+      user.addresses.splice(addressIndex, 1);
+      await user.save();
+      res.status(200).json({ success: 'Address success' });
+    } else {
+      // If the Address is not found, return an error response
+      res.status(404).json({ error: 'Address not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error deleting the Address' });
+  }
+};
+
+
+
+//////////////////////////////////////////////////////////////
+
+
+
+//checkout
+
+const rendercheckout = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const user = await Users.findById(userId);
+    
+    if (!user) {
+      return res.status(404).send('User not found');
+    }
+
+    const cartItems = user.cart.products;
+    const address = user.addresses;
+
+    // Check if the cart is empty
+    if (cartItems.length === 0) {
+      return res.redirect('/cart'); // Redirect to the cart page
+    }
+
+    // Fetch product details for each item in the cart
+    const cartProducts = [];
+    for (const item of cartItems) {
+      const product = await Product.findOne({
+        _id: item.productId,
+        'variants.productRam': item.productRam,
+        'variants.productRom': item.productRom
+      });
+
+      if (product) {
+        // Extract the variant matching the RAM and ROM
+        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+
+        // Push the product details to the cartProducts array along with quantity
+        cartProducts.push({
+          _id: product._id,
+          productName: product.productName,
+          productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
+          productPrice: variant.productPrice,
+          productRam: variant.productRam,
+          productRom: variant.productRom,
+          quantity: item.quantity, // Include quantity in the cart product
+          subtotal: item.quantity * variant.productPrice
+        });
+      }
+    }
+
+    const cartTotal = cartProducts.reduce((sum, item) => sum + item.subtotal, 0);
+    res.render('user/checkout', { user, cart: cartProducts, cartTotal, address });
+  } catch (error) {
+    // console.error(error);
+    res.status(500).send('Internal Server Error');
+  }
+}
+
+
+//payement
+/////////////////////////////////////
 const Cod = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -1489,4 +1534,6 @@ module.exports = {
   cancelOrder,
   fetchOrder,
   search,
+  deleteAddress,
 };
+

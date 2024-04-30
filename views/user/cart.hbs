@@ -596,15 +596,15 @@
                                 </div> --}}
                             </div>
                             <div class="col-lg-4 col-md-6 mb-lm-30px">
-                             
-                            </div>
 
+                            </div>
+                            {{#if cartTotal}}
                             <div class="col-lg-4 col-md-12 mt-md-30px">
                                 <div class="grand-totall">
                                     <div class="title-wrap">
                                         <h4 class="cart-bottom-title section-bg-gary-cart">Cart Total</h4>
                                     </div>
-                                    {{!-- <h5>Total products <span id="totalProducts">{{cartTotal}}</span></h5> --}}
+                                    <h5>Total products <span id="totalProducts">{{cartTotal}}</span></h5>
                                     {{!-- <h5>Discount <span></span></h5> --}}
                                     {{!-- <div class="total-shipping">
                                         <h5>Total shipping</h5>
@@ -617,6 +617,7 @@
                                     <a href="/checkout">Proceed to Checkout</a>
                                 </div>
                             </div>
+                            {{/if}}
                         </div>
                     </div>
                 </div>
@@ -865,7 +866,7 @@
                     },
                     body: JSON.stringify({ couponCode, cartTotal })
                 });
-                console.log("dskofn",cartTotal,couponCode)
+                console.log("dskofn", cartTotal, couponCode)
                 const data = await response.json();
                 document.getElementById("couponMessage").textContent = data.message;
                 if (response.status === 200) {

@@ -77,6 +77,9 @@ router.get('/checkout',requireAuth, userController.rendercheckout);
 
 router.post('/address',requireAuth ,userController.Address);
 
+router.delete('/deleteAddress/:id',userController.deleteAddress)
+
+
 ///////COD
 router.post('/placeOrder',requireAuth ,userController.Cod);
 

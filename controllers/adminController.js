@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const Users = require('../models/User');
 const Product = require('../models/Product');
 const cron = require('node-cron');
+const Brand = require('../models/Brand')
 
 // const multer = require('multer');
 // const Category = require('../models/Category');
@@ -25,10 +26,122 @@ const renderHome = (req, res) => {
     res.render('admin/signin');
   };
 }
+
+
+
+
+
 // Render the dashboard view
-const renderDashboard = (req, res) => {
-  res.render('admin/dashboard');
+const renderDashboard = async (req, res) => {
+  try {
+    // Query all users
+    const users = await Users.find();
+    const brands = await Brand.find();
+    const products = await Product.find();
+
+    // Calculate total counts
+    const totalBrands = brands.length;
+    const totalUsers = users.length;
+    const totalproducts = products.length;
+
+
+    let totalOrders = 0;
+
+    const ordersByDay = {};
+
+    users.forEach(user => {
+      user.orders.forEach(order => {
+        totalOrders++;
+        const date = new Date(order.created_at).toLocaleDateString();
+        if (ordersByDay[date]) {
+          ordersByDay[date]++;
+        } else {
+          ordersByDay[date] = 1;
+        }
+      });
+    });
+
+    // Convert ordersByDay object to arrays for chart data
+    const dates = Object.keys(ordersByDay);
+    const ordersData = Object.values(ordersByDay);
+
+
+    // Initialize an object to hold the count of products ordered by month
+    const productsOrderedByMonth = {};
+
+    users.forEach(user => {
+      user.orders.forEach(order => {
+        // Extract the month and year of the order
+        const date = new Date(order.created_at);
+        const monthYear = `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+
+        // Initialize the counter for this month if it doesn't exist
+        if (!productsOrderedByMonth[monthYear]) {
+          productsOrderedByMonth[monthYear] = 0;
+        }
+
+        // Increment the counter by the number of products in the order
+        productsOrderedByMonth[monthYear] += order.productId.length;
+
+        // Increment total orders count
+        // totalOrders++;
+      });
+    });
+
+    // Extract labels and data for the chart
+    const labels = Object.keys(productsOrderedByMonth);
+    const data = Object.values(productsOrderedByMonth);
+
+
+
+
+    let deliveredOrders = 0;
+    let canceledOrders = 0;
+    let shippedOrders = 0;
+    let pendingOrders = 0;
+
+    users.forEach(user => {
+      user.orders.forEach(order => {
+        // totalOrders++;
+        if (order.status === 'Delivered') {
+          deliveredOrders++;
+        } else if (order.status === 'Canceled') {
+          canceledOrders++;
+        } else if (order.status === 'Shipped') {
+          shippedOrders++;
+        } else if (order.status === 'Pending') {
+          pendingOrders++;
+        }
+      });
+    });
+
+
+    // Render dashboard with total counts and orders data
+    res.render('admin/dashboard', {
+      totalOrders,
+      totalUsers,
+      totalBrands,
+      totalproducts,
+      dates: JSON.stringify(dates),
+      ordersData: JSON.stringify(ordersData),
+      data: JSON.stringify(data),
+      labels: JSON.stringify(labels),
+      deliveredOrders,
+      canceledOrders,
+      shippedOrders,
+      pendingOrders,
+    });
+  } catch (error) {
+    // Handle any errors
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
+
+
+
+
+
 const renderCategory = async function (req, res) {
   try {
     const category = await Categorys.find();
@@ -39,10 +152,7 @@ const renderCategory = async function (req, res) {
   }
 };
 
-// Render the profile view
-// const renderProduct = (req, res) => {
-//   res.render('admin/product');
-// };
+
 
 const handleSignin = async (req, res) => {
   const { email, password } = req.body;
@@ -401,7 +511,7 @@ const fetchOrder = async (req, res) => {
   const orderId = req.params.id;
   try {
     // Find the order containing the orderId
-    const order = await Users.findOne({ "orders._id": orderId });  
+    const order = await Users.findOne({ "orders._id": orderId });
     if (!order) {
       return res.status(404).json({ error: "Order not found" });
     }
@@ -433,17 +543,17 @@ const fetchOrder = async (req, res) => {
     res.json({
       _id: foundOrder._id,
       productName: product.productName,
-      name: user.name, 
-      quantity:foundOrder.quantity,
-      price:foundOrder.price,
-      address:foundOrder.address,
-      payment_Method: foundOrder.payment_Method, 
+      name: user.name,
+      quantity: foundOrder.quantity,
+      price: foundOrder.price,
+      address: foundOrder.address,
+      payment_Method: foundOrder.payment_Method,
       totalprice: foundOrder.totalprice,
       status: foundOrder.status,
       color: product.productColor,
       ram: foundOrder.productRam,
-      rom:foundOrder.productRom,
-      amount:foundOrder.grandTotal,
+      rom: foundOrder.productRom,
+      amount: foundOrder.grandTotal,
     });
 
 
@@ -559,7 +669,7 @@ const renderCoupon = async (req, res) => {
   try {
     const admin = await User.findOne();
     const coupon = admin.Coupon.map(c => ({
-      _id:c._id,
+      _id: c._id,
       Coupon_Name: c.Coupon_Name,
       Coupon_Value: c.Coupon_Value,
       Coupon_Type: c.Coupon_Type,
@@ -579,7 +689,7 @@ const renderCoupon = async (req, res) => {
 const handleCoupon = async (req, res) => {
 
   const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
-  
+
   //  console.log(req.body)
   try {
 
@@ -607,7 +717,7 @@ const handleCoupon = async (req, res) => {
 const checkExpiredCoupons = async () => {
   try {
     const expiredCoupons = await User.find({ "Coupon.EndDate": { $lte: new Date() } });
-    
+
     expiredCoupons.forEach(async (admin) => {
       admin.Coupon.forEach(async (coupon) => {
         if (coupon.Coupon_Status !== 'Inactive') {
@@ -616,7 +726,7 @@ const checkExpiredCoupons = async () => {
         }
       });
     });
-    
+
     console.log('Expired coupons checked and updated successfully.');
   } catch (error) {
     console.error('Error checking expired coupons:', error);
@@ -629,10 +739,10 @@ cron.schedule('0 0 * * *', checkExpiredCoupons);
 
 
 const editCoupon = async (req, res) => {
-  const couponId = req.body.id; 
+  const couponId = req.body.id;
 
   try {
-    const admin = await User.findOne(); 
+    const admin = await User.findOne();
     // Find the coupon by ID within the admin's coupons
     const existingCoupon = admin.Coupon.find(coupon => coupon._id.toString() === couponId);
 
@@ -655,7 +765,7 @@ const editCoupon = async (req, res) => {
 
 const updateCoupon = async (req, res) => {
   const couponId = req.params.id;
-  const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value  } = req.body;
+  const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
   console.log(req.body);
 
 
@@ -703,7 +813,7 @@ const deleteCoupon = async (req, res) => {
     if (couponIndex !== -1) {
       admin.Coupon.splice(couponIndex, 1);
       await admin.save();
-      res.status(200).json({ success:'coupon success'});
+      res.status(200).json({ success: 'coupon success' });
     } else {
       // If the coupon is not found, return an error response
       res.status(404).json({ error: 'Coupon not found' });

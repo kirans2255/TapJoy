@@ -22,6 +22,23 @@
     <link rel="stylesheet" href="assets/css/swiper-bundle.min.css">
     <link rel="stylesheet" href="assets/css/venobox.css">
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
+    <!-- Other meta tags, title, etc. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css">
+
+
+    <style>
+        .edit-btn i {
+            color: blue;
+            /* Change to desired color */
+        }
+
+        .delete-btn i {
+            color: red;
+            /* Change to desired color */
+        }
+    </style>
+
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
@@ -728,7 +745,6 @@
                                 <div id="addressDetails">
                                     {{#each address}}
                                     <div class="address-container">
-
                                         <div class="address-info">
                                             <span>{{name}}</span>,<br>
                                             <span>{{house_name}},</span>
@@ -739,8 +755,23 @@
                                             <span>{{address_type}},</span>
                                             <span>{{phone}}</span>
                                         </div>
+                                        <div class="address-buttons">
+                                            <button class="edit-btn" onclick="openEditModal('{{_id}}')"><i
+                                                    class="fas fa-edit"></i> </button>
+                                            <button class="delete-btn" onclick="deleteAddress('{{this._id}}')"><i
+                                                    class="fas fa-trash-alt"></i> </button>
+                                        </div>
                                     </div>
                                     {{/each}}
+                                </div>
+                            </div>
+
+                            <!-- Modal for Edit -->
+                            <div id="editModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeEditModal()">&times;</span>
+                                    <h2>Edit Address</h2>
+                                    <!-- Add form fields for editing address details here -->
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="account-details">
@@ -958,6 +989,7 @@
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
     <!-- Include SweetAlert library -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
 
 
     <script>
@@ -977,18 +1009,6 @@
                 }
             })
         }
-
-        if (orderCancelled) {
-            Toastify({
-                text: "Order is canceled successfully!",
-                duration: 2000,
-                gravity: "bottom",
-                position: "right",
-                backgroundColor: "linear-gradient(to right, #ff416c, #ff4b2b)",
-                stopOnFocus: true
-            }).showToast();
-        }
-
 
 
         function viewOrderDetails(orderId) {
@@ -1038,6 +1058,58 @@
             const modal = document.getElementById('orderModal');
             modal.style.display = 'none';
         }
+
+
+
+        ///address
+
+        function openEditModal(addressId) {
+            // You can fetch address details corresponding to the addressId and populate the edit modal fields
+            // Show the modal
+            var modal = document.getElementById("editModal");
+            modal.style.display = "block";
+        }
+
+        function closeEditModal() {
+            var modal = document.getElementById("editModal");
+            modal.style.display = "none";
+        }
+
+
+        function deleteAddress(addressId) {
+            var confirmation = confirm("Are you sure you want to delete this Address?");
+
+            if (confirmation) {
+                // Use fetch to send a DELETE request to your server endpoint
+                fetch(`/deleteAddress/${addressId}`, {
+                    method: 'DELETE',
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            // Assuming the product is deleted successfully, you can reload the page or update the UI
+                            console.log('Address deleted successfully');
+                            // Display Noty alert
+                            new Noty({
+                                type: 'success',
+                                text: 'Address deleted successfully',
+                                timeout: 3000 // 3 seconds
+                            }).show();
+                            // Reload the page
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 2000);
+                        } else {
+                            console.error('Failed to delete Address');
+                            // Handle error accordingly
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Handle error accordingly
+                    });
+            }
+        }
+
     </script>
 
 </body>

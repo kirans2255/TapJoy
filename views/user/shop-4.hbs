@@ -25,6 +25,16 @@
     <!-- Style CSS -->
     <link rel="stylesheet" href="/assets/css/style.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    {{!-- <style>
+        .no-products-found {
+            font-size: 24px;
+            color: #ff0000;
+            /* Red color */
+            margin-top: 20px;
+            /* Add some space between the message and other elements */
+            /* You can add additional styling here as needed */
+        }
+    </style> --}}
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="/assets/css/plugins.min.css">
     <link rel="stylesheet" href="/assets/css/style.min.css"> -->
@@ -495,7 +505,7 @@
                                 <button class="active" data-bs-target="#shop-grid" data-bs-toggle="tab">
                                     <i class="fa fa-th" aria-hidden="true"></i>
                                 </button>
-                                <button data-bs-target="#shop-list" data-bs-toggle="tab">
+                                <button data-bs-target="#shop-list" id="listbutton" data-bs-toggle="tab">
                                     <i class="fa fa-list" aria-hidden="true"></i>
                                 </button>
                             </div>
@@ -1275,8 +1285,10 @@
                         // Clear existing products
                         var shopGrid = document.getElementById('shop-grid').querySelector('.row');
                         var shopList = document.getElementById('shop-list').querySelector('.row');
+                        var shopL = document.getElementById('listbutton')
                         shopGrid.innerHTML = '';
                         shopList.innerHTML = '';
+                        shopL.style.display = 'none';
 
                         // Display search results on the page
                         displaySearchResults(searchResults, shopGrid, shopList);
@@ -1287,17 +1299,30 @@
                     });
             });
 
-            function displaySearchResults(products, gridContainer, listContainer) {
-                products.forEach(function (product) {
-                    // Create HTML elements to display each product in grid and list view
-                    var productElementGrid = createProductElement(product, 'grid');
-                    var productElementList = createProductElement(product, 'list');
+            function displaySearchResults(products, listContainer) {
+                // Clear existing list items
+                listContainer.innerHTML = '';
 
-                    // Append product elements to the appropriate container
-                    gridContainer.appendChild(productElementGrid);
-                    listContainer.appendChild(productElementList);
-                });
+                if (products.length === 0) {
+                    // If no products found, display a styled message
+                    var message = document.createElement('div');
+                    message.textContent = 'No products found.';
+                    message.style.fontSize = '40px'; // Set font size
+                    message.style.color = 'green'; // Set text color
+                    message.style.backgroundColor = '#f0f0f0'; // Set background color
+                    message.style.padding = '11.4% 30%'; // Add padding for better readability
+                    message.style.margin = 'auto auto';
+                    listContainer.appendChild(message);
+                } else {
+                    // If products found, display them
+                    products.forEach(function (product) {
+                        var productElement = createProductElement(product, 'list');
+                        listContainer.appendChild(productElement);
+                    });
+                }
             }
+
+
 
             function createProductElement(product, viewType) {
                 var productElement = document.createElement('div');
