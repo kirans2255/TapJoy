@@ -71,6 +71,10 @@ router.delete('/deleteCoupon/:id',adminController.deleteCoupon)
 router.put('/admin/coupon/:id',adminController.updateCoupon)
 
 
+//orderreport
+
+router.post('/orders/excel',requireAuth,adminController.getOrderReport)
+
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);
 

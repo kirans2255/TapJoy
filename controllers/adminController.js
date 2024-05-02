@@ -9,6 +9,9 @@ const Users = require('../models/User');
 const Product = require('../models/Product');
 const cron = require('node-cron');
 const Brand = require('../models/Brand')
+const XLSX = require('xlsx');
+const Excel = require('exceljs');
+
 
 // const multer = require('multer');
 // const Category = require('../models/Category');
@@ -83,8 +86,6 @@ const renderDashboard = async (req, res) => {
         // Increment the counter by the number of products in the order
         productsOrderedByMonth[monthYear] += order.productId.length;
 
-        // Increment total orders count
-        // totalOrders++;
       });
     });
 
@@ -824,6 +825,100 @@ const deleteCoupon = async (req, res) => {
 };
 
 
+
+const getOrderReport = async (req, res) => {
+  const { startDate, endDate } = req.body;
+
+  try {
+    const user = await Users.findOne().populate({
+      path: 'orders',
+      populate: {
+        path: 'productId',
+        model: 'Product'
+      }
+    });
+
+    // console.log("dsdf",user)
+
+    if (!user) {
+      return res.status(404).json({ error: "User data not found" });
+    }
+
+    const orders = user.orders;
+
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(endDate);
+    const deliveredOrders = orders.filter(
+      (order) =>
+        // order.status === "Delivered" &&
+        new Date(order.created_at) >= startDateObj &&
+        new Date(order.created_at) <= endDateObj
+    );
+
+    // console.log("yulk",deliveredOrders);
+
+    if (deliveredOrders.length === 0) {
+      return res.status(404).json({ error: "No orders found" });
+    }
+
+    // CREATE NEW WORK BOOK
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet("Orders");
+
+    // HEADERS TO WORK SHEET
+    worksheet.columns = [
+      { header: "Order ID", key: "orderId", width: 30 },
+      { header: "Order Date", key: "orderDate", width: 20 },
+      { header: "Product ", key: "product", width: 20 },
+      { header: "Customer Name", key: "userName", width: 20 },
+      { header: "Price", key: "price", width: 20 },
+      { header: "Quantity", key: "quantity", width: 20 },
+      { header: "Total", key: "total", width: 20 },
+      { header: "Status", key: "orderStatus", width: 20 },
+    ];
+
+    // DATA ROWS TO WORK SHEET
+    deliveredOrders.forEach((order) => {
+      const productName = order.productId.productName;
+      const productRom = order.productRom;
+      const product = `${productName} - ${productRom}`;
+
+      worksheet.addRow({
+        orderId: order._id,
+        product:product,
+        userName: user.name,
+        orderDate: order.created_at,
+        price: order.price,
+        quantity: order.quantity,
+        total: order.totalprice,
+        orderStatus: order.status,
+      });
+    });
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=sales_report.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+
+    res.end();
+  } catch (error) {
+    console.error("Error generating Excel report:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+/////// report csv
+
+
+
 module.exports = {
   renderDashboard,
   renderHome,
@@ -846,4 +941,5 @@ module.exports = {
   deleteCoupon,
   editCoupon,
   updateCoupon,
+  getOrderReport,
 };
