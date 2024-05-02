@@ -715,30 +715,6 @@ const handleCoupon = async (req, res) => {
 }
 
 
-const checkExpiredCoupons = async () => {
-  try {
-    const expiredCoupons = await User.find({ "Coupon.EndDate": { $lte: new Date() } });
-
-    expiredCoupons.forEach(async (admin) => {
-      admin.Coupon.forEach(async (coupon) => {
-        if (coupon.Coupon_Status !== 'Inactive') {
-          coupon.Coupon_Status = 'Inactive'; // Set status to Inactive
-          await admin.save();
-        }
-      });
-    });
-
-    console.log('Expired coupons checked and updated successfully.');
-  } catch (error) {
-    console.error('Error checking expired coupons:', error);
-  }
-};
-
-// Schedule the job to run once a day (adjust as needed)
-cron.schedule('0 0 * * *', checkExpiredCoupons);
-
-
-
 const editCoupon = async (req, res) => {
   const couponId = req.body.id;
 
@@ -766,9 +742,8 @@ const editCoupon = async (req, res) => {
 
 const updateCoupon = async (req, res) => {
   const couponId = req.params.id;
-  const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
+  const { Coupon_Status, Coupon_Name,Coupon_Value, Coupon_Type, StartDate, EndDate } = req.body;
   console.log(req.body);
-
 
   try {
     // Find the admin
@@ -787,6 +762,7 @@ const updateCoupon = async (req, res) => {
     existingCoupon.Coupon_Type = Coupon_Type;
     existingCoupon.StartDate = StartDate;
     existingCoupon.EndDate = EndDate;
+
 
 
     // Save the updated admin
@@ -937,7 +913,6 @@ module.exports = {
   updatestatus,
   renderCoupon,
   handleCoupon,
-  checkExpiredCoupons,
   deleteCoupon,
   editCoupon,
   updateCoupon,

@@ -45,7 +45,21 @@
 
     <style>
         /* CSS */
+
         .modal-content {
+            background: linear-gradient(135deg, #87ceeb, #ffffff);
+            color: #333;
+     
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            position: absolute;
+
+            max-width: 800px;
+            width: calc(100% - 40px);
+            /* Adjusted width to fit the content */
+   
+        }
+
+        .modal-contents {
             background: linear-gradient(135deg, #87ceeb, #ffffff);
             color: #333;
             margin: auto;
@@ -697,7 +711,7 @@
                                             </tr> --}}
                                         </tbody>
                                         <div id="orderModal" class="modal">
-                                            <div class="modal-content">
+                                            <div class="modal-contents">
                                                 <span class="close" onclick="closeModal()">&times;</span>
                                                 <div class="order-section">
                                                     <h2 class="section-title">Order Details</h2>
@@ -756,7 +770,8 @@
                                             <span>{{phone}}</span>
                                         </div>
                                         <div class="address-buttons">
-                                            <button class="edit-btn" onclick="openEditModal('{{_id}}')"><i
+                                            <button class="edit-btn"
+                                                onclick="editModal('{{this._id}}','{{this.house_name}}','{{this.street}}','{{this.city}}','{{this.state}}','{{this.pin}}')"><i
                                                     class="fas fa-edit"></i> </button>
                                             <button class="delete-btn" onclick="deleteAddress('{{this._id}}')"><i
                                                     class="fas fa-trash-alt"></i> </button>
@@ -766,14 +781,115 @@
                                 </div>
                             </div>
 
+
+                            {{!-- <a href="#" class="btn btn-primary edit-address-btn" data-bs-toggle="modal"
+                                data-bs-target="#staticBackdrop" data-id="{{_id}}">
+                                <i class="fas fa-edit"></i><input type="hidden" value="{{_id}}"> Edit Address
+                            </a>
+
+                            <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="staticBackdropLabel">Edit Address</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="edit-address-form">
+
+                                                <div class="mb-3">
+                                                    <label for="edit-address" class="form-label">Address</label>
+                                                    <textarea class="form-control" id="edit-address" name="address"
+                                                        rows="3">{{ addressDetails.address.address }}</textarea>
+                                                    <p class="error-msg" id="address-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-place" class="form-label">Place</label>
+                                                    <input type="text" class="form-control" id="edit-place" name="place"
+                                                        value="{{ addressDetails.address.place }}">
+                                                    <p class="error-msg" id="place-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-district" class="form-label">District</label>
+                                                    <input type="text" class="form-control" id="edit-district"
+                                                        name="district" value="{{ addressDetails.address.district }}">
+                                                    <p class="error-msg" id="district-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-pincode" class="form-label">Pincode</label>
+                                                    <input type="text" class="form-control" id="edit-pincode"
+                                                        name="pincode" value="{{ addressDetails.address.pincode }}">
+                                                    <p class="error-msg" id="pincode-error"></p>
+                                                </div>
+                                            </form>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <input type="hidden" id="addressId">
+                                            <button type="button" id="savebtn" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> --}}
+
                             <!-- Modal for Edit -->
-                            <div id="editModal" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeEditModal()">&times;</span>
-                                    <h2>Edit Address</h2>
-                                    <!-- Add form fields for editing address details here -->
+                            <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editModalLabel" style="color: #f9f9f9;">Edit
+                                                Brand</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="edit-address-form" action="/updateAddress" method="post">
+
+                                                <input type="hidden" id="editAddressId" name="AddressId" value="">
+
+                                                <div class="mb-3">
+                                                    <label for="edit-house_name" class="form-label">House Name</label>
+                                                    <input type="text" class="form-control" id="edit-house_name"
+                                                        name="house_name" value="">
+                                                    <p class="error-msg" id="address-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-street" class="form-label">Street</label>
+                                                    <input type="text" class="form-control" id="edit-street"
+                                                        name="street" value="">
+                                                    <p class="error-msg" id="place-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-city" class="form-label">City</label>
+                                                    <input type="text" class="form-control" id="edit-city" name="city"
+                                                        value="">
+                                                    <p class="error-msg" id="district-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-state" class="form-label">state</label>
+                                                    <input type="text" class="form-control" id="edit-state" name="state"
+                                                        value="">
+                                                    <p class="error-msg" id="pincode-error"></p>
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="edit-pin" class="form-label">Pin-Code</label>
+                                                    <input type="text" class="form-control" id="edit-pin" name="pin"
+                                                        value="">
+                                                    <p class="error-msg" id="pincode-error"></p>
+                                                </div>
+                                                <button type="submit" class="btn btn-primary">Update Coupon</button>
+                                            </form>
+                                            {{!-- {{/each}} --}}
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+
                             <div class="tab-pane fade" id="account-details">
                                 <h3>Account details </h3>
                                 <div class="login">
@@ -979,6 +1095,7 @@
     <script src="assets/js/plugins/jquery-ui.min.js"></script>
     <script src="assets/js/plugins/mailchimp-ajax.js"></script>
 
+
     <!-- Minify Version -->
     <!-- <script src="assets/js/vendor.min.js"></script>
     <script src="assets/js/plugins.min.js"></script>
@@ -990,6 +1107,8 @@
     <!-- Include SweetAlert library -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+
 
 
     <script>
@@ -1063,11 +1182,54 @@
 
         ///address
 
-        function openEditModal(addressId) {
-            // You can fetch address details corresponding to the addressId and populate the edit modal fields
-            // Show the modal
-            var modal = document.getElementById("editModal");
-            modal.style.display = "block";
+        function editModal(id, house_name, street, city, state, pin) {
+            // Set the existing coupon data in the form
+            $('#edit-house_name').val(house_name);
+            $('#edit-street').val(street);
+            $('#edit-city').val(city);
+            $('#edit-state').val(state);
+            $('#edit-pin').val(pin);
+
+            var editCouponModal = new bootstrap.Modal(document.getElementById('editModal'));
+            editCouponModal.show();
+
+            $('#edit-address-form').on('submit', function (e) {
+                e.preventDefault();
+
+                const updatedData = {
+                    house_name: $('#edit-house_name').val(),
+                    street: $('#edit-street').val(),
+                    city: $('#edit-city').val(),
+                    state: $('#edit-state').val(),
+                    pin: $('#edit-pin').val(),
+                };
+
+                const AddressId = id;
+
+                updateAddress(AddressId, updatedData);
+            });
+        }
+
+        function updateAddress(AddressId, updatedData) {
+            const baseUrl = '/user/address/'
+
+
+            axios.put(`${baseUrl}${AddressId}`, { updatedData })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error updating product: ${response.status}`);
+                    }
+                    return response.json();
+                    window.location.reload()
+                })
+                .then(data => {
+                    console.log('Product updated successfully:', data);
+
+                })
+                .catch(error => {
+                    console.error('Error updating product:', error);
+                    window.location.reload()
+                });
         }
 
         function closeEditModal() {

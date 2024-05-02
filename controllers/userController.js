@@ -1101,8 +1101,6 @@ const removeFromCart = async (req, res) => {
 };
 
 
-
-
 ///address
 ///////////////////////////////////////////////////
 
@@ -1146,6 +1144,47 @@ const Address = async (req, res) => {
 }
 
 
+
+
+const updateAddress = async (req, res) => {
+  const addressId = req.params.id;
+  const {
+    house_name,
+    street,
+    city,
+    state,
+    pin,
+ } = req.body.updatedData;
+
+  try {
+    const admin = await Users.findOne();
+    // Find the address by ID
+    const existingaddress = admin.addresses.id(addressId);
+
+    // console.log("dsf",existingaddress);
+
+    if (!existingaddress) {
+      return res.status(404).json({ error: 'address not found' });
+    }
+
+    // Update the address data based on the form fields
+    existingaddress.house_name = house_name;
+    existingaddress.street = street;
+    existingaddress.city = city;
+    existingaddress.state = state;
+    existingaddress.pin = pin;
+
+    // Save the updated admin
+    await admin.save();
+
+    res.status(200).json({ message: 'address updated successfully', updatedaddress: existingaddress });
+  } catch (error) {
+    console.error('Error updating address:', error);
+    res.status(500).json({ error: 'Error updating address' });
+  }
+};
+
+
 const deleteAddress = async (req, res) => {
   const addressId = req.params.id;
 
@@ -1182,7 +1221,7 @@ const rendercheckout = async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await Users.findById(userId);
-    
+
     if (!user) {
       return res.status(404).send('User not found');
     }
@@ -1436,25 +1475,30 @@ const placeorder = async (req, res) => {
 const validateCoupon = async (req, res) => {
   const { couponCode } = req.body;
   try {
-    // Find the admin document containing the coupons
     const admin = await Admin.findOne();
 
     // Check if the coupon code exists in the admin's coupons array
     const coupon = admin.Coupon.find(coupon => coupon.Coupon_Name === couponCode);
     if (coupon) {
-      // Extract coupon details
-      const { Coupon_Value, Coupon_Type } = coupon;
+      // Check if the coupon is active and within its validity period
+      if (coupon.Coupon_Status === 'Active' && new Date(coupon.EndDate) >= new Date()) {
+        // Extract coupon details
+        const { Coupon_Value, Coupon_Type } = coupon;
 
-      // Return coupon details in the response
-      res.status(200).json({ message: "Coupon applied successfully!", couponValue: Coupon_Value, couponType: Coupon_Type });
+        // Return coupon details in the response
+        return res.status(200).json({ message: "Coupon applied successfully!", couponValue: Coupon_Value, couponType: Coupon_Type });
+      } else {
+        return res.status(403).json({ message: "Coupon is inactive or expired. Please enter a valid coupon code." });
+      }
     } else {
-      res.status(404).json({ message: "Coupon not found. Please enter a valid coupon code." });
+      return res.status(404).json({ message: "Coupon not found. Please enter a valid coupon code." });
     }
   } catch (error) {
     console.error("Error validating coupon:", error);
-    res.status(500).json({ message: "Error validating coupon. Please try again later." });
+    return res.status(500).json({ message: "Error validating coupon. Please try again later." });
   }
 }
+
 
 
 //search
@@ -1535,5 +1579,6 @@ module.exports = {
   fetchOrder,
   search,
   deleteAddress,
+  updateAddress,
 };
 

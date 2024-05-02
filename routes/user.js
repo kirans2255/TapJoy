@@ -75,9 +75,13 @@ router.delete('/cart/:productId',requireAuth,userController.removeFromCart)
 
 router.get('/checkout',requireAuth, userController.rendercheckout);
 
+//Address
+
 router.post('/address',requireAuth ,userController.Address);
 
 router.delete('/deleteAddress/:id',userController.deleteAddress)
+
+router.put('/user/address/:id',userController.updateAddress)
 
 
 ///////COD

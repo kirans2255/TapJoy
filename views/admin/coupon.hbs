@@ -505,7 +505,8 @@
                             <!-- Coupon Status -->
                             <div class="mb-3">
                                 <label for="editCouponStatus" class="form-label">Coupon Status</label><br>
-                                <select name="Coupon_Status" id="editCouponStatus" class="form-select" value="{{this.Coupon_Status}}" required>
+                                <select name="Coupon_Status" id="editCouponStatus" class="form-select"
+                                    value="" required>
                                     <option value="Active">Active</option>
                                     <option value="Inactive">Inactive</option>
                                 </select>
@@ -513,31 +514,36 @@
                             <!-- Coupon Details Section -->
                             <div class="mb-3">
                                 <label for="editCouponName" class="form-label">Coupon Name</label>
-                                <input name="Coupon_Name" type="text" class="form-control" id="editCouponName" value="{{this.Coupon_Name}}" required>
+                                <input name="Coupon_Name" type="text" class="form-control" id="editCouponName"
+                                    value="" required>
                             </div>
                             <!-- Coupon Type -->
                             <div class="mb-3">
                                 <label for="editCouponType" class="form-label">Coupon Type</label><br>
-                                <input type="radio" id="editFixedPrice" name="Coupon_Type" value="fixedPrice" value="{{this.Coupon_Type}}" required>
+                                <input type="radio" id="editFixedPrice" name="Coupon_Type" value="fixedPrice"
+                                    value="" required>
                                 <label for="editFixedPrice">Fixed</label><br>
-                                <input type="radio" id="editPercentage" name="Coupon_Type" value="percentage" value="{{this.Coupon_Type}}" required>
+                                <input type="radio" id="editPercentage" name="Coupon_Type" value="percentage"
+                                    value="" required>
                                 <label for="editPercentage">Percentage</label>
                             </div>
                             <!-- Start Date -->
                             <div class="mb-3">
                                 <label for="editStartDate" class="form-label">Start Date</label>
-                                <input name="StartDate" type="date" class="form-control" id="editStartDate" value="{{this.StartDate}}" required>
+                                <input name="StartDate" type="date" class="form-control" id="editStartDate"
+                                    value="" required>
                             </div>
                             <!-- End Date -->
                             <div class="mb-3">
                                 <label for="editEndDate" class="form-label">End Date</label>
-                                <input name="EndDate" type="date" class="form-control" id="editEndDate" value="{{this.EndDate}}" required>
+                                <input name="EndDate" type="date" class="form-control" id="editEndDate"
+                                    value="" required>
                             </div>
                             <!-- Coupon Value -->
                             <div class="mb-3">
                                 <label for="editCouponValue" class="form-label">Coupon Value</label>
-                                <input name="Coupon_Value" type="text" class="form-control" id="editCouponValue" value="{{this.Coupon_Value}}"
-                                    required>
+                                <input name="Coupon_Value" type="text" class="form-control" id="editCouponValue"
+                                    value="" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Update Coupon</button>
                         </form>
@@ -648,253 +654,7 @@
     <script src="../assets/js/plugins/perfect-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
     <script src="../assets/js/plugins/chartjs.min.js"></script>
-    <script>
-        var ctx = document.getElementById("chart-bars").getContext("2d");
 
-        new Chart(ctx, {
-            type: "bar",
-            data: {
-                labels: ["M", "T", "W", "T", "F", "S", "S"],
-                datasets: [{
-                    label: "Sales",
-                    tension: 0.4,
-                    borderWidth: 0,
-                    borderRadius: 4,
-                    borderSkipped: false,
-                    backgroundColor: "rgba(255, 255, 255, .8)",
-                    data: [50, 20, 10, 22, 50, 10, 40],
-                    maxBarThickness: 6
-                },],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                scales: {
-                    y: {
-                        grid: {
-                            drawBorder: false,
-                            display: true,
-                            drawOnChartArea: true,
-                            drawTicks: false,
-                            borderDash: [5, 5],
-                            color: 'rgba(255, 255, 255, .2)'
-                        },
-                        ticks: {
-                            suggestedMin: 0,
-                            suggestedMax: 500,
-                            beginAtZero: true,
-                            padding: 10,
-                            font: {
-                                size: 14,
-                                weight: 300,
-                                family: "Roboto",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                            color: "#fff"
-                        },
-                    },
-                    x: {
-                        grid: {
-                            drawBorder: false,
-                            display: true,
-                            drawOnChartArea: true,
-                            drawTicks: false,
-                            borderDash: [5, 5],
-                            color: 'rgba(255, 255, 255, .2)'
-                        },
-                        ticks: {
-                            display: true,
-                            color: '#f8f9fa',
-                            padding: 10,
-                            font: {
-                                size: 14,
-                                weight: 300,
-                                family: "Roboto",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                },
-            },
-        });
-
-
-        var ctx2 = document.getElementById("chart-line").getContext("2d");
-
-        new Chart(ctx2, {
-            type: "line",
-            data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Mobile apps",
-                    tension: 0,
-                    borderWidth: 0,
-                    pointRadius: 5,
-                    pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                    pointBorderColor: "transparent",
-                    borderColor: "rgba(255, 255, 255, .8)",
-                    borderColor: "rgba(255, 255, 255, .8)",
-                    borderWidth: 4,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    data: [50, 40, 300, 320, 500, 350, 200, 230, 500],
-                    maxBarThickness: 6
-
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                scales: {
-                    y: {
-                        grid: {
-                            drawBorder: false,
-                            display: true,
-                            drawOnChartArea: true,
-                            drawTicks: false,
-                            borderDash: [5, 5],
-                            color: 'rgba(255, 255, 255, .2)'
-                        },
-                        ticks: {
-                            display: true,
-                            color: '#f8f9fa',
-                            padding: 10,
-                            font: {
-                                size: 14,
-                                weight: 300,
-                                family: "Roboto",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                    x: {
-                        grid: {
-                            drawBorder: false,
-                            display: false,
-                            drawOnChartArea: false,
-                            drawTicks: false,
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            display: true,
-                            color: '#f8f9fa',
-                            padding: 10,
-                            font: {
-                                size: 14,
-                                weight: 300,
-                                family: "Roboto",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                },
-            },
-        });
-
-        var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
-
-        new Chart(ctx3, {
-            type: "line",
-            data: {
-                labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-                datasets: [{
-                    label: "Mobile apps",
-                    tension: 0,
-                    borderWidth: 0,
-                    pointRadius: 5,
-                    pointBackgroundColor: "rgba(255, 255, 255, .8)",
-                    pointBorderColor: "transparent",
-                    borderColor: "rgba(255, 255, 255, .8)",
-                    borderWidth: 4,
-                    backgroundColor: "transparent",
-                    fill: true,
-                    data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
-                    maxBarThickness: 6
-
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false,
-                    }
-                },
-                interaction: {
-                    intersect: false,
-                    mode: 'index',
-                },
-                scales: {
-                    y: {
-                        grid: {
-                            drawBorder: false,
-                            display: true,
-                            drawOnChartArea: true,
-                            drawTicks: false,
-                            borderDash: [5, 5],
-                            color: 'rgba(255, 255, 255, .2)'
-                        },
-                        ticks: {
-                            display: true,
-                            padding: 10,
-                            color: '#f8f9fa',
-                            font: {
-                                size: 14,
-                                weight: 300,
-                                family: "Roboto",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                    x: {
-                        grid: {
-                            drawBorder: false,
-                            display: false,
-                            drawOnChartArea: false,
-                            drawTicks: false,
-                            borderDash: [5, 5]
-                        },
-                        ticks: {
-                            display: true,
-                            color: '#f8f9fa',
-                            padding: 10,
-                            font: {
-                                size: 14,
-                                weight: 300,
-                                family: "Roboto",
-                                style: 'normal',
-                                lineHeight: 2
-                            },
-                        }
-                    },
-                },
-            },
-        });
-    </script>
     <script>
         var win = navigator.platform.indexOf('Win') > -1;
         if (win && document.querySelector('#sidenav-scrollbar')) {
@@ -930,6 +690,10 @@
                 $('#editPercentage').prop('checked', true);
             }
 
+            console.log("StartDate:", StartDate);
+            console.log("EndDate:", EndDate);
+
+
 
             var editCouponModal = new bootstrap.Modal(document.getElementById('editCouponModal'));
             editCouponModal.show();
@@ -964,7 +728,7 @@
             formData.append('EndDate', updatedData.EndDate);
             formData.append('Coupon_Value', updatedData.Coupon_Value);
 
-                console.log("ewrwr",updatedData)
+            console.log("ewrwr", updatedData)
 
 
             fetch(`${baseUrl}${CouponId}`, {
