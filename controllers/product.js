@@ -117,14 +117,11 @@ const updateProduct = async (req, res) => {
   const {
     productName,
     productCategory,
-    // subproductCategory,
-    productRamandrom,
-    productQuantity,
     productBrand,
     productColor,
     productMrp,
-    productPrice,
     productDescription,
+    variants // Add variants data to be received from the request body
   } = req.body;
 
   try {
@@ -148,14 +145,15 @@ const updateProduct = async (req, res) => {
     // Update product details
     product.productName = productName;
     product.productCategory = productCategory;
-    // product.subproductCategory = subproductCategory;
-    product.productRamandrom = productRamandrom,
-      product.productQuantity = productQuantity;
     product.productBrand = productBrand;
     product.productColor = productColor;
     product.productMrp = productMrp;
-    product.productPrice = productPrice;
     product.productDescription = productDescription;
+
+    // Handle variants update
+    if (variants && variants.length > 0) {
+      product.variants = variants;
+    }
 
     await product.save();
 
@@ -165,6 +163,7 @@ const updateProduct = async (req, res) => {
     res.status(500).json({ error: 'Error updating product' });
   }
 };
+
 
 const renderBrand = async function (req, res) {
   try {
@@ -308,7 +307,7 @@ const renderBanner = async function (req, res) {
     const admin = await Admin.findOne();
     const banner = admin.Banner;
     console.log(banner)
-    res.render('admin/banner', {banner});
+    res.render('admin/banner', { banner });
   } catch (error) {
     console.error('Error fetching products:', error);
     res.status(500).json({ error: 'Error fetching products' });
@@ -336,11 +335,11 @@ const handleBanner = async (req, res) => {
     });
 
     const newBanner = {
-        Position: Position,
-        BannerImage: {
-          public_id: result.public_id,
-          url: result.secure_url,
-        },
+      Position: Position,
+      BannerImage: {
+        public_id: result.public_id,
+        url: result.secure_url,
+      },
     }
 
     admin.Banner.push(newBanner)
@@ -375,7 +374,7 @@ module.exports = {
   renderProduct,
   handleProduct,
   editProduct,
-  deleteProduct,  
+  deleteProduct,
   updateProduct,
   renderBrand,
   handleBrand,

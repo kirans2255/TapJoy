@@ -393,7 +393,7 @@
                             <td>
                                 <button class="btn btn-warning" data-bs-toggle="modal"
                                     data-bs-target="#editProductModal"
-                                    onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}', '{{this.productRamandrom}}','{{this.productQuantity}}', '{{this.productBrand}}', '{{this.productColor}}', {{this.productMrp}}, {{this.productPrice}}, '{{this.productDescription}}')">Edit</button>
+                                    onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}','{{this.productBrand}}', '{{this.productColor}}', '{{this.productMrp}}', '{{this.productDescription}}')">Edit</button>
                                 <button class="btn btn-danger" onclick="deleteProduct('{{this.id}}')">Delete</button>
                             </td>
                         </tr>
@@ -561,29 +561,12 @@
                                 </select>
                             </div>
                             <div class="mb-3">
-                                <label name="editproductRamandrom" class="form-label">Ram and Rom</label>
-                                <input name="productRamandrom" type="text" class="form-control"
-                                    id="editproductRamandrom" value="{{this.productRamandrom}}" required>
-                            </div>
-
-                            <div class="mb-3">
-                                <label name="editproductQuantity" class="form-label">Quantity</label>
-                                <input name="productQuantity" type="text" class="form-control" id="editproductQuantity"
-                                    value="{{this.productQuantity}}" required>
-                            </div>
-                            {{!-- <div class="mb-3">
-                                <label for="editSubproductCategory" class="form-label">Sub-Category</label>
-                                <select name="subproductCategory" class="form-select" id="editSubproductCategory"
-                                    required>
-                                    {{#each category}}
-                                    <option value='{{CategoryName}}'> {{CategoryName}} </option>
+                                <label name="editProductBrand" class="form-label">Brand</label>
+                                <select name="productBrand" class="form-select" id="editProductBrand" required>
+                                    {{#each brand}}
+                                    <option value='{{BrandName}}'> {{BrandName}} </option>
                                     {{/each}}
                                 </select>
-                            </div> --}}
-                            <div class="mb-3">
-                                <label for="editProductBrand" class="form-label">Brand</label>
-                                <input name="productBrand" type="text" class="form-control" id="editProductBrand"
-                                    value="{{this.productBrand}}" required>
                             </div>
                             <div class="mb-3">
                                 <label for="editProductColor" class="form-label">Color</label>
@@ -596,14 +579,55 @@
                                     value="{{this.productMrp}}" required>
                             </div>
                             <div class="mb-3">
-                                <label for="editProductPrice" class="form-label">Price</label>
-                                <input name="productPrice" type="number" class="form-control" id="editProductPrice"
-                                    value="{{this.productPrice}}" required>
-                            </div>
-                            <div class="mb-3">
                                 <label for="editProductDescription" class="form-label">Description</label>
                                 <input name="productDescription" type="text" class="form-control"
                                     value="{{this.productDescription}}" id="editProductDescription" required>
+                            </div>
+                            <div class="variant-section">
+                                <div class="mb-3">
+                                    <label for="editproductPrice1" class="form-label">Price</label>
+                                    <input name="variants[0][productPrice]" type="number" class="form-control"
+                                        id="editproductPrice1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editproductQuantity1" class="form-label">Quantity</label>
+                                    <input name="variants[0][productQuantity]" type="number" class="form-control"
+                                        id="editproductQuantity1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editproductRam1" class="form-label">Ram</label>
+                                    <input name="variants[0][productRam]" type="text" class="form-control"
+                                        id="editproductRam1">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editproductRom1" class="form-label">Rom</label>
+                                    <input name="variants[0][productRom]" type="text" class="form-control"
+                                        id="editproductRom1">
+                                </div>
+                            </div>
+
+                            <!-- Second set of variant inputs -->
+                            <div class="variant-section">
+                                <div class="mb-3">
+                                    <label for="editproductPrice2" class="form-label">Price</label>
+                                    <input name="variants[1][productPrice]" type="number" class="form-control"
+                                        id="editproductPrice2">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editproductQuantity2" class="form-label">Quantity</label>
+                                    <input name="variants[1][productQuantity]" type="number" class="form-control"
+                                        id="editproductQuantity2">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editproductRam2" class="form-label">Ram</label>
+                                    <input name="variants[1][productRam]" type="text" class="form-control"
+                                        id="editproductRam2">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="editproductRom2" class="form-label">Rom</label>
+                                    <input name="variants[1][productRom]" type="text" class="form-control"
+                                        id="editproductRom2">
+                                </div>
                             </div>
                             <!-- Add more input fields as needed -->
 
@@ -979,49 +1003,63 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
-        function editProduct(id, productImage, productName, productCategory, productRamandrom, productQuantity, productBrand, productColor, productMrp, productPrice, productDescription) {
+        function editProduct(id, productImage, productName, productCategory, productBrand, productColor, productMrp, productDescription) {
+            // Set product details and images
             $('#editProductName').val(productName);
             $('#editProductCategory').val(productCategory);
-            $('#editproductRamandrom').val(productRamandrom);
-            $('#editproductQuantity').val(productQuantity);
             $('#editProductBrand').val(productBrand);
             $('#editProductColor').val(productColor);
             $('#editProductMrp').val(productMrp);
-            $('#editProductPrice').val(productPrice);
             $('#editProductDescription').val(productDescription);
             $('#editproductImagePreview0').attr('src', productImage[0]).show();
             $('#editproductImagePreview1').attr('src', productImage[1]).show();
             $('#editproductImagePreview2').attr('src', productImage[2]).show();
 
+            // Show the modal
             var editProductModal = new bootstrap.Modal(document.getElementById('editProductModal'));
             editProductModal.show();
 
+            // Handle form submission
             $('#editProduct').on('submit', function (e) {
                 e.preventDefault();
 
+                // Prepare updated data object
                 const updatedData = {
                     productName: $('#editProductName').val(),
                     productCategory: $('#editProductCategory').val(),
-                    productRamandrom: $('#editproductRamandrom').val(),
-                    productQuantity: $('#editproductQuantity').val(),
                     productBrand: $('#editProductBrand').val(),
                     productColor: $('#editProductColor').val(),
                     productMrp: $('#editProductMrp').val(),
-                    productPrice: $('#editProductPrice').val(),
                     productDescription: $('#editProductDescription').val(),
                     productImage: [
                         $('#editProductImage0')[0].files[0],
                         $('#editProductImage1')[0].files[0],
                         $('#editProductImage2')[0].files[0]
                     ],
+                    variants: []
                 };
 
-                const productId = id;
+                // Iterate over each variant section
+                $('.variant-section').each(function (index) {
+                    // Retrieve variant data within the current section
+                    const variantData = {
+                        productPrice: $(this).find('#editproductPrice' + (index + 1)).val(),
+                        productQuantity: $(this).find('#editproductQuantity' + (index + 1)).val(),
+                        productRam: $(this).find('#editproductRam' + (index + 1)).val(),
+                        productRom: $(this).find('#editproductRom' + (index + 1)).val()
+                    };
 
+                    // Push variant data into updatedData.variants array
+                    updatedData.variants.push(variantData);
+
+                    // Log variant data for debugging
+                    console.log("Variant data for index " + index + ":", variantData);
+                });
+
+                const productId = id;
                 updateProduct(productId, updatedData);
             });
         }
-
 
 
 
@@ -1031,12 +1069,9 @@
             const formData = new FormData();
             formData.append('productName', updatedData.productName);
             formData.append('productCategory', updatedData.productCategory);
-            formData.append('productRamandrom', updatedData.productRamandrom);
-            formData.append('productQuantity', updatedData.productQuantity);
             formData.append('productBrand', updatedData.productBrand);
             formData.append('productColor', updatedData.productColor);
             formData.append('productMrp', updatedData.productMrp);
-            formData.append('productPrice', updatedData.productPrice);
             formData.append('productDescription', updatedData.productDescription);
 
             // Check if new images are selected
@@ -1049,6 +1084,15 @@
             if (updatedData.productImage[2]) {
                 formData.append('productImage', updatedData.productImage[2]);
             }
+
+            // Handle variants
+            updatedData.variants.forEach((variant, index) => {
+                // Append variant data to formData with unique keys
+                formData.append(`variants[${index}][productPrice]`, variant.productPrice);
+                formData.append(`variants[${index}][productQuantity]`, variant.productQuantity);
+                formData.append(`variants[${index}][productRam]`, variant.productRam);
+                formData.append(`variants[${index}][productRom]`, variant.productRom);
+            });
 
             fetch(`${baseUrl}${productId}`, {
                 method: 'PUT',
@@ -1068,6 +1112,7 @@
                     console.error('Error updating product:', error.message);
                 });
         }
+
 
         // Function to delete a product
         function deleteProduct(productId) {
