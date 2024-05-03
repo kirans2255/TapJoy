@@ -38,47 +38,59 @@
     <!-- Nepcha Analytics (nepcha.com) -->
     <!-- Nepcha is a easy-to-use web analytics. No cookies and fully compliant with GDPR, CCPA and PECR. -->
     <script defer data-site="YOUR_DOMAIN_HERE" src="https://api.nepcha.com/js/nepcha-analytics.js"></script>
+
     <style>
-        /* Style for input fields */
-        input[type="text"],
-        input[type="file"] {
-            border: 1px solid #ccc;
-            /* Add border */
+        .block-button {
+            background-color: #FF5733;
+            /* Red */
+            color: white;
+            border: none;
+            padding: 8px 26px;
+            cursor: pointer;
+        }
+
+        .unblock-button {
+            background-color: #069120;
+            /* Green */
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .status-select {
             padding: 8px 12px;
-            /* Add padding */
-            border-radius: 5px;
-            /* Add border-radius for rounded corners */
-            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
-            /* Add box shadow for depth */
-            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-            /* Add transition for smooth effects */
-        }
-
-        /* Style for when input field is focused */
-        input[type="text"]:focus,
-        input[type="file"]:focus {
-            border-color: #007bff;
-            /* Change border color when focused */
-            outline: 0;
-            /* Remove default outline */
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, .25);
-            /* Add box shadow when focused */
-        }
-
-        /* Style for submit button */
-        .btn-primary {
-            background-color: #00b321;
-            /* Button background color */
-            border-color: #00b321;
-            /* Button border color */
-        }
-
-        /* Style for submit button on hover */
-        .btn-primary:hover {
-            background-color: #00b392;
-            /* Button background color on hover */
-            border-color: #00b39b;
-            /* Button border color on hover */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
         }
     </style>
 
@@ -109,7 +121,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active  " href="/admin/user">
+                    <a class="nav-link text-white active bg-gradient-primary " href="/admin/user">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">account_circle</i>
                         </div>
@@ -125,15 +137,15 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white " href="/admin/brand">
+                    <a class="nav-link text-white" href="/admin/brand">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">receipt_long</i>
                         </div>
-                        <span class="nav-link-text ms-1">Brand</span>
+                        <span class="nav-link-text ms-1">Brand </span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white active bg-gradient-primary" href="/admin/category">
+                    <a class="nav-link text-white" href="/admin/category">
                         <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
                             <i class="material-icons opacity-10">view_in_ar</i>
                         </div>
@@ -218,9 +230,9 @@
                     <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
                         <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="javascript:;">Pages</a>
                         </li>
-                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Category</li>
+                        <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Order</li>
                     </ol>
-                    <h6 class="font-weight-bolder mb-0">Category</h6>
+                    <h6 class="font-weight-bolder mb-0">Order</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
                     <div class="ms-md-auto pe-md-3 d-flex align-items-center">
@@ -351,129 +363,61 @@
         <div class="col-lg-12 mt-4 mb-3">
             <div class="card z-index-2 ">
                 <div class="container mt-5">
-                    <h1 class="mb-4">Category Table</h1>
-
-                    <!-- Add Product Button -->
-                    <button class="btn btn-primary mb-5" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add
-                        Category</button>
+                    <h1 class="mb-4">User</h1>
 
                     <div class="table-responsive">
-                        <table class="table table-striped">
+                        <table>
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Image</th>
-                                    <th>Name</th>
-
+                                    <th>Customer Name</th>
+                                    {{!-- <th>Reg.Date</th> --}}
+                                    <th>Email</th>
+                                    {{!-- <th>Order Status</th> --}}
                                     <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <!-- Example Product Row -->
-                                {{#each category}}
+                                {{#each user}}
                                 <tr>
                                     <td class="indexing">{{@index}}</td>
-                                    <td><img src="{{CategoryImage.url}}" alt="{{this.CategoryName}}"
-                                            class="img-thumbnail" style="width: 80px;"></td>
-                                    <td>{{this.CategoryName}}</td>
+                                    <td>{{this.name}}</td>
+                                    {{!-- <td>{{this.email}}</td> --}}
+                                    <td>{{this.email}}</td>
                                     <td>
-                                        <button class="btn btn-warning" data-bs-toggle="modal"
-                                            data-bs-target="#editCategoryModal"
-                                            onclick="editCategory('{{this.id}}', '{{this.CategoryName}}','{{CategoryImage.url}}')">Edit</button>
-                                        <button class="btn btn-danger"
-                                            onclick="deleteCategory('{{this.id}}')">Delete</button>
+                                        {{#if this.isBlocked}}
+                                        <button class="toggle-button unblock-button"
+                                            onclick="toggleOrder('{{this._id}}', this)">
+                                            <i class="material-icons">check_circle</i>
+                                            <span>Unblock</span>
+                                        </button>
+                                        {{else}}
+                                        <button class="toggle-button block-button"
+                                            onclick="toggleOrder('{{this._id}}', this)">
+                                            <i class="material-icons">block</i>
+                                            <span>Block</span>
+                                        </button>
+                                        {{/if}}
                                     </td>
                                 </tr>
                                 {{/each}}
                             </tbody>
+                            <div id="orderModal" class="modal">
+                                <div class="modal-content">
+                                    <span class="close" onclick="closeModal()">&times;</span>
+                                    <div class="order-section">
+                                        <h2 class="section-title">Order Details</h2>
+                                        <div id="orderDetails"></div>
+                                    </div>
+                                    <div class="address-section">
+                                        <h2 class="section-title">User Details</h2>
+                                        <div id="addressDetails"></div>
+                                    </div>
+                                </div>
+                            </div>
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Add Category Modal -->
-        <div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-
-
-                        <!-- Form to add a new Category -->
-                        <form id="addCategoryForm" action="/addCategory" method="post" enctype="multipart/form-data">
-                            {{!-- <div class="mb-3">
-                                <label for="CategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
-                                    value="{{CategoryImage.url.[0]}}" required>
-                            </div> --}}
-                            <div class="mb-3">
-                                <label for="CategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="CategoryImage"
-                                    value="{{CategoryImage.url}}" required>
-                            </div>
-                            <div class="mb-3">
-                                <label name="CategoryName" for="CategoryName" class="form-label">Category
-                                    Name</label>
-                                <input name="CategoryName" type="text" class="form-control" id="CategoryName" required>
-                            </div>
-
-                            <!-- Add more input fields as needed -->
-
-                            <button type="submit" class="btn btn-primary" onclick="addCategory()">Add
-                                Category</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Edit Category Modal -->
-        <div class="modal fade" id="editCategoryModal" tabindex="-1" aria-labelledby="editCategoryModalLabel"
-            aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="editCategoryModalLabel">Edit Category</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <!-- Form to edit an existing Category -->
-                        {{!-- {{#each category}} --}}
-
-                        <form id="editCategory" action="/updateCategory" method="post" enctype="multipart/form-data">
-                            <input type="hidden" id="editCategoryId" name="CategoryId" value="{{this.id}}">
-
-                            <div class="mb-3">
-
-                                <label for="editCategoryImage" class="form-label">Category Image</label>
-                                <input name="CategoryImage" type="file" class="form-control" id="editCategoryImage"
-                                    value="{{CategoryImage.url}}">
-                                <img id="editCategoryImagePreview" src="{{CategoryImage.url}}" alt="no image"
-                                    style="max-width: 100px;"><br>
-                            </div>
-
-                            <div class="mb-3">
-                                <label for="editCategoryName" class="form-label">Category Name</label>
-                                <input name="CategoryName" type="text" class="form-control" id="editCategoryName"
-                                    value="{{this.CategoryName}}" required>
-                            </div>
-
-                            <!-- Add more input fields as needed -->
-
-                            <button type="submit" class="btn btn-primary">Update Category</button>
-
-                        </form>
-                        {{!-- {{/each}} --}}
-
-                    </div>
-                </div>
-
             </div>
         </div>
     </main>
@@ -832,92 +776,17 @@
         }
     </script>
     <!-- Github buttons -->
-    <script async defer src="https://buttons.github.io/buttons.js"></script>
+    {{!--
+    <script async defer src="https://buttons.github.io/buttons.js"></script> --}}
     <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/material-dashboard.min.js?v=3.1.0"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Assuming you are using jQuery for simplicity -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
 
-    <script>
 
-        function editCategory(id, CategoryName, CategoryImage) {
-            // Set the existing category data in the modal
-            $('#editCategoryName').val(CategoryName);
-            // Display the existing image
-            $('#editCategoryImagePreview').attr('src', CategoryImage).show();
-
-            var editCategoryModal = new bootstrap.Modal(document.getElementById('editCategoryModal'));
-            editCategoryModal.show();
-
-            $('#editCategory').on('submit', function (e) {
-                e.preventDefault();
-
-                const updatedData = {
-                    CategoryName: $('#editCategoryName').val(),
-                    CategoryImage: $('#editCategoryImage')[0].files[0],
-                };
-
-                const CategoryId = id;
-
-                updateCategory(CategoryId, updatedData);
-            });
-        }
-
-        function updateCategory(CategoryId, updatedData) {
-            const baseUrl = '/admin/category/';
-
-            const formData = new FormData();
-            formData.append('CategoryName', updatedData.CategoryName);
-            formData.append('CategoryImage', updatedData.CategoryImage);
-
-            fetch(`${baseUrl}${CategoryId}`, {
-                method: 'PUT',
-                body: formData,
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Error updating product: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('Product updated successfully:', data);
-                    window.location.reload();
-                })
-                .catch(error => {
-                    console.error('Error updating product:', error);
-                });
-        }
-
-        // Function to delete a product
-        function deleteCategory(CategoryId) {
-            // You can add additional confirmation logic here if needed
-            var confirmation = confirm("Are you sure you want to delete this Category?");
-
-            if (confirmation) {
-                // Use fetch to send a DELETE request to your server endpoint
-                fetch(`/deletecat/${CategoryId}`, {
-                    method: 'DELETE',
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            // Assuming the product is deleted successfully, you can reload the page or update the UI
-                            console.log('Category deleted successfully');
-                            location.reload();  // Reload the page
-                        } else {
-                            console.error('Failed to delete Category');
-                            // Handle error accordingly
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        // Handle error accordingly
-                    });
-            }
-        }
-    </script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             var indexingElements = document.querySelectorAll(".indexing");
@@ -926,6 +795,42 @@
                 element.textContent = index + 1;
             });
         });
+
+
+        function toggleOrder(userId, button) {
+            var icon = button.querySelector('i');
+            var span = button.querySelector('span');
+
+            console.log('dfsdfsd', userId)
+            axios.post('/admin/toggleBlock', { userId: userId })
+                .then(response => {
+                    if (response.data.success) {
+                        const isBlocked = response.data.user.isBlocked;
+                        if (isBlocked) {
+                            icon.innerText = 'check_circle';
+                            span.innerText = 'Unblock';
+                            button.classList.remove('block-button');
+                            button.classList.add('unblock-button');
+                        } else {
+                            icon.innerText = 'block';
+                            span.innerText = 'Block';
+                            button.classList.remove('unblock-button');
+                            button.classList.add('block-button');
+                        }
+                    } else {
+                        console.error('Error toggling block status:', response.data.error);
+                        // Handle error
+                    }
+                })
+                .catch(error => {
+                    console.error('Error toggling block status:', error);
+                    // Handle error
+                });
+        }
+
+
+
+
     </script>
 </body>
 

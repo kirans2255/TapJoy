@@ -55,6 +55,7 @@ const userDataSchema = new mongoose.Schema({
   name: String,
   email: String,
   password: String,
+  isBlocked: { type: Boolean, default: false },
   otp: { type: String },
   otpExpiration: { type: Date },
   wishlist: {

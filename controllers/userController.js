@@ -516,14 +516,18 @@ const renderHome = async (req, res) => {
 
 const handleSignin = async (req, res) => {
   const { email, password } = req.body;
-  // console.log(req.body);
+
   try {
     const user = await Users.findOne({ email });
-    console.log('user');
 
     if (!user) {
       const errorMessage = "User not found";
       return res.status(404).render('user/login', { error: errorMessage });
+    }
+
+    if (user.isBlocked) {
+      const errorMessage = "Your account is blocked. Please contact support.";
+      return res.status(401).render('user/login', { error: errorMessage });
     }
 
     const validPassword = await bcrypt.compare(password, user.password);
@@ -545,15 +549,16 @@ const handleSignin = async (req, res) => {
       }
     );
 
-    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24 hour expiry
+    res.cookie("jwt", token, { httpOnly: true, maxAge: 86400000 }); // 24-hour expiry
 
     res.redirect("/");
-    console.log("user logged in with email and password : jwt created");
+    console.log("User logged in with email and password; JWT created");
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
+
 
 // Google OAuth callback handler
 // const handleGoogleCallback = (req, res) => {

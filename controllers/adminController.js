@@ -140,7 +140,45 @@ const renderDashboard = async (req, res) => {
 };
 
 
+//userlist
 
+const renderUser = async function (req, res) {
+  try {
+    const user = await Users.find();
+
+    res.render('admin/user',{user});
+  } catch (error) {
+    console.error('Error fetching category:', error);
+    res.status(500).json({ error: 'Error fetching category' });
+  }
+};
+
+
+const toggleBlock = async function (req,res) {
+  try {
+
+    const userId = req.body.userId;
+
+    // console.log("sd",userId)
+    const user = await Users.findById(userId);
+    if (user?.isBlocked) {
+      user.isBlocked = false
+    }else{
+      user.isBlocked = true
+    }
+    await user.save(); 
+    // console.log("ff",user.isBlocked) 
+    return res.status(200).json({ success: true, user: user });
+  } catch (error) {
+    console.error('Error toggling block status:', error);
+    return { success: false, error: 'Error toggling block status' };
+  }
+};
+
+//when i click block it should be block the user and button should be unblock and wehn i click unblock the user should be unblock
+
+
+/////////
 
 
 const renderCategory = async function (req, res) {
@@ -152,6 +190,7 @@ const renderCategory = async function (req, res) {
     res.status(500).json({ error: 'Error fetching category' });
   }
 };
+
 
 
 
@@ -173,7 +212,7 @@ const handleSignin = async (req, res) => {
       return res.status(401).render('admin/signin', { error: errorMessage });
     }
 
-    const token = jwt.sign(
+     const token = jwt.sign(
       {
         id: user._id,
         name: user.name,
@@ -488,14 +527,22 @@ const renderOrder = async (req, res) => {
 
     // Extract orders from each user
     const orders = usersWithOrders.reduce((acc, user) => {
-      acc.push(...user.orders.map(order => ({
-        orderId: order._id,
-        productName: order.productId.productName,
-        userName: user.name,
-        payment_Method: order.payment_Method,
-        totalprice: order.totalprice,
-        productImage: order.productId.productImage[0],
-      })));
+      acc.push(
+        ...user.orders.map(order => {
+          if (order.productId) {
+            return {
+              orderId: order._id,
+              productName: order.productId.productName,
+              userName: user.name,
+              payment_Method: order.payment_Method,
+              totalprice: order.totalprice,
+              productImage: order.productId.productImage[0],
+            };
+          } else {
+            return null; // Skip orders without a productId
+          }
+        }).filter(order => order !== null) // Filter out null entries
+      );
       return acc;
     }, []);
 
@@ -505,6 +552,7 @@ const renderOrder = async (req, res) => {
     res.status(500).render('error', { errorMessage: "Error fetching orders" });
   }
 };
+
 
 
 
@@ -917,4 +965,6 @@ module.exports = {
   editCoupon,
   updateCoupon,
   getOrderReport,
+  renderUser,
+  toggleBlock,
 };
