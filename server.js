@@ -53,6 +53,13 @@ app.use('/', indexRoutes);
 const indRoutes = require('./routes/user');
 app.use('/', indRoutes);
 
+
+
+app.use((req, res, next) => {
+  res.status(404).render("admin/404");
+});
+
+
 // const requireAuth = (req, res, next) => {
 //   if (req.session.user) {
 //     res.header('Cache-Control', 'private, no-cache, no-store, must-revalidate');

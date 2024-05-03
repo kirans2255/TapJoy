@@ -1040,38 +1040,44 @@ const updateQuantity = async (req, res) => {
       return res.status(404).json({ errorMessage: 'Product not found in cart' });
     }
 
-    const cartItems = user.cart.products;
-    for (const item of cartItems) {
-      const product = await Product.findOne({
-        _id: item.productId,
-        'variants.productRam': item.productRam,
-        'variants.productRom': item.productRom
-      });
+    const cartItem = user.cart.products[index];
+    const product = await Product.findOne({
+      _id: cartItem.productId,
+      'variants.productRam': cartItem.productRam,
+      'variants.productRom': cartItem.productRom
+    });
 
-      if (product) {
-        const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
-        const productPrice = variant.productPrice;
-
-        // Update quantity and subtotal
-        user.cart.products[index].quantity = parseInt(quantity);
-        const updatedQuantity = parseInt(quantity);
-        const subtotal = productPrice * updatedQuantity;
-        user.cart.products[index].subtotal = subtotal;
-
-        // console.log(subtotal);
-
-        await user.save();
-
-        return res.status(200).json({ successMessage: 'Quantity updated successfully', subtotal });
-      }
+    if (!product) {
+      return res.status(404).json({ errorMessage: 'Product not found' });
     }
 
-    return res.status(404).json({ errorMessage: 'Product not found' });
+    const variant = product.variants.find(v => v.productRam === cartItem.productRam && v.productRom === cartItem.productRom);
+
+    if (!variant) {
+      return res.status(404).json({ errorMessage: 'Variant not found for product' });
+    }
+
+    const availableQuantity = variant.productQuantity;
+
+    if (quantity > availableQuantity) {
+      return res.status(400).json({ errorMessage: 'Requested quantity exceeds available stock' });
+    }
+
+    // Update quantity and subtotal
+    user.cart.products[index].quantity = parseInt(quantity);
+    const updatedQuantity = parseInt(quantity);
+    const subtotal = variant.productPrice * updatedQuantity;
+    user.cart.products[index].subtotal = subtotal;
+
+    await user.save();
+
+    return res.status(200).json({ successMessage: 'Quantity updated successfully', subtotal });
   } catch (err) {
     console.error(err);
     return res.status(500).json({ errorMessage: 'Internal server error' });
   }
 };
+
 
 
 
@@ -1159,7 +1165,7 @@ const updateAddress = async (req, res) => {
     city,
     state,
     pin,
- } = req.body.updatedData;
+  } = req.body.updatedData;
 
   try {
     const admin = await Users.findOne();
