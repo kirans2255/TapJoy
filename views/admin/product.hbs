@@ -412,9 +412,9 @@
                                                     onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}','{{this.productBrand}}', '{{this.productColor}}', '{{this.productMrp}}', '{{this.productDescription}}')">Edit</button>
                                                 <button class="btn btn-danger"
                                                     onclick="deleteProduct('{{this.id}}')">Delete</button>
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">Close</button>
-                                                <button onclick="downloadExcel()" class="btn btn-success">Download
+                                                {{!-- <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button> --}}
+                                                <button onclick="downloadExcel('{{this.id}}')" class="btn btn-success">Download
                                                     Report</button>
 
                                             </div>
@@ -1181,9 +1181,9 @@
             });
         });
 
-        function downloadExcel() {
-            // Send request to backend
-            axios.post('/product/excels',{}, { responseType: 'blob' })
+        function downloadExcel(productId) {
+            // Send request to backend\
+            axios.post('/product/excels',{productId}, { responseType: 'blob' })
                 .then(response => {
                     // Create a blob from the response
                     const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });

@@ -9,6 +9,7 @@ const Product = require('../models/Product'); // Update the import based on your
 const cloudinary = require('../utils/cloudinary');// Update the import based on your cloudinary setup
 const XLSX = require('xlsx');
 const Excel = require('exceljs');
+const Category = require('../models/Category');
 
 const renderProduct = async function (req, res) {
   try {
@@ -174,79 +175,60 @@ const updateProduct = async (req, res) => {
 
 const getReport = async (req, res) => {
   try {
-    // Fetch user with associated orders
-    const user = await Users.findOne().populate({
-      path: 'orders',
-      populate: {
-        path: 'productId',
-        model: 'Product'
-      }
-    });
+    const productId = req.body.productId;
 
-    // console.log("er",user)
+    // Find the product by productId
+    const product = await Product.findById(productId);
 
-    if (!user) {
-      return res.status(404).json({ error: "User data not found" });
+    if (!product) {
+      return res.status(404).json({ error: "Product not found" });
     }
 
-    // Extract delivered orders from user object
-    const deliveredOrders = user.orders.filter(order => order.status === 'Delivered');
-
-    // console.log("erwe",deliveredOrders)
-
-    // CREATE NEW WORKBOOK
+    // Create Excel workbook and worksheet
     const workbook = new Excel.Workbook();
-    const worksheet = workbook.addWorksheet("Orders");
+    const worksheet = workbook.addWorksheet("Product Report");
 
-
-    // HEADERS TO WORKSHEET
+    // Add headers to worksheet
     worksheet.columns = [
-      { header: "Order ID", key: "orderId", width: 30 },
-      { header: "Order Date", key: "orderDate", width: 20 },
-      { header: "Product ", key: "product", width: 20 },
-      { header: "Customer Name", key: "userName", width: 20 },
-      { header: "Price", key: "price", width: 20 },
-      { header: "Quantity", key: "quantity", width: 20 },
-      { header: "Total", key: "total", width: 20 },
-      { header: "Status", key: "orderStatus", width: 20 },
+      { header: "Product ID", key: "productId", width: 30 },
+      { header: "Product", key: "productName", width: 30 },
+      { header: "Category", key: "Category", width: 20 },
+      { header: "Brand", key: "Brand", width: 20 },
+      { header: "Stock Quantity", key: "quantity", width: 15 },
+      { header: "Price", key: "productPrice", width: 20 },
+
+      // Add more headers as needed
     ];
 
-    // DATA ROWS TO WORKSHEET
-    deliveredOrders.forEach((order) => {
-      const productName = order.productId.productName;
-      const productRom = order.productRom;
-      const product = `${productName} - ${productRom}`;
-
+    // Add product details to worksheet
+    product.variants.forEach(variant => {
       worksheet.addRow({
-        orderId: order._id,
-        product: product,
-        userName: user.name,
-        orderDate: order.created_at,
-        price: order.price,
-        quantity: order.quantity,
-        total: order.totalprice,
-        orderStatus: order.status,
+        productId: product._id,
+        productName:  `${product.productName} - ${variant.productRom}`,
+        productPrice: variant.productPrice,
+        quantity:variant.productQuantity,
+        Category:product.productCategory,
+        Brand:product.productBrand
+        // rom: variant.productRom,
       });
     });
+   
 
+    // Set response headers
+    res.setHeader("Content-Type", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+    res.setHeader("Content-Disposition", "attachment; filename=product_report.xlsx");
 
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    );
-    res.setHeader(
-      "Content-Disposition",
-      "attachment; filename=product_report.xlsx"
-    );
-
+    // Write workbook to response
     await workbook.xlsx.write(res);
 
     res.end();
   } catch (error) {
-    console.error("Error generating Excel report:", error);
+    console.error("Error generating product report:", error);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
 
 
 
