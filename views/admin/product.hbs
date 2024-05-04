@@ -357,44 +357,70 @@
                             <th>Brand</th>
                             <th>Color</th>
                             <th>MRP</th>
-                            <th>Ram</th>
-                            <th>Rom</th>
-                            <th>Quantity</th>
-                            <th>Price</th>
-                            {{!-- <th>Description</th> --}}
                             <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Example Product Row -->
                         {{#each products}}
                         <tr>
                             <td class="indexing">{{@index}}</td>
                             <td><img src="{{this.productImage.[0]}}" alt="{{this.productName}}" class="img-thumbnail"
-                                    style="width: 80px;">
-                            </td>
+                                    style="width: 80px;"></td>
                             <td>{{this.productName}}</td>
                             <td>{{this.productCategory}}</td>
                             <td>{{this.productBrand}}</td>
                             <td>{{this.productColor}}</td>
                             <td>{{this.productMrp}}</td>
-                            {{!-- <td>{{this.productRam}}</td>
-                            <td>{{this.productRom}}</td>
-                            <td>{{this.productQuantity}}</td> --}}
-                            {{#each this.variants}}
-                            <td>{{this.productRam}}</td>
-                            <td>{{this.productRom}}</td>
-                            <td>{{this.productQuantity}}</td>
-                            <td>{{this.productPrice}}</td>
-                            {{/each}}
-
-                            {{!-- <td>{{this.productPrice}}</td> --}}
-                            {{!-- <td>{{this.productDescription}}</td> --}}
                             <td>
-                                <button class="btn btn-warning" data-bs-toggle="modal"
-                                    data-bs-target="#editProductModal"
-                                    onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}','{{this.productBrand}}', '{{this.productColor}}', '{{this.productMrp}}', '{{this.productDescription}}')">Edit</button>
-                                <button class="btn btn-danger" onclick="deleteProduct('{{this.id}}')">Delete</button>
+                                <button class="btn btn-primary" data-bs-toggle="modal"
+                                    data-bs-target="#viewVariantModal{{@index}}">View</button>
+
+                            </td>
+                            <td>
+                                <div class="modal fade" id="viewVariantModal{{@index}}" tabindex="-1"
+                                    aria-labelledby="viewVariantModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="viewVariantModalLabel">View Variant Details
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <img src="{{this.productImage.[0]}}" alt="" class="img-fluid">
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <p><strong>Name:</strong> {{this.productName}}</p>
+                                                        <p><strong>Category:</strong> {{this.productCategory}}</p>
+                                                        <p><strong>Brand:</strong> {{this.productBrand}}</p>
+                                                        <p><strong>Color:</strong> {{this.productColor}}</p>
+                                                        <p><strong>MRP:</strong> {{this.productMrp}}</p>
+                                                        {{#each this.variants}}
+                                                        <p><strong>RAM:</strong> {{this.productRam}}</p>
+                                                        <p><strong>ROM:</strong> {{this.productRom}}</p>
+                                                        <p><strong>Quantity:</strong> {{this.productQuantity}}</p>
+                                                        <p><strong>Price:</strong> {{this.productPrice}}</p>
+                                                        {{/each}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button class="btn btn-warning"
+                                                    onclick="editProduct('{{this.id}}',['{{this.productImage.[0]}}', '{{this.productImage.[1]}}', '{{this.productImage.[2]}}'], '{{this.productName}}', '{{this.productCategory}}','{{this.productBrand}}', '{{this.productColor}}', '{{this.productMrp}}', '{{this.productDescription}}')">Edit</button>
+                                                <button class="btn btn-danger"
+                                                    onclick="deleteProduct('{{this.id}}')">Delete</button>
+                                                <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                <button onclick="downloadExcel()" class="btn btn-success">Download
+                                                    Report</button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                         {{/each}}
@@ -402,6 +428,10 @@
                 </table>
             </div>
         </div>
+
+        <!-- View Modal -->
+
+
 
         <!-- Add Product Modal -->
         <div class="modal fade" id="addProductModal" tabindex="-1" aria-labelledby="addProductModalLabel"
@@ -1001,6 +1031,8 @@
 
     <!-- Assuming you are using jQuery for simplicity -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 
     <script>
         function editProduct(id, productImage, productName, productCategory, productBrand, productColor, productMrp, productDescription) {
@@ -1149,7 +1181,24 @@
             });
         });
 
-
+        function downloadExcel() {
+            // Send request to backend
+            axios.post('/product/excels',{}, { responseType: 'blob' })
+                .then(response => {
+                    // Create a blob from the response
+                    const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    // Create a link element to trigger the download
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(blob);
+                    link.download = 'product_report.xlsx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 
 </body>

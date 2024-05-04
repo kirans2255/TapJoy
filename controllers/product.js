@@ -2,10 +2,13 @@ const express = require('express');
 const path = require('path');
 const Brand = require('../models/Brand');
 const Admin = require('../models/Admin');
+const Users = require('../models/User');
 const mongoose = require('mongoose')
 const Categorys = require('../models/Category');
 const Product = require('../models/Product'); // Update the import based on your model file path
 const cloudinary = require('../utils/cloudinary');// Update the import based on your cloudinary setup
+const XLSX = require('xlsx');
+const Excel = require('exceljs');
 
 const renderProduct = async function (req, res) {
   try {
@@ -165,6 +168,89 @@ const updateProduct = async (req, res) => {
 };
 
 
+
+//download report
+
+
+const getReport = async (req, res) => {
+  try {
+    // Fetch user with associated orders
+    const user = await Users.findOne().populate({
+      path: 'orders',
+      populate: {
+        path: 'productId',
+        model: 'Product'
+      }
+    });
+
+    // console.log("er",user)
+
+    if (!user) {
+      return res.status(404).json({ error: "User data not found" });
+    }
+
+    // Extract delivered orders from user object
+    const deliveredOrders = user.orders.filter(order => order.status === 'Delivered');
+
+    // console.log("erwe",deliveredOrders)
+
+    // CREATE NEW WORKBOOK
+    const workbook = new Excel.Workbook();
+    const worksheet = workbook.addWorksheet("Orders");
+
+
+    // HEADERS TO WORKSHEET
+    worksheet.columns = [
+      { header: "Order ID", key: "orderId", width: 30 },
+      { header: "Order Date", key: "orderDate", width: 20 },
+      { header: "Product ", key: "product", width: 20 },
+      { header: "Customer Name", key: "userName", width: 20 },
+      { header: "Price", key: "price", width: 20 },
+      { header: "Quantity", key: "quantity", width: 20 },
+      { header: "Total", key: "total", width: 20 },
+      { header: "Status", key: "orderStatus", width: 20 },
+    ];
+
+    // DATA ROWS TO WORKSHEET
+    deliveredOrders.forEach((order) => {
+      const productName = order.productId.productName;
+      const productRom = order.productRom;
+      const product = `${productName} - ${productRom}`;
+
+      worksheet.addRow({
+        orderId: order._id,
+        product: product,
+        userName: user.name,
+        orderDate: order.created_at,
+        price: order.price,
+        quantity: order.quantity,
+        total: order.totalprice,
+        orderStatus: order.status,
+      });
+    });
+
+
+    res.setHeader(
+      "Content-Type",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=product_report.xlsx"
+    );
+
+    await workbook.xlsx.write(res);
+
+    res.end();
+  } catch (error) {
+    console.error("Error generating Excel report:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+
+/////
 const renderBrand = async function (req, res) {
   try {
     const brand = await Brand.find();
@@ -384,4 +470,5 @@ module.exports = {
   renderBanner,
   handleBanner,
   deleteBanner,
+  getReport
 };

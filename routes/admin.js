@@ -76,11 +76,11 @@ router.put('/admin/coupon/:id',adminController.updateCoupon)
 router.post('/orders/excel',requireAuth,adminController.getOrderReport)
 
 //user
-
 router.get('/admin/user',adminController.renderUser);
 
 router.post('/admin/toggleBlock',adminController.toggleBlock);
 
+router.post('/product/excels',requireAuth,product.getReport);
 
 // Route for handling logout
 router.get('/logout', adminController.handleLogout);
