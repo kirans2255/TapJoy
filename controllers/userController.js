@@ -1306,6 +1306,7 @@ const Cod = async (req, res) => {
 
     // Get all products in the cart
     const allProducts = user.cart.products;
+    console.log('ooo',allProducts)
     // console.log(allProducts)
 
     if (allProducts.length === 0) {
@@ -1321,6 +1322,7 @@ const Cod = async (req, res) => {
         'variants.productRam': item.productRam,
         'variants.productRom': item.productRom
       });
+      // console.log("rrr",product)
 
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
@@ -1328,6 +1330,7 @@ const Cod = async (req, res) => {
 
       // Find the variant matching the RAM and ROM
       const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
+      // console.log('ddd',variant)
 
       if (!variant) {
         return res.status(404).json({ message: "Variant not found" });
@@ -1348,16 +1351,15 @@ const Cod = async (req, res) => {
         created_at: new Date(),
       };
 
+      console.log("dsf",newOrder)
       // Push the new order to the user's orders array
       user.orders.push(newOrder);
     }
 
     // Clear the cart after creating orders
     user.cart.products = [];
-
     // Save the updated user document
     await user.save();
-
     res
       .status(200)
       .json({ message: "Orders placed successfully", orders: user.orders });

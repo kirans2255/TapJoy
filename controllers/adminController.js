@@ -546,6 +546,8 @@ const renderOrder = async (req, res) => {
       return acc;
     }, []);
 
+    orders.reverse();
+
     res.render('admin/order', { orders });
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -739,7 +741,7 @@ const handleCoupon = async (req, res) => {
 
   const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
 
-  //  console.log(req.body)
+   console.log("hh",req.body)
   try {
 
     const admin = await User.findOne()
@@ -791,7 +793,6 @@ const editCoupon = async (req, res) => {
 const updateCoupon = async (req, res) => {
   const couponId = req.params.id;
   const { Coupon_Status, Coupon_Name,Coupon_Value, Coupon_Type, StartDate, EndDate } = req.body;
-  console.log(req.body);
 
   try {
     // Find the admin

@@ -1069,17 +1069,19 @@
                     const paymentMethodId = selectedPaymentMethod.id;
 
                     // Fetch subtotal from the HTML
-                    const subtotals = document.getElementById('razor-price').textContent
-                    let subtotal = parseFloat(subtotals)
-                    console.log("jdj", subtotal)
-                    //const subtotal = subtotalElement.innerText;
+                    const subtotals = document.getElementById('razor-price').textContent;
+                    let subtotal = parseFloat(subtotals);
+                    console.log("jdj", subtotal);
+
+                    // Determine the amount based on grandTotal or subtotal
+                    const amount = !isNaN(grandTotal) ? grandTotal : subtotal;
 
                     // Example Axios code to post the data
                     if (paymentMethodId === 'Razorpay') {
                         // Handle Razorpay payment method
                         axios.post('/razorpay/placeOrder', {
                             addressId: addressId,
-                            amount: subtotal
+                            amount: amount // Use amount here
                         })
                             .then(response => {
                                 console.log("fff", response)
@@ -1093,7 +1095,7 @@
                                     description: "Complete the payment for order placement",
                                     handler: function (response) {
                                         console.log("pppp", response)
-                                        // This function is triggered after the pay   ment is successfully completed
+                                        // This function is triggered after the payment is successfully completed
                                         const selectedAddressId = document.querySelector('input[name="selectedAddress"]:checked').getAttribute('data-address-id');
                                         const totalPrice = parseFloat(document.getElementById('razor-price').innerText);
 
@@ -1105,7 +1107,6 @@
                                                 grandTotal: grandTotal,
                                                 razorpay_order_id: response.razorpay_order_id,
                                                 razorpay_payment_id: response.razorpay_payment_id
-
                                             })
                                             .then(response => {
                                                 // Handle successful response
@@ -1131,6 +1132,7 @@
                                 // Display error alert
                                 swal("Error!", "Error placing order with Razorpay. Please try again later.", "error");
                             });
+
                     } else if (paymentMethodId === 'COD') {
                         // Handle Cash on Delivery payment method
                         console.log("dd", grandTotal)
@@ -1166,7 +1168,7 @@
 
 
     <script>
-        
+
         document.getElementById("applyCouponForm").addEventListener("submit", async (e) => {
             e.preventDefault();
             const couponCode = document.getElementById("couponCode").value;
