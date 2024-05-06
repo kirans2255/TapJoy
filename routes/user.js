@@ -13,9 +13,9 @@ router.get('/signup', userController.renderSignup);
 
 router.get('/forgot-password',userController.forgotGetPage)
 
-router.get('/shop',userController.rendershop);
+router.get('/tablet',userController.rendershop);
 
-router.get('/shops',userController.rendershops);
+router.get('/phone',userController.rendershops);
 
 router.get('/brand/:brandName', userController.renderbrand);
 
@@ -30,9 +30,9 @@ router.get('/',isAuthenticated, userController.renderDashboard);
 
 router.get('/singleproduct/:id', userController.rendersingleProduct);
 
-router.get('/shops/:category',userController.Getsort)
+router.get('/tablet/:category',userController.Getsort)
 
-router.get('/shop/:category',userController.sort)
+router.get('/phone/:category',userController.sort)
 
 router.get('/wishlist',requireAuth,userController.renderwishlist);
 
