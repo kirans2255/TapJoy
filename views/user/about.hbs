@@ -56,35 +56,38 @@
             </div>
             <!-- Header top area end -->
             <!-- Header action area start -->
-            <div class="header-nav-area d-none d-lg-block sticky-nav">
+              <div class="header-bottom  d-none d-lg-block">
                 <div class="container">
-                    <div class="header-nav">
-                        <div class="main-menu position-relative">
-                            <ul>
-                                <li><a href="/">Home </a></li>
-                                <li><a href="/about">About</a></li>
-                                <li class="dropdown"><a href="#">Shop <i class="fa fa-angle-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li><a href="/tablet">Tablet</a></li>
-                                        <li><a href="/phone">Phone</a></li>
-                                    </ul>
-                                </li>
-                                <li><a href="/contact">Contact</a></li>
-                                <li class="dropdown position-static"><a href="about.html">Pages <i
-                                            class="fa fa-angle-down"></i></a>
-                                    <ul class="sub-menu">
-                                        <li class="d-flex">
-                                            <ul class="d-block">
-                                                {{!-- <li class="title"><a href="#">Profile</a></li> --}}
-                                                <li><a href="/account">Profile</a></li>
-                                                <li><a href="order-tracking.html">Orders</a></li>
-                                                <li><a href="/logoutt">Logout</a></li>
-                                                {{!-- <li><a href="coming-soon.html">Coming Soon Page</a></li> --}}
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
+                    <div class="row justify-content-between align-items-center">
+                        <div class="col-lg-3 col">
+                            <div class="header-logo">
+                                <a href="index.html"><img src="assets/images/logo/phone.jpg" alt="Site Logo"
+                                        style="width: 100px; height: auto;" /></a>
+                            </div>
+                        </div>
+                        {{!-- <div class="col-lg-6 d-none d-lg-block">
+                            <div class="search-element">
+                                <form action="#">
+                                    <input type="text" placeholder="Search" />
+                                    <button><i class="pe-7s-search"></i></button>
+                                </form>
+                            </div>
+                        </div> --}}
+                        <div class="col-lg-3 col">
+                            <div class="header-actions">
+                                <!-- Single Wedge Start -->
+                                <a href="/wishlist" class="header-action-btn">
+                                    <i class="pe-7s-like"></i>
+                                </a>
+                                <!-- Single Wedge End -->
+                                <a href="/cart" class="header-action-btn">
+                                    <i class="pe-7s-shopbag"></i>
+                                </a>
+                                <a href="#offcanvas-mobile-menu"
+                                    class="header-action-btn header-action-btn-menu offcanvas-toggle d-lg-none">
+                                    <i class="pe-7s-menu"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -99,14 +102,14 @@
                                 <a href="index.html"><img src="assets/images/logo/logo.png" alt="Site Logo" /></a>
                             </div>
                         </div>
-                        <div class="col-lg-6 d-none d-lg-block">
+                        {{!-- <div class="col-lg-6 d-none d-lg-block">
                             <div class="search-element">
                                 <form action="#">
                                     <input type="text" placeholder="Search" />
                                     <button><i class="pe-7s-search"></i></button>
                                 </form>
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="col-lg-3 col">
                             <div class="header-actions">
                                 <!-- Single Wedge Start -->
@@ -162,7 +165,7 @@
                 </div>
             </div>
             <!-- header navigation area end -->
-            <div class="mobile-search-box d-lg-none">
+            {{!-- <div class="mobile-search-box d-lg-none">
                 <div class="container">
                     <!-- mobile search start -->
                     <div class="search-element max-width-100">
@@ -173,7 +176,7 @@
                     </div>
                     <!-- mobile search start -->
                 </div>
-            </div>
+            </div> --}}
         </header>
         <!-- offcanvas overlay start -->
         <div class="offcanvas-overlay"></div>
