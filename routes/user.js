@@ -30,9 +30,9 @@ router.get('/',isAuthenticated, userController.renderDashboard);
 
 router.get('/singleproduct/:id', userController.rendersingleProduct);
 
-router.get('/tablet/:category',userController.Getsort)
+router.get('/phone/:category',userController.Getsort)
 
-router.get('/phone/:category',userController.sort)
+router.get('/tablet/:category',userController.sort)
 
 router.get('/wishlist',requireAuth,userController.renderwishlist);
 

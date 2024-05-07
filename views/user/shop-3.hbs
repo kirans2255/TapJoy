@@ -400,14 +400,20 @@
                                 </div>
                                 <!-- Single Wedge End -->
                                 <div class="header-bottom-set dropdown">
-                                    <button class="dropdown-toggle header-action-btn" data-bs-toggle="dropdown">{{sd}}
-                                        <i class="fa fa-angle-down"></i></button>
+                                    <button id="sortingButton" class="dropdown-toggle header-action-btn"
+                                        data-bs-toggle="dropdown">Default
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
-                                        <li><a class="dropdown-item" href="/shop/alphabeticallyaz">Name, A to Z</a></li>
-                                        <li><a class="dropdown-item" href="/shop/alphabeticallya">Name, Z to A</a></li>
-                                        <li><a class="dropdown-item" href="/shop/sortbylowtohigh">Price, low to high</a>
+                                        <li><a class="dropdown-item" href="/tablet/alphabeticallyaz">Name, A to Z</a>
                                         </li>
-                                        <li><a class="dropdown-item" href="/shop/sortbyhightolow">Price, high to low</a>
+                                        <li><a class="dropdown-item" href="/tablet/alphabeticallya">Name, Z to A</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="/tablet/sortbylowtohigh">Price, low to
+                                                high</a>
+                                        </li>
+                                        <li><a class="dropdown-item" href="/tablet/sortbyhightolow">Price, high to
+                                                low</a>
                                         </li>
                                         {{!-- <li><a class="dropdown-item" href="#">Sort By new</a></li>
                                         <li><a class="dropdown-item" href="#">Sort By old</a></li> --}}
@@ -1244,6 +1250,24 @@
 
             return productElement;
         }
+
+        // JavaScript to update sorting button text and store selected option
+        document.querySelectorAll('.dropdown-item').forEach(item => {
+            item.addEventListener('click', event => {
+                const buttonText = event.target.textContent;
+                document.getElementById('sortingButton').textContent = buttonText;
+                // Store selected sorting option in sessionStorage
+                sessionStorage.setItem('selectedSortingOption', buttonText);
+            });
+        });
+
+        // Check if there is a previously selected sorting option in sessionStorage
+        const selectedOption = sessionStorage.getItem('selectedSortingOption');
+        if (selectedOption) {
+            // If there is a selected option, update the sorting button text
+            document.getElementById('sortingButton').textContent = selectedOption;
+        }
+
 
 
     </script>

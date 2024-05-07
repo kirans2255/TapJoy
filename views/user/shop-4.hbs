@@ -414,8 +414,10 @@
                                 </div>
                                 <!-- Single Wedge End -->
                                 <div class="header-bottom-set dropdown">
-                                    <button class="dropdown-toggle header-action-btn" data-bs-toggle="dropdown">Default
-                                        <i class="fa fa-angle-down"></i></button>
+                                    <button id="sortingButton" class="dropdown-toggle header-action-btn"
+                                        data-bs-toggle="dropdown">Default
+                                        <i class="fa fa-angle-down"></i>
+                                    </button>
                                     <ul class="dropdown-menu dropdown-menu-right">
                                         <li><a class="dropdown-item" href="/phone/alphabeticallyaz">Name, A to Z</a>
                                         </li>
@@ -424,10 +426,9 @@
                                                 high</a></li>
                                         <li><a class="dropdown-item" href="/phone/sortbyhightolow">Price, high to
                                                 low</a></li>
-                                        {{!-- <li><a class="dropdown-item" href="#">Sort By new</a></li>
-                                        <li><a class="dropdown-item" href="#">Sort By old</a></li> --}}
                                     </ul>
                                 </div>
+
                                 <!-- Single Wedge Start -->
                             </div>
                             <!-- Right Side End -->
@@ -1261,6 +1262,25 @@
 
                 return productElement;
             }
+
+
+            // JavaScript to update sorting button text and store selected option
+            document.querySelectorAll('.dropdown-item').forEach(item => {
+                item.addEventListener('click', event => {
+                    const buttonText = event.target.textContent;
+                    document.getElementById('sortingButton').textContent = buttonText;
+                    // Store selected sorting option in sessionStorage
+                    sessionStorage.setItem('selectedSortingOption', buttonText);
+                });
+            });
+
+            // Check if there is a previously selected sorting option in sessionStorage
+            const selectedOption = sessionStorage.getItem('selectedSortingOption');
+            if (selectedOption) {
+                // If there is a selected option, update the sorting button text
+                document.getElementById('sortingButton').textContent = selectedOption;
+            }
+
 
 
         </script>

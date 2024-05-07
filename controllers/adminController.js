@@ -630,6 +630,8 @@ const updatestatus = async (req, res) => {
   try {
     const { orderId, newStatus, productName } = req.body;
 
+    // console.log("h",req.body)
+
     const user = await Users.findOne();
     // console.log(user)
 
@@ -969,3 +971,5 @@ module.exports = {
   renderUser,
   toggleBlock,
 };
+
+
