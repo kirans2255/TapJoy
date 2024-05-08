@@ -4,37 +4,39 @@ const passport = require('passport');
 
 const userController = require('../controllers/userController');
 const requireAuth = require('../middleware/userrequire');
+const block = require('../middleware/block');
 const { isAuthenticated } = require('../middleware/authMiddleware');
 
+
 // Render the home view
-router.get('/signin',userController.renderHome);
+router.get('/signin',block,userController.renderHome);
 
-router.get('/signup', userController.renderSignup);
+router.get('/signup',block, userController.renderSignup);
 
-router.get('/forgot-password',userController.forgotGetPage)
+router.get('/forgot-password',block,userController.forgotGetPage)
 
-router.get('/tablet',userController.rendershop);
+router.get('/tablet',block,userController.rendershop);
 
-router.get('/phone',userController.rendershops);
+router.get('/phone',block,userController.rendershops);
 
-router.get('/brand/:brandName', userController.renderbrand);
+router.get('/brand/:brandName',block, userController.renderbrand);
 
 router.post('/forget-password',userController.forgotEmailPostPage)
 
 router.post('/resethePassword',userController.resetPassword)
 
-router.get('/brands/:brandName', userController.renderbrands);
+router.get('/brands/:brandName',block, userController.renderbrands);
 
 // Render the dashboard view (requires authentication)
 router.get('/',isAuthenticated, userController.renderDashboard);
 
-router.get('/singleproduct/:id', userController.rendersingleProduct);
+router.get('/singleproduct/:id',block, userController.rendersingleProduct);
 
-router.get('/phone/:category',userController.Getsort)
+router.get('/phone/:category',block,userController.Getsort)
 
-router.get('/tablet/:category',userController.sort)
+router.get('/tablet/:category',block,userController.sort)
 
-router.get('/wishlist',requireAuth,userController.renderwishlist);
+router.get('/wishlist',block,requireAuth,userController.renderwishlist);
 
 router.post('/wishlist/:productId',requireAuth ,userController.addToWishlist);
 
@@ -47,23 +49,23 @@ router.post('/login', userController.handleSignin);
 
 //contact
 
-router.get('/contact', userController.renderContact);
+router.get('/contact', block,userController.renderContact);
 
 router.post('/send-mail',requireAuth,userController.handleContact)
 
 //////////////////
 //About
 
-router.get('/about', userController.renderAbout);
+router.get('/about',block, userController.renderAbout);
 
 ////////////////////////////////////
 //Cart
 
-router.get('/cart',requireAuth, userController.renderCart);
+router.get('/cart',block,requireAuth, userController.renderCart);
 
 router.post('/cart/:productId',requireAuth ,userController.addToCart);
 
-router.get('/account',requireAuth, userController.renderAccount);
+router.get('/account',block,requireAuth, userController.renderAccount);
 
 
 router.put('/updateQuantity',requireAuth,userController.updateQuantity)
@@ -73,7 +75,7 @@ router.delete('/cart/:productId',requireAuth,userController.removeFromCart)
 //checkout
 
 
-router.get('/checkout',requireAuth, userController.rendercheckout);
+router.get('/checkout',block,requireAuth, userController.rendercheckout);
 
 //Address
 
@@ -102,7 +104,7 @@ router.post('/coupon', userController.validateCoupon);
 
 router.post('/admin/cancel', userController.cancelOrder);
 
-router.get('/order/:id',userController.fetchOrder);
+router.get('/order/:id',block,userController.fetchOrder);
 
 ///search
 
