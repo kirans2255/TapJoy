@@ -146,7 +146,7 @@ const renderUser = async function (req, res) {
   try {
     const user = await Users.find();
 
-    res.render('admin/user',{user});
+    res.render('admin/user', { user });
   } catch (error) {
     console.error('Error fetching category:', error);
     res.status(500).json({ error: 'Error fetching category' });
@@ -154,7 +154,7 @@ const renderUser = async function (req, res) {
 };
 
 
-const toggleBlock = async function (req,res) {
+const toggleBlock = async function (req, res) {
   try {
 
     const userId = req.body.userId;
@@ -163,10 +163,10 @@ const toggleBlock = async function (req,res) {
     const user = await Users.findById(userId);
     if (user?.isBlocked) {
       user.isBlocked = false
-    }else{
+    } else {
       user.isBlocked = true
     }
-    await user.save(); 
+    await user.save();
     // console.log("ff",user.isBlocked) 
     return res.status(200).json({ success: true, user: user });
   } catch (error) {
@@ -212,7 +212,7 @@ const handleSignin = async (req, res) => {
       return res.status(401).render('admin/signin', { error: errorMessage });
     }
 
-     const token = jwt.sign(
+    const token = jwt.sign(
       {
         id: user._id,
         name: user.name,
@@ -572,6 +572,7 @@ const fetchOrder = async (req, res) => {
     if (!foundOrder) {
       return res.status(404).json({ error: "Order not found" });
     }
+
     // Get the product ID from the found order
     const productId = foundOrder.productId;
 
@@ -587,8 +588,27 @@ const fetchOrder = async (req, res) => {
       return res.status(404).json({ error: "Product not found" });
     }
 
-    const ram = product.variants.productRam;
-    // console.log("kkk",ram);
+
+    // Construct order history data
+    let shippedAt = foundOrder.shippedAt;
+    let deliveredAt = foundOrder.deliveredAt;
+
+    // Check if status is shipped and update shippedAt if it's not already set
+    if (foundOrder.status === "Shipped" && !shippedAt) {
+      shippedAt = new Date();
+    }
+
+    // Check if status is delivered and update deliveredAt if it's not already set
+    if (foundOrder.status === "Delivered" && !deliveredAt) {
+      deliveredAt = new Date();
+    }
+
+    const orderHistory = {
+      createdAt: foundOrder.created_at,
+      shippedAt: shippedAt,
+      deliveredAt: deliveredAt,
+      // Add any additional historical data fields as needed
+    };
 
 
     res.json({
@@ -605,6 +625,7 @@ const fetchOrder = async (req, res) => {
       ram: foundOrder.productRam,
       rom: foundOrder.productRom,
       amount: foundOrder.grandTotal,
+      orderHistory: orderHistory 
     });
 
 
@@ -613,6 +634,7 @@ const fetchOrder = async (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
 
 
 
@@ -743,7 +765,7 @@ const handleCoupon = async (req, res) => {
 
   const { Coupon_Status, Coupon_Name, Coupon_Type, StartDate, EndDate, Coupon_Value } = req.body;
 
-   console.log("hh",req.body)
+  console.log("hh", req.body)
   try {
 
     const admin = await User.findOne()
@@ -794,7 +816,7 @@ const editCoupon = async (req, res) => {
 
 const updateCoupon = async (req, res) => {
   const couponId = req.params.id;
-  const { Coupon_Status, Coupon_Name,Coupon_Value, Coupon_Type, StartDate, EndDate } = req.body;
+  const { Coupon_Status, Coupon_Name, Coupon_Value, Coupon_Type, StartDate, EndDate } = req.body;
 
   try {
     // Find the admin
@@ -912,7 +934,7 @@ const getOrderReport = async (req, res) => {
 
       worksheet.addRow({
         orderId: order._id,
-        product:product,
+        product: product,
         userName: user.name,
         orderDate: order.created_at,
         price: order.price,

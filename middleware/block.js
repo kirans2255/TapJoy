@@ -22,10 +22,10 @@ const checkBlocked = async (req, res, next) => {
 
     // If the user is an admin and is blocked, prevent access to the page
     if (user && user.isBlocked) {
-      return res.redirect('/?status=blocked');
+      res.clearCookie("jwt");
+      res.redirect("/signin");
     }
 
-    // Move to the next middleware or route handler if user is not blocked
     next();
   } catch (error) {
     console.error('Error checking block status:', error);

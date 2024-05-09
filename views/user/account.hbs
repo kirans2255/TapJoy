@@ -70,7 +70,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            max-width: 800px;
+            max-width: 900px;
             width: calc(100% - 40px);
             /* Adjusted width to fit the content */
             display: flex;
@@ -492,19 +492,19 @@
                             </ul>
                         </li>
                         <li><a href="/contact">Contact</a></li>
-                        <li class="dropdown "><a href="#">Pages <i class="fa fa-angle-down"></i></a>
+                        {{!-- <li class="dropdown "><a href="#">Pages <i class="fa fa-angle-down"></i></a>
                             <ul class="sub-menu">
                                 <li class="d-flex">
                                     <ul class="d-block">
-                                        {{!-- <li class="title"><a href="#">Profile</a></li> --}}
+                                        <li class="title"><a href="#">Profile</a></li>
                                         <li><a href="/account">Profile</a></li>
-                                        <li><a href="order-tracking.html">Orders</a></li>
+                                        <li><a href="/account">Orders</a></li>
                                         <li><a href="/logoutt">Logout</a></li>
-                                        {{!-- <li><a href="coming-soon.html">Coming Soon Page</a></li> --}}
+                                        <li><a href="coming-soon.html">Coming Soon Page</a></li>
                                     </ul>
                                 </li>
                             </ul>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
             </div>
@@ -1049,8 +1049,42 @@
                 <p>Price: ${data.price}</p>
                 <p>Total Price: ${data.totalprice}</p>
                 <p>Order Status: ${data.status}</p>
-                <p>Discount Amount: ${data.amount}</p>
+                <p>Discount Amount: ${data.amount}</p><br>
+                                <h3>Status History</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Event</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>${new Date(data.orderHistory.createdAt).toLocaleString()}</td>
+                            <td>Order Created</td>
+                        </tr>
+                        ${
+                        // Conditionally include shippedAt if it exists and it changed
+                        data.orderHistory.shippedAt && data.orderHistory.shippedAt !== data.orderHistory.createdAt ?
+                            `<tr>
+                                    <td>${new Date(data.orderHistory.shippedAt).toLocaleString()}</td>
+                                    <td>Order Shipped</td>
+                                </tr>` : ''
+                        }
+                        ${
+                        // Conditionally include deliveredAt if it exists and it changed
+                        data.orderHistory.deliveredAt && data.orderHistory.deliveredAt !== data.orderHistory.shippedAt ?
+                            `<tr>
+                                    <td>${new Date(data.orderHistory.deliveredAt).toLocaleString()}</td>
+                                    <td>Order Delivered</td> 
+                                </tr>` : ''
+                        }
+                            ${data.status === "Canceled" ? `<tr><td>${new Date().toLocaleString()}</td><td>Order Canceled</td></tr>` : ''}
+                    </tbody>
+                </table>
+            
             `;
+            
                     const addressDetails = document.getElementById('addressDetails');
                     addressDetails.innerHTML = `
     <p>Customer Name: ${data.name}</p>
@@ -1060,6 +1094,8 @@
     <p>${data.address.city} - ${data.address.pin}</p>
     <p>${data.address.state}</p>
     <p>Phone Number: ${data.address.phone}</p>
+
+    
 `;
 
                     // Show modal

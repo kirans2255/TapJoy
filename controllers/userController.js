@@ -146,6 +146,27 @@ const fetchOrder = async (req, res) => {
     const ram = product.variants.productRam;
     // console.log("kkk",ram);
 
+    // Construct order history data
+    let shippedAt = foundOrder.shippedAt;
+    let deliveredAt = foundOrder.deliveredAt;
+
+    // Check if status is shipped and update shippedAt if it's not already set
+    if (foundOrder.status === "Shipped" && !shippedAt) {
+      shippedAt = new Date();
+    }
+
+    // Check if status is delivered and update deliveredAt if it's not already set
+    if (foundOrder.status === "Delivered" && !deliveredAt) {
+      deliveredAt = new Date();
+    }
+
+    const orderHistory = {
+      createdAt: foundOrder.created_at,
+      shippedAt: shippedAt,
+      deliveredAt: deliveredAt,
+      // Add any additional historical data fields as needed
+    };
+
 
     res.json({
       _id: foundOrder._id,
@@ -161,6 +182,7 @@ const fetchOrder = async (req, res) => {
       ram: foundOrder.productRam,
       rom: foundOrder.productRom,
       amount: foundOrder.grandTotal,
+      orderHistory: orderHistory
     });
 
 
@@ -447,8 +469,19 @@ const removeFromWishlist = async (req, res) => {
 
 
 //signup
-const renderSignup = (req, res) => {
-  res.render('user/signup', { error: req.query.error || '' });
+const renderSignup = async (req, res) => {
+  try {
+    const user = await Users.find(); // Corrected line
+    if (req.cookies.jwt) {
+      res.redirect('/');
+    } else {
+      res.render('user/signup', { user }); // Passing user object to render function
+    }
+  } catch (error) {
+    console.error(error);
+    // Handle error appropriately, maybe by sending an error response
+    res.status(500).send('Internal Server Error');
+  }
 };
 
 
@@ -995,6 +1028,12 @@ const addToCart = async (req, res) => {
     // Check if the product variant is already in the cart
     const existingProductIndex = user.cart.products.findIndex(item => item.productId.toString() === productId && item.productRam === ram && item.productRom === rom);
 
+    // Check if the product is out of stock
+    const variant = product.variants.find(v => v.productRam === ram && v.productRom === rom);
+    if (!variant || variant.productQuantity <= 0) {
+      return res.status(400).json({ errorMessage: 'Out of stock' });
+    }
+
     if (existingProductIndex !== -1) {
       // If product variant is found in the cart, increase quantity
       user.cart.products[existingProductIndex].quantity += 1;
@@ -1012,7 +1051,7 @@ const addToCart = async (req, res) => {
     res.status(200).json({ successMessage: 'Added to Cart successfully' });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ errorMessage: 'Internal server error' });
+    res.status(500).json({ errorMessage: 'Out of stock' });
   }
 };
 
@@ -1283,6 +1322,7 @@ const rendercheckout = async (req, res) => {
 
 //payement
 /////////////////////////////////////
+
 const Cod = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -1306,8 +1346,6 @@ const Cod = async (req, res) => {
 
     // Get all products in the cart
     const allProducts = user.cart.products;
-    console.log('ooo',allProducts)
-    // console.log(allProducts)
 
     if (allProducts.length === 0) {
       return res
@@ -1322,7 +1360,6 @@ const Cod = async (req, res) => {
         'variants.productRam': item.productRam,
         'variants.productRom': item.productRom
       });
-      // console.log("rrr",product)
 
       if (!product) {
         return res.status(404).json({ message: "Product not found" });
@@ -1330,14 +1367,12 @@ const Cod = async (req, res) => {
 
       // Find the variant matching the RAM and ROM
       const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
-      // console.log('ddd',variant)
 
       if (!variant) {
         return res.status(404).json({ message: "Variant not found" });
       }
 
       const newOrder = {
-        // orderId: new mongoose.Types.ObjectId(),
         productId: item.productId,
         productRam: item.productRam,
         productRom: item.productRom,
@@ -1351,9 +1386,23 @@ const Cod = async (req, res) => {
         created_at: new Date(),
       };
 
-      console.log("dsf",newOrder)
       // Push the new order to the user's orders array
       user.orders.push(newOrder);
+
+      // Update product quantity
+      const updatedProduct = await Product.findOneAndUpdate(
+        {
+          _id: item.productId,
+          'variants.productRam': item.productRam,
+          'variants.productRom': item.productRom
+        },
+        { $inc: { 'variants.$.productQuantity': -item.quantity } },
+        { new: true }
+      );
+
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Failed to update product quantity" });
+      }
     }
 
     // Clear the cart after creating orders
@@ -1368,6 +1417,7 @@ const Cod = async (req, res) => {
     res.status(500).json({ error: "Error placing the order" });
   }
 };
+
 
 
 
@@ -1467,8 +1517,22 @@ const placeorder = async (req, res) => {
 
       // Push the new order to the user's orders array
       user.orders.push(postorder);
-    }
 
+
+      const updatedProduct = await Product.findOneAndUpdate(
+        {
+          _id: item.productId,
+          'variants.productRam': item.productRam,
+          'variants.productRom': item.productRom
+        },
+        { $inc: { 'variants.$.productQuantity': -item.quantity } },
+        { new: true }
+      );
+
+      if (!updatedProduct) {
+        return res.status(404).json({ message: "Failed to update product quantity" });
+      }
+    }
     // Clear the cart after creating orders
     user.cart.products = [];
 

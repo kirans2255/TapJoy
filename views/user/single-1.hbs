@@ -28,6 +28,13 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 
     <style>
+        .out-of-stock {
+            color: red;
+            font-weight: bold;
+            /* Optional: Make the text bold */
+            /* Add any other styling properties as needed */
+        }
+
         .image-box {
             border: 1px solid #ccc;
             padding: 10px;
@@ -222,20 +229,20 @@
                                     </ul>
                                 </li>
                                 <li><a href="/contact">Contact</a></li>
-                                <li class="dropdown position-static"><a href="about.html">Pages <i
+                                {{!-- <li class="dropdown position-static"><a href="about.html">Pages <i
                                             class="fa fa-angle-down"></i></a>
                                     <ul class="sub-menu">
                                         <li class="d-flex">
                                             <ul class="d-block">
-                                                {{!-- <li class="title"><a href="#">Profile</a></li> --}}
+                                                <li class="title"><a href="#">Profile</a></li>
                                                 <li><a href="/account">Profile</a></li>
-                                                <li><a href="order-tracking.html">Orders</a></li>
+                                                <li><a href="/account">Orders</a></li>
                                                 <li><a href="/logoutt">Logout</a></li>
-                                                {{!-- <li><a href="coming-soon.html">Coming Soon Page</a></li> --}}
+                                                <li><a href="coming-soon.html">Coming Soon Page</a></li>
                                             </ul>
                                         </li>
                                     </ul>
-                                </li>
+                                </li> --}}
                             </ul>
                         </div>
                     </div>
@@ -553,17 +560,22 @@
                                 <span>RAM and ROM:</span>
                                 {{#each product.variants}}
                                 <div class="clickable-box" style="margin-left: 10px;">
-                                    <ul class="d-flex ">
+                                    <ul class="d-flex">
                                         <li class="">
                                             <a href="#" class="ram-rom-link" data-ram="{{this.productRam}}"
-                                                data-rom="{{this.productRom}}"
-                                                data-price="{{this.productPrice}}">{{this.productRam}} |
-                                                {{this.productRom}}
+                                                data-rom="{{this.productRom}}" data-price="{{this.productPrice}}">
+                                                {{this.productRam}} | {{this.productRom}}
                                             </a>
                                         </li>
                                     </ul>
+                                    {{#unless this.productQuantity}}
+                                    <div class="out-of-stock">
+                                        Out of Stock
+                                    </div>
+                                    {{/unless}}
                                 </div>
                                 {{/each}}
+
                             </div>
 
                             <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
@@ -593,9 +605,9 @@
                                         onclick="addToWishlist('{{product._id}}')" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal-Wishlist"><i class="pe-7s-like"></i></a>
                                 </div>
-                                <div class="pro-details-compare-wishlist pro-details-wishlist ">
+                                {{!-- <div class="pro-details-compare-wishlist pro-details-wishlist ">
                                     <a href="compare.html"><i class="pe-7s-refresh-2"></i></a>
-                                </div>
+                                </div> --}}
                             </div>
                             <div class="container">
                                 <div class="row">
@@ -1565,24 +1577,37 @@
                     body: JSON.stringify({ userId, productId, price, variantInfo, rom, ram })
                 })
                     .then(response => {
-                        console.log('ffff', response)
                         if (response.status === 404) {
                             console.log("Response status is 404. Redirecting to '/' page");
                             window.location.href = "/"; // Redirect to the home page
                         }
                         if (!response.ok) {
-
                             console.log("Failed to add product to Cart. Response status:", response.status);
                             throw new Error('Failed to add product to Cart');
-
                         }
-
                         return response.json();
                     })
-
                     .then(response => {
-                        console.log("pop", response);
-                        if (response.errorMessage === 'Removed from Cart successfully') {
+                        if (response.errorMessage) {
+                            swal({
+                                title: response.errorMessage,
+                                icon: "error",
+                                buttons: false,
+                                timer: 1000
+                            });
+                            console.log("Product is out of stock or not available");
+                            return;
+                        }
+                        if (response.successMessage === 'Added to Cart successfully') {
+                            Toastify({
+                                text: "Added to Cart",
+                                duration: 1000, // 3 seconds
+                                gravity: "top", // Display at the top
+                                position: 'right', // Display on the right side
+                                backgroundColor: "black", // Background color
+                                stopOnFocus: true, // Stop the timer when the toast is focused
+                            }).showToast();
+                        } else if (response.successMessage === 'Removed from Cart successfully') {
                             Toastify({
                                 text: "Removed From Cart",
                                 duration: 1000, // 3 seconds
@@ -1592,18 +1617,6 @@
                                 stopOnFocus: true, // Stop the timer when the toast is focused
                             }).showToast();
                         }
-                        else {
-                            Toastify({
-                                text: "Added to Cart",
-                                duration: 1000, // 3 seconds
-                                gravity: "top", // Display at the top
-                                position: 'right', // Display on the right side
-                                backgroundColor: "black", // Background color
-                                stopOnFocus: true, // Stop the timer when the toast is focused
-                            }).showToast();
-                        }
-                        console.log("b");
-
                         // Handle success message or update UI as needed
                         console.log(response.message);
                     })
@@ -1612,6 +1625,7 @@
                         // Handle error or update UI as needed
                     });
             }
+
 
         </script>
 
