@@ -363,7 +363,8 @@ const renderwishlist = async (req, res) => {
           productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
           productPrice: variant.productPrice,
           productRam: variant.productRam,
-          productRom: variant.productRom
+          productRom: variant.productRom,
+          maxStock: variant.productQuantity
         });
         // console.log(wishlistProducts);
       }
@@ -431,7 +432,6 @@ const addToWishlist = async (req, res) => {
     res.status(500).json({ errorMessage: 'Internal server error' });
   }
 };
-
 
 
 
@@ -965,7 +965,7 @@ const renderCart = async (req, res) => {
 
     const cartItems = user.cart.products;
 
-    // Fetch product details for each item in the cart
+    // Fetching product details for each item in the cart
     const cartProducts = [];
     for (const item of cartItems) {
       const product = await Product.findOne({
@@ -978,20 +978,21 @@ const renderCart = async (req, res) => {
         // Extract the variant matching the RAM and ROM
         const variant = product.variants.find(v => v.productRam === item.productRam && v.productRom === item.productRom);
 
-        // Push the product details to the cartProducts array along with quantity
         cartProducts.push({
           _id: product._id,
           variantId: variant._id,
           productName: product.productName,
-          productImage: product.productImage[0], // Assuming the product image is an array and we take the first image
+          productImage: product.productImage[0], 
           productPrice: variant.productPrice,
           productRam: variant.productRam,
           productRom: variant.productRom,
           quantity: item.quantity,
-          subtotal: item.quantity * variant.productPrice
+          subtotal: item.quantity * variant.productPrice,
+          maxStock: variant.productQuantity
         });
       }
     }
+    // console.log("D",cartProducts)
 
     const cartTotal = cartProducts.reduce((sum, item) => sum + item.subtotal, 0);
 

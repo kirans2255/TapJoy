@@ -348,7 +348,7 @@
                     <h6 class="font-weight-bolder mb-0">Order</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                   
+
                 </div>
             </div>
         </nav>
@@ -412,19 +412,8 @@
                             </div>
                         </table>
                     </div>
-                    <nav aria-label="Page navigation">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Next</a>
-                            </li>
-                        </ul>
-                    </nav>
+                    <div id="pagination" class="pagination"></div>
+
                 </div>
             </div>
         </div>
@@ -896,7 +885,7 @@
                     <tbody>
                         <tr>
                             <td>${new Date(data.orderHistory.createdAt).toLocaleString()}</td>
-                            <td>Order Created</td>
+                            <td>Order Placed</td>
                         </tr>
                         ${
                         // Conditionally include shippedAt if it exists and it changed
@@ -933,6 +922,50 @@
             const modal = document.getElementById('orderModal');
             modal.style.display = 'none';
         }
+
+        ////Pagination
+
+        $(document).ready(function () {
+            // Define rows per page and initialize current page
+            var rowsPerPage = 6;
+            var currentPage = 1;
+
+            // Function to show rows for the current page
+            function showPage(page) {
+                $('tbody tr').hide();
+                var start = (page - 1) * rowsPerPage;
+                var end = start + rowsPerPage;
+                $('tbody tr').slice(start, end).show();
+            }
+
+            // Function to generate pagination links
+            function renderPagination(totalPages) {
+                var paginationHtml = '';
+                for (var i = 1; i <= totalPages; i++) {
+                    paginationHtml += '<a href="#" class="page-link" data-page="' + i + '">' + i + '</a>';
+                }
+                $('#pagination').html(paginationHtml);
+
+                // Highlight current page link
+                $('#pagination a[data-page="' + currentPage + '"]').addClass('active');
+            }
+
+            // Function to handle pagination navigation
+            $(document).on('click', '.page-link', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).data('page'));
+                currentPage = page;
+                showPage(page);
+                $('.page-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // Initial setup
+            var totalRows = $('tbody tr').length;
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            showPage(currentPage);
+            renderPagination(totalPages);
+        });
 
 
     </script>

@@ -24,6 +24,8 @@
     <link rel="stylesheet" href="assets/css/jquery-ui.min.css">
     <!-- Style CSS -->
     <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <style>
         .cart-plus-minus-box {
             width: 50px;
@@ -67,7 +69,8 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Site Logo" /></a>
+                                <a href="/"><img src="assets/images/logo/Tap.png" alt="Site Logo"
+                                        style="width: 150px;" /></a>
                             </div>
                         </div>
                         {{!-- <div class="col-lg-6 d-none d-lg-block">
@@ -104,7 +107,8 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="index.html"><img src="assets/images/logo/logo.png" alt="Site Logo" /></a>
+                                <a href="/"><img src="assets/images/logo/Tap.png" alt="Site Logo"
+                                        style="width: 150px;" /></a>
                             </div>
                         </div>
                         {{!-- <div class="col-lg-6 d-none d-lg-block">
@@ -421,7 +425,7 @@
                                                     value="{{this.quantity}}"
                                                     onchange="updateQuantity(this.value,'{{this._id}}')" readonly />
                                                 <button class="increment-btn"
-                                                    onclick="incrementQuantity('{{this._id}}')">+</button>
+                                                    onclick="incrementQuantity('{{this._id}}','{{this.maxStock}}')">+</button>
                                             </td>
                                             <td class="product-subtotal" id="">
                                                 ₹{{this.subtotal}}
@@ -667,15 +671,30 @@
 
     <!--Main JS (Common Activation Codes)-->
     <script src="assets/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 
     <script>
-        function incrementQuantity(productId) {
+
+        function incrementQuantity(productId, maxStock) {
             const inputElement = document.getElementById('quantityInput-' + productId);
             let currentQuantity = parseInt(inputElement.value);
-            currentQuantity++;
-            inputElement.value = currentQuantity;
-            updateQuantity(currentQuantity, productId);
+            const maxQuantity = parseInt(maxStock);
+
+            if (currentQuantity < maxQuantity) {
+                currentQuantity++;
+                inputElement.value = currentQuantity;
+                updateQuantity(currentQuantity, productId);
+            } else {
+                Toastify({
+                    text: 'Out of stock',
+                    duration: 3000, // Display duration in milliseconds
+                    gravity: 'top', // Position of the toast message
+                    close: true // Whether to display a close button
+                }).showToast();
+            }
         }
+
 
         function decrementQuantity(productId) {
             const inputElement = document.getElementById('quantityInput-' + productId);
@@ -773,8 +792,6 @@
                 document.getElementById("couponMessage").textContent = "Error applying coupon. Please try again later.";
             }
         });
-
-
 
     </script>
 </body>
