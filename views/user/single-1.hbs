@@ -68,6 +68,23 @@
             text-decoration: underline;
             /* underline on hover */
         }
+
+        .header-actions .header-action-btn {
+            margin: 0 3px;
+            /* Further reduce margin between items */
+            font-size: 18px;
+            /* Adjust icon size if necessary */
+        }
+
+        .header-logo img {
+            max-width: 100px;
+            /* Smaller logo */
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
     </style>
 
 
@@ -139,7 +156,7 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="/"><img src="assets/images/logo/Tap.png" alt="Site Logo"
+                                <a href="/"><img src="/assets/images/logo/Tap.png" alt="Site Logo"
                                         style="width: 150px;" /></a>
                             </div>
                         </div>
@@ -180,7 +197,7 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="/"><img src="assets/images/logo/Tap.png" alt="Site Logo"
+                                <a href="/"><img src="/assets/images/logo/Tap.png" alt="Site Logo"
                                         style="width: 100px;" /></a>
                             </div>
                         </div>
@@ -541,7 +558,7 @@
                                     </div> --}}
                                 </ul>
                             </div>
-                            <div class="pro-details-rating-wrap">
+                            {{!-- <div class="pro-details-rating-wrap">
                                 <div class="rating-product">
                                     <i class="fa fa-star"></i>
                                     <i class="fa fa-star"></i>
@@ -550,7 +567,7 @@
                                     <i class="fa fa-star"></i>
                                 </div>
                                 <span class="read-review"><a class="reviews" href="#">(5 Customer Review)</a></span>
-                            </div>
+                            </div> --}}
                             <p class="mt-30px">{{product.productDescription}}</p>
                             <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
                                 <span>Category: </span>
@@ -634,13 +651,13 @@
                         </div>
                         <!-- product details description area start -->
                         <div class="description-review-wrapper">
-                            <div class="description-review-topbar nav">
-                                {{!-- <button data-bs-toggle="tab" data-bs-target="#des-details2">Information</button>
-                                --}}
+                            {{!-- <div class="description-review-topbar nav">
+                                <button data-bs-toggle="tab" data-bs-target="#des-details2">Information</button>
+                               
                                 <button class="active" data-bs-toggle="tab"
                                     data-bs-target="#des-details1">Information</button>
                                 <button data-bs-toggle="tab" data-bs-target="#des-details3">Reviews (02)</button>
-                            </div>
+                            </div> --}}
                             <div class="tab-content description-review-bottom">
                                 <div id="des-details2" class="tab-pane">
                                     <div class="product-anotherinfo-wrapper text-start">

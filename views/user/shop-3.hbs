@@ -28,6 +28,24 @@
     <!-- Minify Version -->
     <!-- <link rel="stylesheet" href="/assets/css/plugins.min.css">
     <link rel="stylesheet" href="/assets/css/style.min.css"> -->
+    <style>
+        .header-actions .header-action-btn {
+            margin: 0 3px;
+            /* Further reduce margin between items */
+            font-size: 18px;
+            /* Adjust icon size if necessary */
+        }
+
+        .header-logo img {
+            max-width: 100px;
+            /* Smaller logo */
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+    </style>
 </head>
 
 <body>
@@ -222,7 +240,7 @@
                 <div class="container">
                     <!-- mobile search start -->
                     <div class="search-element max-width-100">
-                         <form id="searchForm">
+                        <form id="searchForm">
                             <input type="text" id="searchInput" placeholder="Search" />
                             <button type="submit"><i class="pe-7s-search"></i></button>
                         </form>
