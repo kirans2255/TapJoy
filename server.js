@@ -12,7 +12,7 @@ const app = express();
 const port = 3000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/signup');
+mongoose.connect('mongodb+srv://kiransunilkumar2017:adUe9QdFUdDcHFGS@tapjoy.8gnnhtt.mongodb.net/tapjoy');
 const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
