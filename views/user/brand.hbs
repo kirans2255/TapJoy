@@ -81,7 +81,7 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="/"><img src="assets/images/logo/Tapss.png" alt="Site Logo"
+                                <a href="/"><img src="/assets/images/logo/Tapss.png" alt="Site Logo"
                                         style="width: 250px;" /></a>
                             </div>
                         </div>
@@ -122,7 +122,7 @@
                     <div class="row justify-content-between align-items-center">
                         <div class="col-lg-3 col">
                             <div class="header-logo">
-                                <a href="/"><img src="assets/images/logo/Tapss.png" alt="Site Logo"
+                                <a href="/"><img src="/assets/images/logo/Tapss.png" alt="Site Logo"
                                         style="width: 250px;" /></a>
                             </div>
                         </div>
@@ -488,7 +488,7 @@
                                                                 data-bs-target="#exampleModal-Cart"><i
                                                                     class="pe-7s-shopbag"></i></button> --}}
                                                             <button class="action wishlist" title="Wishlist"
-                                                                onclick="addToWishlist( '{{this._id}}')"
+                                                                onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productRam}}','{{this.variants.[0].productRom}}')"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Wishlist"><i
                                                                     class="pe-7s-like"></i></button>
@@ -551,7 +551,7 @@
                                                                         data-bs-target="#exampleModal-Cart"><i
                                                                             class="pe-7s-shopbag"></i></button> --}}
                                                                     <button class="action wishlist" title="Wishlist"
-                                                                        onclick="addToWishlist('{{this._id}}')"
+                                                                        onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productRam}}','{{this.variants.[0].productRom}}')"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal-Wishlist"><i
                                                                             class="pe-7s-like"></i></button>
@@ -680,8 +680,8 @@
                             <div class="col-md-6 col-lg-4 mb-md-30px mb-lm-30px">
                                 <div class="single-wedge">
                                     <div class="footer-logo">
-                                        <a href="index.html"><img src="assets/images/logo/Tap.png" style="width: 200px;"
-                                                alt=""></a>
+                                        <a href="index.html"><img src="/assets/images/logo/Tap.png"
+                                                style="width: 200px;" alt=""></a>
                                     </div>
                                     {{!-- <p class="about-text">Your tech sanctuary --}}
                                     </p>
@@ -776,7 +776,7 @@
                             <div class="row flex-md-row-reverse align-items-center">
                                 <div class="col-md-6 text-center text-md-end">
                                     <div class="payment-mth"><a href="#"><img class="img img-fluid"
-                                                src="assets/images/icons/payment.png" alt="payment-image"></a>
+                                                src="/assets/images/icons/payment.png" alt="payment-image"></a>
                                     </div>
                                 </div>
                                 {{!-- <div class="col-md-6 text-center text-md-start">
@@ -1021,13 +1021,13 @@
     <script src="/assets/js/main.js"></script>
 
     <script>
-        function addToWishlist(productId) {
+        function addToWishlist(productId, ram, rom) {
             fetch(`/wishlist/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId, productId })
+                body: JSON.stringify({ userId, productId, ram, rom })
             })
                 .then(response => {
                     if (!response.ok) {
@@ -1069,6 +1069,7 @@
                     // Handle error or update UI as needed
                 });
         }
+
 
     </script>
 
