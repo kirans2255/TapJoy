@@ -48,26 +48,18 @@
         }
 
 
-        .clickable-box {
-            border: 1px solid #ccc;
-            cursor: pointer;
-        }
+        
 
         .clickable-box:hover {
             background-color: #f0f0f0;
         }
 
-        .ram-rom-link {
-            color: #000;
-            /* or any other color you prefer */
-            text-decoration: none;
-            /* remove underline */
+
+        .rrl .active {
+            background-color: rgb(158, 229, 236);
+            color: #d21818;
         }
 
-        .ram-rom-link:hover {
-            text-decoration: underline;
-            /* underline on hover */
-        }
 
         .header-actions .header-action-btn {
             margin: 0 3px;
@@ -581,7 +573,7 @@
                                 </ul>
                             </div>
 
-                            <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
+                            {{!-- <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
                                 <span>RAM and ROM:</span>
                                 {{#each product.variants}}
                                 <div class="clickable-box" style="margin-left: 10px;">
@@ -601,6 +593,27 @@
                                 </div>
                                 {{/each}}
 
+                            </div> --}}
+                            <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
+                                <span>RAM and ROM:</span>
+                                {{#each product.variants}}
+                                <div class="clickable-box" style="margin-left: 10px;">
+                                    <ul class="d-flex">
+                                        <li class="rrl">
+                                            <a href="#" class="ram-rom-link {{#if @first}}active{{/if}}"
+                                                data-ram="{{this.productRam}}" data-rom="{{this.productRom}}"
+                                                data-price="{{this.productPrice}}">
+                                                {{this.productRam}} | {{this.productRom}}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                    {{#unless this.productQuantity}}
+                                    <div class="out-of-stock">
+                                        Out of Stock
+                                    </div>
+                                    {{/unless}}
+                                </div>
+                                {{/each}}
                             </div>
 
                             <div class="pro-details-categories-info pro-details-same-style d-flex m-0">
@@ -653,7 +666,7 @@
                         <div class="description-review-wrapper">
                             {{!-- <div class="description-review-topbar nav">
                                 <button data-bs-toggle="tab" data-bs-target="#des-details2">Information</button>
-                               
+
                                 <button class="active" data-bs-toggle="tab"
                                     data-bs-target="#des-details1">Information</button>
                                 <button data-bs-toggle="tab" data-bs-target="#des-details3">Reviews (02)</button>
@@ -1144,8 +1157,8 @@
                             <div class="col-md-6 col-lg-4 mb-md-30px mb-lm-30px">
                                 <div class="single-wedge">
                                     <div class="footer-logo">
-                                        <a href="index.html"><img src="assets/images/logo/Tap.png" style="width: 200px;"
-                                                alt=""></a>
+                                        <a href="index.html"><img src="/assets/images/logo/Tap.png"
+                                                style="width: 200px;" alt=""></a>
                                     </div>
                                     {{!-- <p class="about-text">Your tech sanctuary --}}
                                     </p>
@@ -1513,11 +1526,22 @@
                 });
             });
 
+
+            // Function to handle variant selection
+            document.querySelectorAll('.ram-rom-link').forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    document.querySelectorAll('.ram-rom-link').forEach(item => item.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
             function addToWishlist(productId) {
                 const selectedVariant = document.querySelector('.ram-rom-link.active');
 
                 const rom = selectedVariant.getAttribute('data-rom');
                 const ram = selectedVariant.getAttribute('data-ram');
+
 
                 if (!selectedVariant) {
                     swal({
@@ -1578,11 +1602,9 @@
                     });
             }
 
+
             function addToCart(productId) {
                 const selectedVariant = document.querySelector('.ram-rom-link.active');
-
-                const rom = selectedVariant.getAttribute('data-rom');
-                const ram = selectedVariant.getAttribute('data-ram');
 
                 if (!selectedVariant) {
                     swal({
@@ -1593,8 +1615,12 @@
                     });
                     return;
                 }
+
+                const rom = selectedVariant.getAttribute('data-rom');
+                const ram = selectedVariant.getAttribute('data-ram');
                 const price = selectedVariant.getAttribute('data-price');
                 const variantInfo = selectedVariant.getAttribute('data-variant-info'); // Additional variant information
+
                 fetch(`/cart/${productId}`, {
                     method: 'POST',
                     headers: {
@@ -1651,6 +1677,7 @@
                         // Handle error or update UI as needed
                     });
             }
+
 
 
         </script>

@@ -495,7 +495,7 @@
                                                                 data-bs-target="#exampleModal-Cart"><i
                                                                     class="pe-7s-shopbag"></i></button> --}}
                                                             <button class="action wishlist" title="Wishlist"
-                                                                onclick="addToWishlist( '{{this._id}}','{{this.variants.[0].productPrice}}')"
+                                                                onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productRam}}','{{this.variants.[0].productRom}}')"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#exampleModal-Wishlist"><i
                                                                     class="pe-7s-like"></i></button>
@@ -559,7 +559,7 @@
                                                                         data-bs-target="#exampleModal-Cart"><i
                                                                             class="pe-7s-shopbag"></i></button> --}}
                                                                     <button class="action wishlist" title="Wishlist"
-                                                                        onclick="addToWishlist('{{this._id}}')"
+                                                                        onclick="addToWishlist('{{this._id}}', '{{this.variants.[0].productRam}}','{{this.variants.[0].productRom}}')"
                                                                         data-bs-toggle="modal"
                                                                         data-bs-target="#exampleModal-Wishlist"><i
                                                                             class="pe-7s-like"></i></button>
@@ -1056,13 +1056,13 @@
     <!--Main JS (Common Activation Codes)-->
     <script src="/assets/js/main.js"></script>
     <script>
-        function addToWishlist(productId, price) {
+        function addToWishlist(productId, ram, rom) {
             fetch(`/wishlist/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ userId, productId, price })
+                body: JSON.stringify({ userId, productId, ram, rom })
             })
                 .then(response => {
                     if (!response.ok) {

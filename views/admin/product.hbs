@@ -213,7 +213,7 @@
                     <h6 class="font-weight-bolder mb-0">Products</h6>
                 </nav>
                 <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
-                    
+
                 </div>
             </div>
         </nav>
@@ -308,6 +308,8 @@
                     </tbody>
                 </table>
             </div>
+            <div id="pagination" class="pagination"></div>
+
         </div>
 
         <!-- View Modal -->
@@ -1080,6 +1082,49 @@
                     console.error('Error:', error);
                 });
         }
+
+
+        $(document).ready(function () {
+            // Define rows per page and initialize current page
+            var rowsPerPage = 6;
+            var currentPage = 1;
+
+            // Function to show rows for the current page
+            function showPage(page) {
+                $('tbody tr').hide();
+                var start = (page - 1) * rowsPerPage;
+                var end = start + rowsPerPage;
+                $('tbody tr').slice(start, end).show();
+            }
+
+            // Function to generate pagination links
+            function renderPagination(totalPages) {
+                var paginationHtml = '';
+                for (var i = 1; i <= totalPages; i++) {
+                    paginationHtml += '<a href="#" class="page-link" data-page="' + i + '">' + i + '</a>';
+                }
+                $('#pagination').html(paginationHtml);
+
+                // Highlight current page link
+                $('#pagination a[data-page="' + currentPage + '"]').addClass('active');
+            }
+
+            // Function to handle pagination navigation
+            $(document).on('click', '.page-link', function (e) {
+                e.preventDefault();
+                var page = parseInt($(this).data('page'));
+                currentPage = page;
+                showPage(page);
+                $('.page-link').removeClass('active');
+                $(this).addClass('active');
+            });
+
+            // Initial setup
+            var totalRows = $('tbody tr').length;
+            var totalPages = Math.ceil(totalRows / rowsPerPage);
+            showPage(currentPage);
+            renderPagination(totalPages);
+        });
     </script>
 
 </body>
