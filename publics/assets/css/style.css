@@ -5641,7 +5641,7 @@ body.offcanvas-open {
   background: #f2f8fd;
 }
 .footer-area .footer-top {
-  padding: 100px 0 100px 0;
+  padding: 10px 0 10px 0;
 }
 @media only screen and (min-width: 992px) and (max-width: 1199px) {
   .footer-area .footer-top {
