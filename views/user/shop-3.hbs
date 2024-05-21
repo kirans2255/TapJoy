@@ -1162,22 +1162,7 @@
 
 
     <script>
-        document.querySelector('a[href="/logoutt"]').addEventListener('click', function (event) {
-            event.preventDefault(); // Prevent default link behavior
 
-            Swal.fire({
-                title: 'Are you sure you want to logout?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Yes, logout',
-                cancelButtonText: 'Cancel',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    // Redirect to logout page or perform logout action
-                    window.location.href = "/logoutt"; // Change to your logout URL
-                }
-            });
-        });
 
 
         document.getElementById('searchForm').addEventListener('submit', function (event) {
