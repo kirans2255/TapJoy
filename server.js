@@ -46,7 +46,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
 
-// // Routes
+// Routes
 const indexRoutes = require('./routes/admin');
 app.use('/', indexRoutes);
 

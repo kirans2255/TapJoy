@@ -625,7 +625,7 @@ const fetchOrder = async (req, res) => {
       ram: foundOrder.productRam,
       rom: foundOrder.productRom,
       amount: foundOrder.grandTotal,
-      orderHistory: orderHistory 
+      orderHistory: orderHistory
     });
 
 
@@ -928,20 +928,22 @@ const getOrderReport = async (req, res) => {
 
     // DATA ROWS TO WORK SHEET
     deliveredOrders.forEach((order) => {
-      const productName = order.productId.productName;
-      const productRom = order.productRom;
-      const product = `${productName} - ${productRom}`;
+      if (order.productId) {
+        const productName = order.productId.productName;
+        const productRom = order.productRom;
+        const product = `${productName} - ${productRom}`;
 
-      worksheet.addRow({
-        orderId: order._id,
-        product: product,
-        userName: user.name,
-        orderDate: order.created_at,
-        price: order.price,
-        quantity: order.quantity,
-        total: order.totalprice,
-        orderStatus: order.status,
-      });
+        worksheet.addRow({
+          orderId: order._id,
+          product: product,
+          userName: user.name,
+          orderDate: order.created_at,
+          price: order.price,
+          quantity: order.quantity,
+          total: order.totalprice,
+          orderStatus: order.status,
+        });
+      }
     });
 
     res.setHeader(
