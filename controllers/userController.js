@@ -664,7 +664,6 @@ const handleSignin = async (req, res) => {
 
 const successGoogleLogin = async (req, res) => {
   try {
-    console.log("Google OAuth Response:", req.user);
     
     if (!req.user) {
       return res.status(401).send("No user data, login failed");
