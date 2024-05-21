@@ -608,23 +608,84 @@ const handleSignin = async (req, res) => {
 // };
 
 // LOGIN WITH GOOGLE
+// const successGoogleLogin = async (req, res) => {
+//   try {
+//     if (!req.user) {
+//       // If no user data
+//       return res.status(401).send("no user data , login failed");
+//     }
+
+//     console.log(req.user);
+
+//     // Checking user already exists in database
+//     let user = await Users.findOne({ email: req.user.email });
+
+//     if (!user) {
+//       // If the user does not exist, create a new user
+//       user = new Users({
+//         name: req.user.displayName,
+//         email: req.user.email,
+//       });
+
+//       // Save the new user to the database
+//       await user.save();
+//     }
+
+//     // Generate JWT token
+//     const token = jwt.sign(
+//       {
+//         id: user._id,
+//         name: user.name,
+//         email: user.email,
+//       },
+//       process.env.JWT_KEY,
+//       {
+//         expiresIn: "24h",
+//       }
+//     );
+
+//     // Set JWT token in a cookie
+//     res.cookie("jwt", token, {
+//       httpOnly: true,
+//       maxAge: 24 * 60 * 60 * 1000, // 24 hours in milliseconds
+//       secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
+//     });
+
+//     // Redirect the user to the home page
+//     res.status(200).redirect("/");
+
+//     console.log("User logged in with Google : jwt created");
+//   } catch (error) {
+//     console.error("Error logging in with Google:", error);
+//     res.status(500).redirect("/");
+//   }
+// };
+
+
 const successGoogleLogin = async (req, res) => {
   try {
+    console.log("Google OAuth Response:", req.user);
+    
     if (!req.user) {
-      // If no user data
-      return res.status(401).send("no user data , login failed");
+      return res.status(401).send("No user data, login failed");
     }
 
-    console.log(req.user);
+    // Check if the user object has the displayName and email properties
+    const userName = req.user.displayName || req.user.name;
+    const userEmail = req.user.email;
 
-    // Checking user already exists in database
-    let user = await Users.findOne({ email: req.user.email });
+    if (!userEmail) {
+      return res.status(401).send("No email found in user data");
+    }
+
+    // Checking if user already exists in the database
+    let user = await Users.findOne({ email: userEmail });
 
     if (!user) {
       // If the user does not exist, create a new user
       user = new Users({
-        name: req.user.displayName,
-        email: req.user.email,
+        name: userName,
+        email: userEmail,
       });
 
       // Save the new user to the database
@@ -654,12 +715,13 @@ const successGoogleLogin = async (req, res) => {
     // Redirect the user to the home page
     res.status(200).redirect("/");
 
-    console.log("User logged in with Google : jwt created");
+    console.log("User logged in with Google: JWT created");
   } catch (error) {
     console.error("Error logging in with Google:", error);
     res.status(500).redirect("/");
   }
 };
+
 
 const failureGooglelogin = (req, res) => {
   res.status(500).send("Error logging in with Google");
