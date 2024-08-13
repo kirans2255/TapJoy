@@ -12,7 +12,8 @@ const app = express();
 const port = 3000;
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://kiransunilkumar2017:adUe9QdFUdDcHFGS@tapjoy.8gnnhtt.mongodb.net/tapjoy');
+mongoose.connect(process.env.MONGODB_CONNECT);
+
 const db = mongoose.connection;
 
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
